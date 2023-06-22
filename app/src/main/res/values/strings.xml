@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">FoodOrderingApp</string>
+
+    <string name="splash_label">Broadway</string>
+    <string name="splash_msg">Order Your Food</string>
+    <string name="splash_btn_start">Get Started</string>
+
+    <string name="home_msg_1">Order &amp; Eat</string>
+    <string name="home_banner_title">Free Deliviery</string>
+</resources>
