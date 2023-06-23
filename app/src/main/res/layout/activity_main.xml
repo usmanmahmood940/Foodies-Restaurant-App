@@ -12,8 +12,7 @@
         android:layout_height="@dimen/zero"
         android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.8"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHeight_percent="0.75"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/background_intro" />
@@ -53,7 +52,6 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/iv_poster"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_logo" />
 

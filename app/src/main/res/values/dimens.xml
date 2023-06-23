@@ -2,7 +2,9 @@
 <resources>
     <dimen name="zero">0dp</dimen>
 
+    <dimen name="font_small_75">12sp</dimen>
     <dimen name="font_small_100">14sp</dimen>
+    <dimen name="font_small_115">16sp</dimen>
     <dimen name="font_small_125">18sp</dimen>
     <dimen name="font_small_150">20sp</dimen>
     <dimen name="font_normal_100">25sp</dimen>
@@ -10,6 +12,7 @@
     <dimen name="font_normal_150">40dp</dimen>
     <dimen name="font_large_100">55dp</dimen>
 
+    <dimen name="margin_small_50">4dp</dimen>
     <dimen name="margin_small_100">8dp</dimen>
     <dimen name="margin_normal_100">16dp</dimen>
     <dimen name="margin_normal_150">25dp</dimen>
@@ -17,11 +20,20 @@
 
     <dimen name="search_box_height">55dp</dimen>
 
+    <dimen name="padding_small_100">3dp</dimen>
     <dimen name="padding_normal_100">10dp</dimen>
     <dimen name="padding_normal_200">20dp</dimen>
 
     <dimen name="vertical_guideline">15dp</dimen>
     <dimen name="horizontal_guideline">20dp</dimen>
+
+    <dimen name="rounded_corner_radius">50dp</dimen>
+    <dimen name="vertical_offset">6dp</dimen>
+    <dimen name="floating_btn_elevation">3dp</dimen>
+
+    <dimen name="category_image_size">35dp</dimen>
+    <dimen name="cart_image_maxsize">30dp</dimen>
+    <dimen name="food_image_size">100dp</dimen>
 
 
 

@@ -7,21 +7,25 @@
     tools:context=".HomeActivity">
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/coordinatorLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:overScrollMode="never"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/padding_normal_200"
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="800dp">
+                android:layout_height="wrap_content">
 
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guide_start"
@@ -50,6 +54,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     app:layout_constraintGuide_end="@dimen/horizontal_guideline" />
+
                 <TextView
                     android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
@@ -101,33 +106,293 @@
                     app:layout_constraintTop_toBottomOf="@+id/tv_desc" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_banner"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="150dp"
                     android:layout_marginTop="@dimen/margin_normal_100"
-                    android:background="@drawable/shape_banner_background"
 
+                    android:background="@drawable/shape_banner_background"
                     app:layout_constraintEnd_toEndOf="@id/guide_end"
                     app:layout_constraintStart_toStartOf="@id/guide_start"
-                    app:layout_constraintTop_toBottomOf="@+id/et_search"
 
-                    >
+                    app:layout_constraintTop_toBottomOf="@+id/et_search">
 
                     <ImageView
                         android:id="@+id/iv_banner"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:adjustViewBounds="true"
                         android:paddingTop="@dimen/padding_normal_200"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintWidth_percent="0.5"
                         app:srcCompat="@drawable/image_banner" />
 
+                    <TextView
+                        android:id="@+id/tv_banner_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Free Delivery"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_small_100"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/iv_banner"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.20" />
+
+                    <TextView
+                        android:id="@+id/tv_banner_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="June 21 - July 1"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_small_100"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/iv_banner"
+                        app:layout_constraintTop_toBottomOf="@id/tv_banner_label" />
+
+                    <TextView
+                        android:id="@+id/tv_order"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:background="@drawable/shape_circle_btn_orange"
+                        android:padding="@dimen/padding_normal_100"
+                        android:text="Order Now"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/font_small_100"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/iv_banner"
+                        app:layout_constraintTop_toBottomOf="@id/tv_banner_desc" />
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/tv_label_categories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal_100"
+                    android:text="@string/label_categories"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/font_small_150"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/guide_start"
+                    app:layout_constraintTop_toBottomOf="@+id/cl_banner" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_categories"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal_100"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_label_categories"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_category"
+                    android:overScrollMode="never"
+                    />
+
+
+                <TextView
+                    android:id="@+id/tv_label_Popular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal_100"
+                    android:text="@string/label_popular"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/font_small_150"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/guide_start"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_categories" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_popular"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal_100"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_label_Popular"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_food_domain"
+                    android:overScrollMode="never"
+                    />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
     </ScrollView>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:backgroundTint="#f6f6f6"
+            app:fabCradleMargin="@dimen/margin_small_100"
+            app:fabCradleRoundedCornerRadius="@dimen/rounded_corner_radius"
+            app:fabCradleVerticalOffset="@dimen/vertical_offset">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                >
+
+                <LinearLayout
+                    android:id="@+id/btn_home"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/ic_bottom_home" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Home"
+                        android:textAlignment="center"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/font_small_75" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btn_profile"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:orientation="vertical"
+
+                    >
+
+                    <ImageView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/ic_person" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Profile"
+                        android:textAlignment="center"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/font_small_75" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btn_cart"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
+
+                    <ImageView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/btn1" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Home"
+                        android:textAlignment="center"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/font_small_75" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btn_chat"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:orientation="vertical">
+
+                    <ImageView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="15dp"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/ic_chat" />
+
+                    <TextView
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Support"
+                        android:textAlignment="center"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/font_small_75" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btn_setting"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.2"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:src="@drawable/btn4"
+                        app:srcCompat="@drawable/ic_setting" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Settings"
+                        android:textAlignment="center"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/font_small_75" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.bottomappbar.BottomAppBar>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/orange"
+            android:elevation="@dimen/floating_btn_elevation"
+            android:src="@drawable/shopping_cart"
+            app:backgroundTint="@color/orange"
+            app:layout_anchor="@id/app_bar"
+            app:maxImageSize="@dimen/cart_image_maxsize"
+            app:tint="@color/white"
+            >
+
+        </com.google.android.material.floatingactionbutton.FloatingActionButton>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

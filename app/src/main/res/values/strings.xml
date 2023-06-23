@@ -7,4 +7,7 @@
 
     <string name="home_msg_1">Order &amp; Eat</string>
     <string name="home_banner_title">Free Deliviery</string>
+    <string name="label_categories">Categories</string>
+    <string name="label_popular">Popular</string>
+
 </resources>
