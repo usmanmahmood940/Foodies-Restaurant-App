@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".HomeFragment">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/padding_normal_200"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guide_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_begin="@dimen/vertical_guideline" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guide_end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_end="@dimen/vertical_guideline" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guide_top"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_begin="@dimen/horizontal_guideline" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guide_bottom"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_end="@dimen/horizontal_guideline" />
+
+                <TextView
+                    android:id="@+id/tv_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hi Richard"
+                    android:textColor="@color/orange_2"
+                    android:textSize="@dimen/font_normal_100"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@id/guide_start"
+                    app:layout_constraintTop_toTopOf="@id/guide_top" />
+
+                <TextView
+                    android:id="@+id/tv_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="@string/home_msg_1"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/font_normal_100"
+                    app:layout_constraintStart_toStartOf="@id/guide_start"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/ivFoodIcon"
+                    android:layout_width="60dp"
+                    android:layout_height="0dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/profile"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_desc"
+                    app:layout_constraintEnd_toEndOf="@id/guide_end"
+                    app:layout_constraintTop_toTopOf="@+id/tv_name"
+                    app:shapeAppearanceOverlay="@style/roundImage" />
+
+                <EditText
+                    android:id="@+id/et_search"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/search_box_height"
+                    android:layout_marginTop="@dimen/margin_normal_100"
+                    android:background="@drawable/shape_search_background"
+                    android:drawableStart="@drawable/search"
+                    android:drawablePadding="@dimen/padding_normal_100"
+                    android:hint="Find Your Food"
+                    android:inputType="text"
+                    android:padding="@dimen/padding_normal_200"
+                    android:textSize="@dimen/font_small_100"
+                    android:textStyle="italic"
+                    app:layout_constraintEnd_toEndOf="@id/guide_end"
+                    app:layout_constraintStart_toStartOf="@id/guide_start"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_desc" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_banner"
+                    android:layout_width="0dp"
+                    android:layout_height="150dp"
+                    android:layout_marginTop="@dimen/margin_normal_100"
+                    android:paddingEnd="@dimen/padding_normal_200"
+                    android:background="@drawable/shape_banner_background"
+                    app:layout_constraintEnd_toEndOf="@id/guide_end"
+                    app:layout_constraintStart_toStartOf="@id/guide_start"
+                    app:layout_constraintTop_toBottomOf="@+id/et_search">
+
+                    <ImageView
+                        android:id="@+id/iv_banner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:paddingTop="@dimen/padding_normal_200"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:srcCompat="@drawable/image_banner" />
+
+                    <TextView
+                        android:id="@+id/tv_banner_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Free Delivery"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_small_100"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.20" />
+
+                    <TextView
+                        android:id="@+id/tv_banner_desc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="June 21 - July 1"
+                        android:textAlignment="center"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_small_100"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+
+                        app:layout_constraintTop_toBottomOf="@id/tv_banner_label" />
+
+                    <TextView
+                        android:id="@+id/tv_order"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_circle_btn_orange"
+                        android:padding="@dimen/padding_normal_100"
+                        android:text="Order Now"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/font_small_100"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_banner_desc" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/tv_label_categories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal_100"
+                    android:text="@string/label_categories"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/font_small_150"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/guide_start"
+                    app:layout_constraintTop_toBottomOf="@+id/cl_banner" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_categories"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal_100"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_label_categories"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_category"
+                    android:overScrollMode="never"
+                    />
+
+
+                <TextView
+                    android:id="@+id/tv_label_Popular"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal_100"
+                    android:text="@string/label_popular"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/font_small_150"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="@+id/guide_start"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_categories" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_popular"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal_100"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_label_Popular"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_food_domain"
+                    android:overScrollMode="never"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

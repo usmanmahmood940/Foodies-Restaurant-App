@@ -6,375 +6,77 @@
     android:layout_height="match_parent"
     tools:context=".HomeActivity">
 
-    <ScrollView
-        android:id="@+id/scrollView"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph"
         app:layout_constraintBottom_toTopOf="@+id/coordinatorLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:overScrollMode="never"
-        >
+        tools:layout="@layout/fragment_home"
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/padding_normal_200"
-            android:orientation="vertical">
+        />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guide_start"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_begin="@dimen/vertical_guideline" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guide_end"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    app:layout_constraintGuide_end="@dimen/vertical_guideline" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guide_top"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_begin="@dimen/horizontal_guideline" />
-
-                <androidx.constraintlayout.widget.Guideline
-                    android:id="@+id/guide_bottom"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintGuide_end="@dimen/horizontal_guideline" />
-
-                <TextView
-                    android:id="@+id/tv_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Hi Richard"
-                    android:textColor="@color/orange_2"
-                    android:textSize="@dimen/font_normal_100"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="@id/guide_start"
-                    app:layout_constraintTop_toTopOf="@id/guide_top" />
-
-                <TextView
-                    android:id="@+id/tv_desc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:text="@string/home_msg_1"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/font_normal_100"
-                    app:layout_constraintStart_toStartOf="@id/guide_start"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_name" />
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/ivFoodIcon"
-                    android:layout_width="60dp"
-                    android:layout_height="0dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/profile"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_desc"
-                    app:layout_constraintEnd_toEndOf="@id/guide_end"
-                    app:layout_constraintTop_toTopOf="@+id/tv_name"
-                    app:shapeAppearanceOverlay="@style/roundImage" />
-
-                <EditText
-                    android:id="@+id/et_search"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/search_box_height"
-                    android:layout_marginTop="@dimen/margin_normal_100"
-                    android:background="@drawable/shape_search_background"
-                    android:drawableStart="@drawable/search"
-                    android:drawablePadding="@dimen/padding_normal_100"
-                    android:hint="Find Your Food"
-                    android:inputType="text"
-                    android:padding="@dimen/padding_normal_200"
-                    android:textSize="@dimen/font_small_100"
-                    android:textStyle="italic"
-                    app:layout_constraintEnd_toEndOf="@id/guide_end"
-                    app:layout_constraintStart_toStartOf="@id/guide_start"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_desc" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/cl_banner"
-                    android:layout_width="0dp"
-                    android:layout_height="150dp"
-                    android:layout_marginTop="@dimen/margin_normal_100"
-                    android:paddingEnd="@dimen/padding_normal_200"
-                    android:background="@drawable/shape_banner_background"
-                    app:layout_constraintEnd_toEndOf="@id/guide_end"
-                    app:layout_constraintStart_toStartOf="@id/guide_start"
-                    app:layout_constraintTop_toBottomOf="@+id/et_search">
-
-                    <ImageView
-                        android:id="@+id/iv_banner"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:paddingTop="@dimen/padding_normal_200"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:srcCompat="@drawable/image_banner" />
-
-                    <TextView
-                        android:id="@+id/tv_banner_label"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Free Delivery"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/font_small_100"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.20" />
-
-                    <TextView
-                        android:id="@+id/tv_banner_desc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="June 21 - July 1"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/font_small_100"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.0"
-
-                        app:layout_constraintTop_toBottomOf="@id/tv_banner_label" />
-
-                    <TextView
-                        android:id="@+id/tv_order"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/shape_circle_btn_orange"
-                        android:padding="@dimen/padding_normal_100"
-                        android:text="Order Now"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/font_small_100"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tv_banner_desc" />
-
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <TextView
-                    android:id="@+id/tv_label_categories"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_normal_100"
-                    android:text="@string/label_categories"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/font_small_150"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="@+id/guide_start"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_banner" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_categories"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_normal_100"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_label_categories"
-                    android:orientation="horizontal"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_category"
-                    android:overScrollMode="never"
-                    />
-
-
-                <TextView
-                    android:id="@+id/tv_label_Popular"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_normal_100"
-                    android:text="@string/label_popular"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/font_small_150"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="@+id/guide_start"
-                    app:layout_constraintTop_toBottomOf="@+id/rv_categories" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_popular"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_normal_100"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_label_Popular"
-                    android:orientation="horizontal"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_food_domain"
-                    android:overScrollMode="never"
-                    />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </LinearLayout>
-    </ScrollView>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/app_bar"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:backgroundTint="#f6f6f6"
-            app:fabCradleMargin="@dimen/margin_small_100"
-            app:fabCradleRoundedCornerRadius="@dimen/rounded_corner_radius"
-            app:fabCradleVerticalOffset="@dimen/vertical_offset">
+            app:contentInsetStart="0dp"
+            app:fabCradleMargin="10dp"
+            app:fabCradleRoundedCornerRadius="50dp"
+            android:backgroundTint="@color/light_grey"
+            >
 
-            <LinearLayout
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomNavigationView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                app:elevation="0dp"
+                android:paddingVertical="@dimen/padding_small_100"
+                app:itemRippleColor="@color/grey2"
+                app:backgroundTint="@android:color/transparent"
+                app:labelVisibilityMode="labeled"
+                app:menu="@menu/bottom_menu"
+                app:itemIconTint="@drawable/bottom_nav_item_color"
+                app:itemTextColor="@drawable/bottom_nav_item_color"
 
-                >
-
-                <LinearLayout
-                    android:id="@+id/btn_home"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.2"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        app:srcCompat="@drawable/ic_bottom_home"
-                        app:tint="@color/orange_2" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Home"
-                        android:textAlignment="center"
-                        android:textColor="@color/orange_2"
-                        android:textSize="@dimen/font_small_75"
-                        />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/btn_profile"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.2"
-                    android:orientation="vertical"
-
-                    >
-
-                    <ImageView
-
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        app:srcCompat="@drawable/ic_person" />
-
-                    <TextView
-
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Profile"
-                        android:textAlignment="center"
-                        android:textColor="@color/grey"
-                        android:textSize="@dimen/font_small_75" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/btn_cart"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.2"
-                    android:orientation="vertical"
-                    android:visibility="invisible"
-                    >
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/btn_chat"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.2"
-                    android:orientation="vertical">
-
-                    <ImageView
-
-                        android:layout_width="match_parent"
-                        android:layout_height="15dp"
-                        android:layout_weight="1"
-                        app:srcCompat="@drawable/ic_chat" />
-
-                    <TextView
-
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Support"
-                        android:textAlignment="center"
-                        android:textColor="@color/grey"
-                        android:textSize="@dimen/font_small_75" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/btn_setting"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.2"
-                    android:orientation="vertical">
-
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:src="@drawable/btn4"
-                        app:srcCompat="@drawable/ic_setting" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Settings"
-                        android:textAlignment="center"
-                        android:textColor="@color/grey"
-                        android:textSize="@dimen/font_small_75" />
-                </LinearLayout>
-
-            </LinearLayout>
+                />
 
         </com.google.android.material.bottomappbar.BottomAppBar>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+           android:id="@+id/btn_cart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/orange"
             android:elevation="@dimen/floating_btn_elevation"
             android:src="@drawable/shopping_cart"
             app:backgroundTint="@color/orange"
             app:layout_anchor="@id/app_bar"
+            app:layout_anchorGravity="center|bottom"
             app:maxImageSize="@dimen/cart_image_maxsize"
             app:tint="@color/white"
+
             >
 
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

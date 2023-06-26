@@ -1,33 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
     <item
-        android:id="@+id/action_home"
+        android:id="@+id/nav_home"
         android:icon="@drawable/ic_bottom_home"
         android:title="Home"
-        app:tint="@color/orange_2" />
+        app:tint="@color/orange_2"
+        />
 
     <item
-        android:id="@+id/action_profile"
+        android:id="@+id/nav_profile"
         android:icon="@drawable/ic_person"
         android:title="Profile"
+  
         app:tint="@color/grey" />
 
     <item
-        android:id="@+id/action_cart"
-        android:icon="@drawable/btn1"
-        android:title="Cart"
-        android:visible="false" />
+        android:id="@+id/nav_cart"
+        android:title=""
+        android:enabled="false"
+        />
 
     <item
-        android:id="@+id/action_chat"
+        android:id="@+id/nav_support"
         android:icon="@drawable/ic_chat"
         android:title="Support"
+        
         app:tint="@color/grey" />
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/nav_setting"
         android:icon="@drawable/ic_setting"
         android:title="Settings"
+     
         app:tint="@color/grey" />
+
 </menu>
