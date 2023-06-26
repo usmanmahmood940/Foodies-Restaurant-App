@@ -5,7 +5,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:cardCornerRadius="15dp"
-    app:cardElevation="2dp"
+    app:cardElevation="5dp"
     android:layout_margin="@dimen/margin_small_100"
     >
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -65,7 +65,7 @@
             android:id="@+id/tv_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/margin_small_100"
+            android:layout_marginVertical="@dimen/margin_small_150"
             android:background="@drawable/shape_circle_btn_orange"
             android:paddingHorizontal="@dimen/padding_normal_100"
             android:paddingVertical="@dimen/padding_small_100"
