@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SplashActivity">
+
+    <ImageView
+        android:id="@+id/iv_poster"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/zero"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.75"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/background_intro" />
+
+    <TextView
+        android:id="@+id/tv_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:text="@string/splash_label"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_large_100"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/iv_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/iv_poster" />
+
+    <ImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_poster"
+        app:layout_constraintEnd_toEndOf="@id/iv_poster"
+        app:layout_constraintStart_toStartOf="@+id/iv_poster"
+        app:layout_constraintTop_toTopOf="@+id/iv_poster"
+        app:srcCompat="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/tv_splash_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed"
+        android:text="@string/splash_msg"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_normal_125"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_poster"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_logo" />
+
+    <Button
+        android:id="@+id/btn_start"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/splash_btn_start"
+        android:textSize="@dimen/font_normal_100"
+        app:backgroundTint="@null"
+        android:background="@drawable/shape_circle_btn_orange"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:layout_marginHorizontal="@dimen/margin_normal_200"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_poster" />
+</androidx.constraintlayout.widget.ConstraintLayout>

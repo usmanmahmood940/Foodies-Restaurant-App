@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="@dimen/margin_normal_100"
+    android:paddingVertical="@dimen/margin_normal_150"
+    android:background="@drawable/bg_bottom_sheet"
+    tools:context=".AddToCartBottomSheet">
+
+    <ImageView
+        android:id="@+id/iv_fooditem_image"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/food_image_bottom_sheet_size"
+        android:adjustViewBounds="true"
+        android:src="@drawable/pop_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_small_50"
+        android:layout_marginTop="@dimen/margin_normal_100"
+        android:text="Pepperoni Pizza"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_small_150"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/tv_dollar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_fooditem_image" />
+
+    <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="5.334"
+        android:maxLength="5"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_small_150"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tv_description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_fooditem_image" />
+
+    <TextView
+        android:id="@+id/tv_dollar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:text="$"
+        android:textColor="@color/orange_3"
+        android:textSize="@dimen/font_small_100"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_price"
+        app:layout_constraintEnd_toStartOf="@+id/tv_price" />
+
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small_100"
+        android:layout_marginEnd="@dimen/margin_small_50"
+        android:text="Pepperoni Pizza"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_small_125"
+        app:layout_constraintEnd_toStartOf="@+id/tv_dollar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+
+    <TextView
+        android:id="@+id/tv_total_amount_label"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="@dimen/margin_normal_200"
+        android:layout_marginEnd="@dimen/margin_small_50"
+        android:text="Total Amount"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_small_125"
+        app:layout_constraintEnd_toStartOf="@+id/tv_dollar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_description" />
+    <TextView
+        android:id="@+id/tv_dollar_total_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:text="$"
+        android:textColor="@color/orange_3"
+        android:textSize="@dimen/font_small_75"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_total_amount"
+        app:layout_constraintEnd_toStartOf="@+id/tv_total_amount" />
+
+    <TextView
+        android:id="@+id/tv_total_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="5.334"
+        android:maxLength="5"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_small_125"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_total_amount_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_total_amount_label" />
+
+
+    <TextView
+        android:id="@+id/tv_add_to_cart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal_150"
+        android:background="@drawable/shape_circle_btn_orange"
+        android:paddingHorizontal="@dimen/padding_normal_200"
+        android:paddingVertical="@dimen/padding_normal_100"
+        android:text="Add to Cart"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_small_150"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_total_amount_label" />
+
+
+    <ImageView
+        android:id="@+id/iv_decrease"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_minus"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_add_to_cart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_add_to_cart"
+        android:adjustViewBounds="true"
+        android:layout_marginVertical="@dimen/margin_small_50"
+        />
+    <TextView
+        android:id="@+id/tv_quantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_add_to_cart"
+        app:layout_constraintStart_toEndOf="@+id/iv_decrease"
+        app:layout_constraintTop_toTopOf="@+id/tv_add_to_cart"
+        android:text="1"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginStart="@dimen/margin_small_100"
+        android:textSize="@dimen/font_small_125"
+        />
+    <ImageView
+        android:id="@+id/iv_increase"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_plus"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_add_to_cart"
+        app:layout_constraintStart_toEndOf="@id/tv_quantity"
+        app:layout_constraintTop_toTopOf="@+id/tv_add_to_cart"
+        android:adjustViewBounds="true"
+        android:layout_marginStart="@dimen/margin_small_100"
+        android:layout_marginVertical="@dimen/margin_small_50"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

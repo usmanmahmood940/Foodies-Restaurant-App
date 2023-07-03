@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".HomeFragment">
+    tools:context=".Fragments.HomeFragment">
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -97,6 +97,8 @@
                     android:padding="@dimen/padding_normal_200"
                     android:textSize="@dimen/font_small_100"
                     android:textStyle="italic"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
                     app:layout_constraintEnd_toEndOf="@id/guide_end"
                     app:layout_constraintStart_toStartOf="@id/guide_start"
                     app:layout_constraintTop_toBottomOf="@+id/tv_desc" />
@@ -191,10 +193,19 @@
                     tools:listitem="@layout/item_category"
                     android:overScrollMode="never"
                     />
+                <com.example.foodorderingapp.DottedProgressBar.DotProgressBar
+                    android:id="@+id/progressBar_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/margin_small_100"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_categories"
+                    />
 
 
                 <TextView
-                    android:id="@+id/tv_label_Popular"
+                    android:id="@+id/tv_label_category"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_normal_100"
@@ -203,7 +214,7 @@
                     android:textSize="@dimen/font_small_150"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/guide_start"
-                    app:layout_constraintTop_toBottomOf="@+id/rv_categories" />
+                    app:layout_constraintTop_toBottomOf="@+id/progressBar_category" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_popular"
@@ -212,11 +223,20 @@
                     android:layout_marginTop="@dimen/margin_normal_100"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_label_Popular"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_label_category"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_food_domain"
+                    tools:listitem="@layout/item_food_item"
                     android:overScrollMode="never"
+                    />
+                <com.example.foodorderingapp.DottedProgressBar.DotProgressBar
+                    android:id="@+id/progressBar_fooditem"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/margin_normal_100"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_popular"
                     />
             </androidx.constraintlayout.widget.ConstraintLayout>
 

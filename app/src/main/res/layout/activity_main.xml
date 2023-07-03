@@ -6,67 +6,82 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/iv_poster"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/zero"
-        android:scaleType="fitXY"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph"
+        app:layout_constraintBottom_toTopOf="@+id/coordinatorLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.75"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/background_intro" />
+        tools:layout="@layout/fragment_home"
 
-    <TextView
-        android:id="@+id/tv_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed-medium"
-        android:text="@string/splash_label"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_large_100"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/iv_logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/iv_poster" />
+        />
 
-    <ImageView
-        android:id="@+id/iv_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_poster"
-        app:layout_constraintEnd_toEndOf="@id/iv_poster"
-        app:layout_constraintStart_toStartOf="@+id/iv_poster"
-        app:layout_constraintTop_toTopOf="@+id/iv_poster"
-        app:srcCompat="@drawable/logo" />
 
-    <TextView
-        android:id="@+id/tv_splash_msg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed"
-        android:text="@string/splash_msg"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_normal_125"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_poster"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_logo" />
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
 
-    <Button
-        android:id="@+id/btn_start"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/splash_btn_start"
-        android:textSize="@dimen/font_normal_100"
-        app:backgroundTint="@null"
-        android:background="@drawable/shape_circle_btn_orange"
-        android:fontFamily="sans-serif-condensed-medium"
-        android:layout_marginHorizontal="@dimen/margin_normal_200"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_poster" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/app_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:contentInsetStart="0dp"
+            app:fabCradleMargin="10dp"
+            app:fabCradleRoundedCornerRadius="50dp"
+            android:backgroundTint="@color/light_grey"
+            >
+
+
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:id="@+id/bottomNavigationView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:elevation="0dp"
+                android:paddingVertical="@dimen/padding_small_100"
+                app:itemRippleColor="@color/grey2"
+                app:backgroundTint="@android:color/transparent"
+                app:labelVisibilityMode="labeled"
+                app:menu="@menu/bottom_menu"
+                app:itemIconTint="@drawable/bottom_nav_item_color"
+                app:itemTextColor="@drawable/bottom_nav_item_color"
+
+                />
+
+        </com.google.android.material.bottomappbar.BottomAppBar>
+
+        <com.andremion.counterfab.CounterFab
+           android:id="@+id/btn_cart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="@dimen/floating_btn_elevation"
+            android:src="@drawable/shopping_cart"
+            app:backgroundTint="@color/orange"
+            app:layout_anchor="@id/app_bar"
+            app:layout_anchorGravity="center|bottom"
+            app:maxImageSize="@dimen/cart_image_maxsize"
+            app:tint="@color/white"
+            app:badgeBackgroundColor="@color/light_grey"
+            app:badgePosition="RightTop"
+            app:badgeTextColor="@color/orange"
+
+            >
+
+
+        </com.andremion.counterfab.CounterFab>
+  
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

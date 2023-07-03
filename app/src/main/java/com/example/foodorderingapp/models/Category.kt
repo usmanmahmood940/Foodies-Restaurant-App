@@ -1,6 +1,10 @@
 package com.example.foodorderingapp.models
 
+
+
 data class Category(
-    val name:String,
-    val icon:Int,
-)
+    val id:String ="",
+    val name:String = "",
+    val icon:String = "",
+
+    )

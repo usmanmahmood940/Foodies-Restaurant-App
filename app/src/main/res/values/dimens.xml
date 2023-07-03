@@ -36,6 +36,11 @@
     <dimen name="category_image_size">35dp</dimen>
     <dimen name="cart_image_maxsize">30dp</dimen>
     <dimen name="food_image_size">100dp</dimen>
+    <dimen name="food_image_bottom_sheet_size">250dp</dimen>
+
+    <dimen name="mtrl_badge_with_text_radius">22dp</dimen>
+
+
 
 
 
