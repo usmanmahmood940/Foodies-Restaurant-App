@@ -19,7 +19,7 @@ import com.example.foodorderingapp.R
 class DotProgressBar : FrameLayout {
     private var margin:Int = convertDpToPixel(4f,context)
     private var dotRadius:Int = convertDpToPixel(8f,context)
-    private var numberOfDots = 3
+    private var numberOfDots = 4
     private val animators = mutableListOf<Animator>()
     private var animationDuration = 1000L
     private var minScale = 0.5f

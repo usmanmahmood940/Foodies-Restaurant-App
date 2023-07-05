@@ -3,6 +3,7 @@ package com.example.foodorderingapp.Utils
 import android.content.ContentResolver
 import android.content.res.Resources
 import android.net.Uri
+import java.util.*
 
 object Helper {
 
@@ -15,5 +16,11 @@ object Helper {
                     resources.getResourceEntryName(drawableResId)
         )
        return imageUri
+    }
+
+    fun generateRandomStringWithTime(): String {
+        val timestamp = System.currentTimeMillis()
+        val randomString = UUID.randomUUID().toString()
+        return "$randomString-$timestamp"
     }
 }

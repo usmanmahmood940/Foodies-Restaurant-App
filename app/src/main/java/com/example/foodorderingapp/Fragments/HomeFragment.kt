@@ -1,5 +1,6 @@
 package com.example.foodorderingapp.Fragments
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +11,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodorderingapp.Adapter.CategoryAdapter
 import com.example.foodorderingapp.Adapter.FoodItemAdapter
-import com.example.foodorderingapp.AddToCartBottomSheet
-import com.example.foodorderingapp.DottedProgressBar.DotProgressBar
+import com.example.foodorderingapp.BottomSheet.AddToCartBottomSheet
 import com.example.foodorderingapp.Listeners.CategoryClickListener
 import com.example.foodorderingapp.Listeners.FoodItemClickListener
-import com.example.foodorderingapp.ViewModels.HomeViewModel
+import com.example.foodorderingapp.viewModels.HomeViewModel
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.Response.CustomResponse
 import com.example.foodorderingapp.Utils.Constants
@@ -92,8 +92,14 @@ class HomeFragment : Fragment() {
                     }
                 }
                 is CustomResponse.Error -> {
-                    binding.rvCategories.visibility = View.INVISIBLE
-                    binding.progressBarCategory.visibility = View.VISIBLE
+                    binding.progressBarCategory.visibility = View.GONE
+                    val alertDialog = AlertDialog.Builder(requireActivity())
+                    alertDialog.setTitle("Error Message")
+                    alertDialog.setMessage(it.errorMessage)
+                    alertDialog.show()
+
+//                    binding.tvError.visibility = View.VISIBLE
+//                    binding.tvError.text = it.errorMessage
                 }
                 else -> {}
             }

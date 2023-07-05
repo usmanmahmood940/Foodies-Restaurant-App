@@ -1,10 +1,8 @@
-package com.example.foodorderingapp.ViewModels
+package com.example.foodorderingapp.viewModels
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.foodorderingapp.R
 import com.example.foodorderingapp.Repositories.CategoryRepository
 import com.example.foodorderingapp.Repositories.FoodItemRepository
 import com.example.foodorderingapp.Response.CustomResponse
@@ -35,8 +33,6 @@ class SearchViewModel  @Inject constructor(
         }
     }
 
-
-
     fun getFoodItemsByQuery(query:String): List<FoodItem> {
         val filteredCategory = mutableListOf<Category>()
         filteredCategory.addAll(categoryList.value?.data?.filter { it.name.contains(query) }?: emptyList())
@@ -47,6 +43,12 @@ class SearchViewModel  @Inject constructor(
         } ?: emptyList()
         return filteredItems
 
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        categoryRepository.stopObservingData()
+        foodItemRepository.stopObservingData()
     }
 
 

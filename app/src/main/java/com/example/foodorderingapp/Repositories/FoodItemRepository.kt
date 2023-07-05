@@ -4,12 +4,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.foodorderingapp.Response.CustomResponse
+import com.example.foodorderingapp.Utils.Helper.generateRandomStringWithTime
 import com.example.foodorderingapp.models.FoodItem
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import java.util.*
 import javax.inject.Inject
 
 class FoodItemRepository  @Inject constructor() {
@@ -68,13 +68,14 @@ class FoodItemRepository  @Inject constructor() {
         databaseReference.addValueEventListener(valueEventListener as ValueEventListener)
     }
 
-
-
-    fun generateRandomStringWithTime(): String {
-        val timestamp = System.currentTimeMillis()
-        val randomString = UUID.randomUUID().toString()
-        return "$randomString-$timestamp"
+    fun stopObservingData() {
+        valueEventListener?.let {
+            databaseReference.removeEventListener(it)
+        }
     }
+
+
+
 
 }
 

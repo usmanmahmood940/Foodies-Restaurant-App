@@ -8,7 +8,7 @@
     android:paddingHorizontal="@dimen/margin_normal_100"
     android:paddingVertical="@dimen/margin_normal_150"
     android:background="@drawable/bg_bottom_sheet"
-    tools:context=".AddToCartBottomSheet">
+    tools:context=".BottomSheet.AddToCartBottomSheet">
 
     <ImageView
         android:id="@+id/iv_fooditem_image"
@@ -67,7 +67,8 @@
         android:layout_marginEnd="@dimen/margin_small_50"
         android:text="Pepperoni Pizza"
         android:textColor="@color/black"
-        android:textSize="@dimen/font_small_125"
+        android:textSize="@dimen/font_small_115"
+        android:textStyle="italic"
         app:layout_constraintEnd_toStartOf="@+id/tv_dollar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_name" />

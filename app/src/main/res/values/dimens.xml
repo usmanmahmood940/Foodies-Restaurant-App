@@ -23,7 +23,9 @@
 
     <dimen name="padding_small_100">5dp</dimen>
     <dimen name="padding_normal_100">10dp</dimen>
+    <dimen name="padding_normal_120">12dp</dimen>
     <dimen name="padding_normal_200">20dp</dimen>
+    <dimen name="padding_normal_500">50dp</dimen>
 
     <dimen name="vertical_guideline">15dp</dimen>
     <dimen name="horizontal_guideline">20dp</dimen>

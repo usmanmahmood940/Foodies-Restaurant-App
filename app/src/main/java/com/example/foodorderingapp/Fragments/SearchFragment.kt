@@ -11,10 +11,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.foodorderingapp.Adapter.FoodItemAdapter
-import com.example.foodorderingapp.AddToCartBottomSheet
+import com.example.foodorderingapp.BottomSheet.AddToCartBottomSheet
 import com.example.foodorderingapp.Listeners.FoodItemClickListener
 import com.example.foodorderingapp.Response.CustomResponse
-import com.example.foodorderingapp.ViewModels.SearchViewModel
+import com.example.foodorderingapp.viewModels.SearchViewModel
 import com.example.foodorderingapp.databinding.FragmentSearchBinding
 import com.example.foodorderingapp.models.FoodItem
 import dagger.hilt.android.AndroidEntryPoint

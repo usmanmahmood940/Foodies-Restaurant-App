@@ -1,8 +1,8 @@
-package com.example.foodorderingapp
+package com.example.foodorderingapp.BottomSheet
 
 import android.app.Dialog
 import android.os.Bundle
-import androidx.fragment.app.FragmentActivity
+import com.example.foodorderingapp.R
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 

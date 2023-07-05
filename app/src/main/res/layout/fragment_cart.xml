@@ -1,14 +1,281 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Fragments.CartFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+        <variable
+            name="cartViewModel"
+            type="com.example.foodorderingapp.viewModels.CartViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Cart Fragment" />
+        tools:context=".Fragments.CartFragment">
 
-</FrameLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/sv_cart"
+            android:overScrollMode="never">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guide_start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_begin="@dimen/vertical_guideline" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guide_end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_end="@dimen/vertical_guideline" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guide_top"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_begin="@dimen/horizontal_guideline" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/guide_bottom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintGuide_end="@dimen/horizontal_guideline" />
+
+                    <TextView
+                        android:id="@+id/tv_mycart_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/my_cart"
+                        android:textColor="@color/orange_2"
+                        android:textSize="@dimen/font_small_150"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toStartOf="@+id/guide_end"
+                        app:layout_constraintStart_toEndOf="@id/guide_start"
+                        app:layout_constraintTop_toBottomOf="@id/guide_top" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_cart"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_normal_100"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_mycart_label"
+                        app:layout_constraintStart_toEndOf="@id/guide_start"
+                        app:layout_constraintEnd_toStartOf="@+id/guide_end"
+                        android:overScrollMode="never" />
+
+                    <TextView
+                        android:id="@+id/tv_item_total_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/item_total"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_small_125"
+                        app:layout_constraintStart_toEndOf="@id/guide_start"
+                        app:layout_constraintTop_toBottomOf="@+id/rv_cart"
+                        android:layout_marginTop="@dimen/margin_normal_100"
+                        android:layout_marginStart="@dimen/margin_small_100" />
+
+                    <TextView
+                        android:id="@+id/tv_item_total_dollar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="$"
+                        android:textColor="@color/orange"
+                        android:textSize="@dimen/font_small_100"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_item_total"
+                        app:layout_constraintEnd_toStartOf="@+id/tv_item_total"
+                      />
+
+                    <TextView
+                        android:id="@+id/tv_item_total"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_small_100"
+                        android:text="@{String.valueOf(cartViewModel.totalItemAmount)}"
+                        android:maxLength="6"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_small_125"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_item_total_label"
+                        app:layout_constraintEnd_toStartOf="@+id/guide_end"
+                        app:layout_constraintTop_toTopOf="@+id/tv_item_total_label" />
+
+
+                    <TextView
+                        android:id="@+id/tv_delivery_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/delivery"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_small_125"
+                        app:layout_constraintStart_toEndOf="@id/guide_start"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_item_total"
+                        android:layout_marginTop="@dimen/margin_small_100"
+                        android:layout_marginStart="@dimen/margin_small_100" />
+
+                    <TextView
+                        android:id="@+id/tv_delivery_dollar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="$"
+                        android:textColor="@color/orange"
+                        android:textSize="@dimen/font_small_100"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_delivery"
+                        app:layout_constraintEnd_toStartOf="@+id/tv_delivery"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_delivery"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_small_100"
+                        android:text="@{String.valueOf(cartViewModel.deliveryCharges)}"
+                        android:maxLength="5"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_small_125"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_delivery_label"
+                        app:layout_constraintEnd_toStartOf="@+id/guide_end"
+                        app:layout_constraintTop_toTopOf="@+id/tv_delivery_label" />
+
+                    <TextView
+                        android:id="@+id/tv_tax_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tax"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_small_125"
+                        app:layout_constraintStart_toEndOf="@id/guide_start"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_delivery_label"
+                        android:layout_marginTop="@dimen/margin_small_100"
+                        android:layout_marginStart="@dimen/margin_small_100" />
+
+                    <TextView
+                        android:id="@+id/tv_tax_dollar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="$"
+                        android:textColor="@color/orange"
+                        android:textSize="@dimen/font_small_100"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_tax"
+                        app:layout_constraintEnd_toStartOf="@+id/tv_tax"
+                        />
+
+
+                    <TextView
+                        android:id="@+id/tv_tax"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_small_100"
+                        android:text="@{String.valueOf(cartViewModel.tax)}"
+                        android:maxLength="5"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_small_125"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_tax_label"
+                        app:layout_constraintEnd_toStartOf="@+id/guide_end"
+                        app:layout_constraintTop_toTopOf="@+id/tv_tax_label" />
+
+                    <TextView
+                        android:id="@+id/tv_total_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/total"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_normal_100"
+                        app:layout_constraintStart_toEndOf="@id/guide_start"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_tax_label"
+                        android:layout_marginTop="@dimen/margin_normal_150"
+                        android:layout_marginStart="@dimen/margin_small_100" />
+
+                    <TextView
+                        android:id="@+id/tv_total_dollar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="$"
+                        android:textColor="@color/orange"
+                        android:textSize="@dimen/font_small_150"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_total"
+                        app:layout_constraintEnd_toStartOf="@+id/tv_total"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_total"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_small_100"
+                        android:text="@{String.valueOf(cartViewModel.totalAMount)}"
+                        android:maxLength="6"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_normal_100"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_total_label"
+                        app:layout_constraintEnd_toStartOf="@+id/guide_end"
+                        app:layout_constraintTop_toTopOf="@+id/tv_total_label" />
+
+                    <TextView
+                        android:id="@+id/tv_checkout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:background="@drawable/shape_circle_btn_orange"
+                        android:gravity="center"
+                        android:paddingVertical="@dimen/padding_normal_100"
+                        android:paddingHorizontal="@dimen/padding_normal_500"
+                        android:text="@string/checkout"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/font_normal_100"
+                        android:textStyle="bold"
+
+                        android:layout_marginTop="@dimen/margin_normal_200"
+                        app:layout_constraintBottom_toTopOf="@+id/guide_bottom"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/guide_start"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_total_label" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+        <TextView
+            android:id="@+id/tv_cart_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cart_empty"
+            android:textSize="@dimen/font_normal_100"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

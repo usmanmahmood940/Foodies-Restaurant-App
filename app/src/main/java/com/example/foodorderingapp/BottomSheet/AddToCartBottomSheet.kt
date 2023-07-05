@@ -1,19 +1,24 @@
-package com.example.foodorderingapp
+package com.example.foodorderingapp.BottomSheet
 
+import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
+import com.example.foodorderingapp.CartManager
 import com.example.foodorderingapp.databinding.FragmentAddToCartBottomSheetBinding
+import com.example.foodorderingapp.models.CartItem
 import com.example.foodorderingapp.models.FoodItem
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class AddToCartBottomSheet : RoundedBottomSheetDialogFragment() {
     private lateinit var binding: FragmentAddToCartBottomSheetBinding
+
+    @Inject
+    lateinit var cartManager: CartManager
 
     companion object {
         private const val ARG_FOOD_ITEM = "foodItem"
@@ -27,21 +32,27 @@ class AddToCartBottomSheet : RoundedBottomSheetDialogFragment() {
             return fragment
         }
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentAddToCartBottomSheetBinding.inflate(inflater,container,false)
-       return  binding.root
+        binding = FragmentAddToCartBottomSheetBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         // Retrieve the FoodItem from the arguments
-        val foodItem = arguments?.getParcelable<FoodItem>(ARG_FOOD_ITEM)
-        Glide.with(binding.ivFooditemImage.context).load(foodItem?.image).into(binding.ivFooditemImage)
+        val foodItem = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable<FoodItem>(ARG_FOOD_ITEM, FoodItem::class.java)
+        } else {
+            arguments?.getParcelable<FoodItem>(ARG_FOOD_ITEM)
+        }
+        Glide.with(binding.ivFooditemImage.context).load(foodItem?.image)
+            .into(binding.ivFooditemImage)
 
         binding.tvName.text = foodItem?.title
         binding.tvDescription.text = foodItem?.description
@@ -70,7 +81,8 @@ class AddToCartBottomSheet : RoundedBottomSheetDialogFragment() {
         // Example logic for adding the item to the cart
         binding.tvAddToCart.setOnClickListener {
             // Perform the action
-
+            val cartItem = CartItem(foodItem, quantity, totalAmount)
+            cartManager.addToCart(cartItem)
             dismiss()
         }
     }

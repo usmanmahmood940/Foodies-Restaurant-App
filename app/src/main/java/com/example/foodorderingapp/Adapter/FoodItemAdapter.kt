@@ -12,9 +12,10 @@ import com.example.foodorderingapp.Listeners.FoodItemClickListener
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.models.FoodItem
 
-class FoodItemAdapter(private var foodDomainList: List<FoodItem> = emptyList(),private val listener: FoodItemClickListener) :
-    RecyclerView.Adapter<FoodItemAdapter.ViewHolder>() {
-
+class FoodItemAdapter(
+    private var foodDomainList: List<FoodItem> = emptyList(),
+    private val listener: FoodItemClickListener,
+    ) : RecyclerView.Adapter<FoodItemAdapter.ViewHolder>() {
 
     fun setList(list: List<FoodItem>) {
         foodDomainList = list

@@ -1,19 +1,14 @@
-package com.example.foodorderingapp.ViewModels
+package com.example.foodorderingapp.viewModels
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.foodorderingapp.R
 import com.example.foodorderingapp.Repositories.CategoryRepository
 import com.example.foodorderingapp.Repositories.FoodItemRepository
 import com.example.foodorderingapp.Response.CustomResponse
 import com.example.foodorderingapp.models.Category
 import com.example.foodorderingapp.models.FoodItem
-import com.google.android.gms.common.api.Api
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -65,10 +60,12 @@ class HomeViewModel  @Inject constructor(
 
 
     }
-   
 
-
-
+    override fun onCleared() {
+        super.onCleared()
+        categoryRepository.stopObservingData()
+        foodItemRepository.stopObservingData()
+    }
 
 
 }
