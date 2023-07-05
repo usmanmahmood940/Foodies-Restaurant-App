@@ -21,4 +21,7 @@
     <string name="cart_empty">Your cart is empty</string>
 
 
+    <string name="enter_credentials">Enter your email and password to continue</string>
+
+
 </resources>

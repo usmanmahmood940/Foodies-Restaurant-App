@@ -6,4 +6,5 @@ object Constants {
     const val POPULAR = "Popular"
     const val CART = "Cart"
     const val CART_COUNT = "CartCount"
+    const val FIRST_TIME_OPEN = "FirstTimeOpen"
 }

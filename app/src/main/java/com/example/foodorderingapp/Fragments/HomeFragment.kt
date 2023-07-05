@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.foodorderingapp.Adapter.CategoryAdapter
 import com.example.foodorderingapp.Adapter.FoodItemAdapter
 import com.example.foodorderingapp.BottomSheet.AddToCartBottomSheet
@@ -21,12 +22,16 @@ import com.example.foodorderingapp.Utils.Constants
 import com.example.foodorderingapp.databinding.FragmentHomeBinding
 import com.example.foodorderingapp.models.Category
 import com.example.foodorderingapp.models.FoodItem
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var homeViewModel: HomeViewModel
+    @Inject
+    lateinit var auth:FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,6 +39,14 @@ class HomeFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater)
+
+        auth.currentUser?.apply {
+            binding.tvName.text = displayName
+            Glide.with(this@HomeFragment).load(photoUrl).into(binding.ivProfile)
+//            binding.ivProfile.setImageURI(photoUrl!!)
+            println(photoUrl)
+        }
+
 
 
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)

@@ -27,8 +27,6 @@ class CartManager(private val sharedPreferences: SharedPreferences) {
             val type = object : TypeToken<MutableList<CartItem>?>() {}.type
             _cartItemList.value = Gson().fromJson<MutableList<CartItem>>(cartJson, type)
         }
-       
-
     }
 
     interface CartChangeListener {
@@ -83,7 +81,6 @@ class CartManager(private val sharedPreferences: SharedPreferences) {
         editor.putString(CART, cartJson)
         editor.putInt(CART_COUNT, quantityCount ?: 0)
         editor.apply()
-
         cartChangeListener?.onCartChanged(getCartCount())
     }
 

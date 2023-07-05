@@ -239,21 +239,18 @@
                         app:layout_constraintEnd_toStartOf="@+id/guide_end"
                         app:layout_constraintTop_toTopOf="@+id/tv_total_label" />
 
-                    <TextView
+                    <Button
                         android:id="@+id/tv_checkout"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-
                         android:background="@drawable/shape_circle_btn_orange"
-                        android:gravity="center"
-                        android:paddingVertical="@dimen/padding_normal_100"
-                        android:paddingHorizontal="@dimen/padding_normal_500"
                         android:text="@string/checkout"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/font_normal_100"
+                        android:textSize="@dimen/font_small_150"
                         android:textStyle="bold"
-
+                        app:backgroundTint="@null"
                         android:layout_marginTop="@dimen/margin_normal_200"
+                        android:layout_marginHorizontal="@dimen/margin_normal_200"
                         app:layout_constraintBottom_toTopOf="@+id/guide_bottom"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/guide_start"

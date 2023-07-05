@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 
 import com.example.foodorderingapp.CartManager
+import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,4 +28,11 @@ class AppModule {
     fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
         return context.getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE)
     }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
+    }
+
 }
