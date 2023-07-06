@@ -1,6 +1,7 @@
 package com.example.foodorderingapp.Fragments
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.foodorderingapp.Activities.LoginActivity
 import com.example.foodorderingapp.Adapter.CategoryAdapter
 import com.example.foodorderingapp.Adapter.FoodItemAdapter
 import com.example.foodorderingapp.BottomSheet.AddToCartBottomSheet
@@ -150,24 +152,22 @@ class HomeFragment : Fragment() {
             }
 
         }
-//        val dotProgressBar = DotProgressBar.Builder()
-//            .setMargin(4)
-//            .setAnimationDuration(2000)
-//            .setDotBackground(R.drawable.ic_launcher_background)
-//            .setMaxScale(1f)
-//            .setMinScale(0.3f)
-//            .setNumberOfDots(5)
-//            .setdotRadius(8)
-//            .build(this)
-//        frame_layout.addView(dotProgressBar)
-//        dotProgressBar.startAnimation()
      
         binding.etSearch.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
         }
 
+        binding.ivProfile.setOnClickListener{
+            auth.signOut()
+            startActivity(Intent(requireContext(),LoginActivity::class.java))
+            requireActivity().finish()
+        }
+
         return binding.root
     }
+
+
+    
 
 
 

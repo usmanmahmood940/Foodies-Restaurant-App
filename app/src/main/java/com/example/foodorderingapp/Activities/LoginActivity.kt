@@ -10,6 +10,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.foodorderingapp.R
+import com.example.foodorderingapp.Utils.Helper.isValidEmail
 import com.example.foodorderingapp.databinding.ActivityLoginBinding
 import com.facebook.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -75,7 +76,8 @@ class LoginActivity : AppCompatActivity() {
             val email = binding.etEmail.text.toString().trim()
             val password = binding.etPassword.text.toString().trim()
 
-            if (email.isNotEmpty() && password.isNotEmpty()) {
+//            email.isNotBlank() && password.isNotBlank()
+            if (email.isNotBlank() && password.isNotBlank()) {
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this) { task ->
                         if (task.isSuccessful) {
@@ -95,6 +97,20 @@ class LoginActivity : AppCompatActivity() {
                         }
                     }
 
+            }
+            else{
+               when{
+                   email.isBlank() -> {
+                       binding.etEmail.error = "Email field cannot be empty."
+                   }
+                   !email.isValidEmail() -> {
+                       binding.etEmail.error = "Provide a valid email address."
+                   }
+                   password.isBlank() -> {
+                       binding.etPassword.error = "Password field cannot be empty."
+                   }
+                   else -> {}
+               }
             }
         }
         
@@ -154,3 +170,5 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 }
+
+
