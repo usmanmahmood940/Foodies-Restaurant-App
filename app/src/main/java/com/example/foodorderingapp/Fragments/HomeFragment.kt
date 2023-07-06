@@ -40,8 +40,9 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater)
 
+
         auth.currentUser?.apply {
-            binding.tvName.text = displayName
+            binding.tvName.text =  "Hi $displayName"
             Glide.with(this@HomeFragment).load(photoUrl).into(binding.ivProfile)
 //            binding.ivProfile.setImageURI(photoUrl!!)
             println(photoUrl)

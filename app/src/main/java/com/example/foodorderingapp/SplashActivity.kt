@@ -1,9 +1,11 @@
-package com.example.foodorderingapp.Activities
+package com.example.foodorderingapp
 
 import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.foodorderingapp.Activities.LoginActivity
+import com.example.foodorderingapp.Activities.MainActivity
 import com.example.foodorderingapp.Utils.Constants.FIRST_TIME_OPEN
 import com.example.foodorderingapp.databinding.ActivitySplashBinding
 import com.google.firebase.auth.FirebaseAuth

@@ -53,12 +53,15 @@
 
                 <TextView
                     android:id="@+id/tv_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="Hi Richard"
+                    android:maxLength="20"
                     android:textColor="@color/orange_2"
                     android:textSize="@dimen/font_normal_100"
                     android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_profile"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="@id/guide_start"
                     app:layout_constraintTop_toBottomOf="@id/guide_top" />
 

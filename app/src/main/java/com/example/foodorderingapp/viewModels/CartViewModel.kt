@@ -11,7 +11,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CartViewModel  @Inject constructor(
-    private val foodItemRepository: FoodItemRepository,
     private val cartManager: CartManager
 ) : ViewModel() {
 
