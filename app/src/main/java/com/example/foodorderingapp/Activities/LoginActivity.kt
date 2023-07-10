@@ -40,17 +40,6 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        if (auth.currentUser != null) {
-//            val user = auth.currentUser
-//            Toast.makeText(
-//                this,
-//                "Name : ${auth.currentUser?.displayName} \nPhoneNumber :  ${auth.currentUser?.phoneNumber}",
-//                Toast.LENGTH_SHORT
-//            ).show()
-//        } else {
-//            Toast.makeText(this, "Not login", Toast.LENGTH_SHORT).show()
-//        }
-
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -66,7 +55,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
-
     private fun loginListeners() {
         auth.currentUser?.getIdToken(false)?.addOnSuccessListener {
             Toast.makeText(this, it.token.toString(), Toast.LENGTH_LONG).show()
@@ -77,43 +65,56 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.etPassword.text.toString().trim()
 
 //            email.isNotBlank() && password.isNotBlank()
-            if (email.isNotBlank() && password.isNotBlank()) {
-                auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(this) { task ->
-                        if (task.isSuccessful) {
-                            val user = auth.currentUser
-                            Toast.makeText(
-                                this,
-                                "Name : ${auth.currentUser?.displayName}",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-                            Toast.makeText(
-                                this,
-                                "Firebase sign-in failed : ${task.exception.toString()}",
-                                Toast.LENGTH_SHORT
-                            ).show()
+//            if (email.isNotBlank() && password.isNotBlank()) {
+//                auth.signInWithEmailAndPassword(email, password)
+//                    .addOnCompleteListener(this) { task ->
+//                        if (task.isSuccessful) {
+//                            val user = auth.currentUser
+//                            Toast.makeText(
+//                                this,
+//                                "Name : ${auth.currentUser?.displayName}",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//                        } else {
+//                            Toast.makeText(
+//                                this,
+//                                "Firebase sign-in failed : ${task.exception.toString()}",
+//                                Toast.LENGTH_SHORT
+//                            ).show()
+//
+//                        }
+//                    }
+//
+//            }
 
+            when {
+                email.isBlank() -> {
+                    binding.etEmail.error = getString(R.string.email_required_error)
+                    binding.etEmail.requestFocus()
+                }
+                !email.isValidEmail() -> {
+                    binding.etEmail.error = getString(R.string.email_valid_error)
+                    binding.etEmail.requestFocus()
+                }
+                password.isBlank() -> {
+                    binding.etPassword.error =  getString(R.string.password_required_error)
+                    binding.etPassword.requestFocus()
+                }
+                else -> {
+                    auth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(this) { task ->
+                            if (task.isSuccessful) {
+                                startActivity(Intent(this, MainActivity::class.java))
+                                finish()
+                            } else {
+                                Toast.makeText(this, "Firebase sign-in failed", Toast.LENGTH_SHORT).show()
+                            }
                         }
-                    }
+                }
+            }
 
-            }
-            else{
-               when{
-                   email.isBlank() -> {
-                       binding.etEmail.error = "Email field cannot be empty."
-                   }
-                   !email.isValidEmail() -> {
-                       binding.etEmail.error = "Provide a valid email address."
-                   }
-                   password.isBlank() -> {
-                       binding.etPassword.error = "Password field cannot be empty."
-                   }
-                   else -> {}
-               }
-            }
         }
-        
+
         binding.btnGoogleLogin.setOnClickListener {
             signInGoogle()
         }
@@ -133,8 +134,6 @@ class LoginActivity : AppCompatActivity() {
         val signInIntent = googleSignInClient.signInIntent
         launcher.launch(signInIntent)
     }
-
-
 
 
     private val launcher =
