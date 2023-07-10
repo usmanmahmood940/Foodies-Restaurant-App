@@ -1,5 +1,6 @@
 package com.example.foodorderingapp.models
 
+
 data class Order(
     var orderId:String="",
     val customerInfo: CustomerInfo,

@@ -30,8 +30,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.collectLatest
 import java.io.IOException
-import java.lang.Math.*
 import java.util.*
 import javax.inject.Inject
 
@@ -98,99 +99,105 @@ class CheckoutFragment : Fragment() {
                 navController.navigate(R.id.action_checkoutFragment_to_mapsFragment)
             }
 
-
-
             btnPlaceOrder.setOnClickListener {
-                when {
-                    etName.text.toString().isNullOrBlank() -> {
-                        etName.error = getString(R.string.name_required_error)
-                        etName.requestFocus()
-                    }
-                    etEmail.text.toString().isNullOrBlank() -> {
-                        etEmail.error = getString(R.string.email_required_error)
-                        etEmail.requestFocus()
-                    }
-                    !etEmail.text.toString().isValidEmail() -> {
-                        etEmail.error = getString(R.string.email_valid_error)
-                        etEmail.requestFocus()
-                    }
-                    etMobileNum.text.toString().isNullOrBlank() -> {
-                        etMobileNum.error = getString(R.string.mobile_required_error)
-                        etMobileNum.requestFocus()
-                    }
-                    etAddress.text.isNullOrBlank() -> {
-                        etAddress.error = getString(R.string.address_required_error)
-                        etAddress.isFocusableInTouchMode = true
-                        etAddress.requestFocus()
-                        etAddress.isFocusableInTouchMode = false
-
-                    }
-                    !checkoutViewModel.validDistance() -> {
-                        showDeliveryError()
-                    }
-                    else -> {
-
-                        val customerInfo = CustomerInfo(
-                            name = etName.text.toString().trim(),
-                            email = etEmail.text.toString().trim(),
-                            phoneNumner = etMobileNum.text.toString().trim()
-                        )
-                        val deliveryInfo = DeliveryInfo(
-                            locationLatitude = checkoutViewModel.latitude,
-                            locationLongitude = checkoutViewModel.latitude
-                        )
-                        val paymentMethod = PaymentMethod.CashOnDelivery()
-                        var cartItemList = emptyList<CartItem>()
-                        val cartJson = sharedPreferences.getString(Constants.CART, null)
-                        if (!cartJson.isNullOrEmpty()) {
-                            val type = object : TypeToken<MutableList<CartItem>?>() {}.type
-                            cartItemList = Gson().fromJson<MutableList<CartItem>>(cartJson, type)
-                        }
-                        val totalAmount = cartItemList.sumOf { it.totalAmount }
-                        val order = Order(
-                            customerInfo = customerInfo,
-                            deliveryInfo = deliveryInfo,
-                            paymentMethod = paymentMethod,
-                            cartItemList = cartItemList,
-                            totalAmount = totalAmount
-                        )
-                        checkoutViewModel.createOrder(order)
-                        // move to next fragment
-                        // pop this fragment and previous fragment
-
-
-                        Toast.makeText(requireContext(), "Form submitted", Toast.LENGTH_LONG).show()
-
-                    }
-                }
+                placeOrder()
             }
+
+
 
         }
     }
 
-        fun getAddressFromLocation(context: Context, latitude: Double, longitude: Double): String {
-            val geocoder = Geocoder(context, Locale.getDefault())
-            var addressText = ""
-            try {
-                val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
-                if (addresses != null && addresses.isNotEmpty()) {
-                    val address: Address = addresses[0]
-                    val sb = StringBuilder()
-
-                    for (i in 0 until address.maxAddressLineIndex + 1) {
-                        sb.append(address.getAddressLine(i))
-                        if (i < address.maxAddressLineIndex) {
-                            sb.append(", ")
-                        }
-                    }
-
-                    addressText = sb.toString()
+    private fun placeOrder() {
+        binding.apply {
+            when {
+                etName.text.toString().isNullOrBlank() -> {
+                    etName.error = getString(R.string.name_required_error)
+                    etName.requestFocus()
                 }
-            } catch (e: IOException) {
-            }
+                etEmail.text.toString().isNullOrBlank() -> {
+                    etEmail.error = getString(R.string.email_required_error)
+                    etEmail.requestFocus()
+                }
+                !etEmail.text.toString().isValidEmail() -> {
+                    etEmail.error = getString(R.string.email_valid_error)
+                    etEmail.requestFocus()
+                }
+                etMobileNum.text.toString().isNullOrBlank() -> {
+                    etMobileNum.error = getString(R.string.mobile_required_error)
+                    etMobileNum.requestFocus()
+                }
+                etAddress.text.isNullOrBlank() -> {
+                    etAddress.error = getString(R.string.address_required_error)
+                    etAddress.isFocusableInTouchMode = true
+                    etAddress.requestFocus()
+                    etAddress.isFocusableInTouchMode = false
 
-            return addressText
+                }
+                !checkoutViewModel.validDistance() -> {
+                    showDeliveryError()
+                }
+                else -> {
+
+                    val customerInfo = CustomerInfo(
+                        name = etName.text.toString().trim(),
+                        email = etEmail.text.toString().trim(),
+                        phoneNumner = etMobileNum.text.toString().trim()
+                    )
+                    val deliveryInfo = DeliveryInfo(
+                        locationLatitude = checkoutViewModel.latitude,
+                        locationLongitude = checkoutViewModel.latitude
+                    )
+                    val paymentMethod = PaymentMethod.CashOnDelivery()
+                    var cartItemList = emptyList<CartItem>()
+                    val cartJson = sharedPreferences.getString(Constants.CART, null)
+                    if (!cartJson.isNullOrEmpty()) {
+                        val type = object : TypeToken<MutableList<CartItem>?>() {}.type
+                        cartItemList = Gson().fromJson<MutableList<CartItem>>(cartJson, type)
+                    }
+                    val totalAmount = cartItemList.sumOf { it.totalAmount }
+                    val order = Order(
+                        customerInfo = customerInfo,
+                        deliveryInfo = deliveryInfo,
+                        paymentMethod = paymentMethod,
+                        cartItemList = cartItemList,
+                        totalAmount = totalAmount
+                    )
+                    checkoutViewModel.placeOrder(order)
+                    // move to next fragment
+                    // pop this fragment and previous fragment
+
+
+                    Toast.makeText(requireContext(), "Form submitted", Toast.LENGTH_LONG).show()
+
+                }
+            }
+        }
+    }
+
+    fun getAddressFromLocation(context: Context, latitude: Double, longitude: Double): String {
+        val geocoder = Geocoder(context, Locale.getDefault())
+        var addressText = ""
+        try {
+            val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
+            if (addresses != null && addresses.isNotEmpty()) {
+                val address: Address = addresses[0]
+                val sb = StringBuilder()
+
+                for (i in 0 until address.maxAddressLineIndex + 1) {
+                    sb.append(address.getAddressLine(i))
+                    if (i < address.maxAddressLineIndex) {
+                        sb.append(", ")
+                    }
+                }
+
+                addressText = sb.toString()
+            }
+        } catch (e: IOException) {
         }
 
-
+        return addressText
     }
+
+
+}
