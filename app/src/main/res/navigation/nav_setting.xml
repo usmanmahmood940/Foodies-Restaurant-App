@@ -6,7 +6,7 @@
     app:startDestination="@id/settingFragment">
     <fragment
         android:id="@+id/settingFragment"
-        android:name="com.example.foodorderingapp.SettingFragment"
+        android:name="com.example.foodorderingapp.Fragments.SettingFragment"
         android:label="fragment_setting"
         tools:layout="@layout/fragment_setting" />
 

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activities.LoginActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+    
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/horizontal_guideline"
+                android:paddingTop="@dimen/padding_normal_900"
+                android:paddingBottom="@dimen/padding_normal_500"
+                >
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/ivPersonsGroup"
+                    android:layout_width="@dimen/food_image_size"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/ic_gif_burger"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:id="@+id/tvLabelWelcome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small_100"
+                    android:fontFamily="@font/avenir_next_demi_bold"
+                    android:text="Welcome to Broadway"
+                    android:textColor="@color/orange"
+                    android:textSize="@dimen/font_normal_100"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ivPersonsGroup" />
+
+
+                <TextView
+                    android:id="@+id/tvLabelHeading"
+                    android:layout_width="@dimen/zero"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal_200"
+                    android:fontFamily="@font/avenir_next_medium"
+                    android:text="@string/enter_credentials"
+                    android:textColor="@color/grey"
+                    android:textSize="@dimen/font_small_115"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvLabelWelcome" />
+
+                <RelativeLayout
+                    android:id="@+id/rlEmailBox"
+                    android:layout_width="@dimen/zero"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_large_100"
+                    android:background="@drawable/shape_email_pass"
+                    android:padding="@dimen/padding_normal_100"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvLabelHeading">
+
+                    <ImageView
+                        android:id="@+id/ivEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        app:srcCompat="@drawable/ic_email" />
+
+                    <EditText
+                        android:id="@+id/etEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollHorizontally="true"
+                        android:singleLine="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/margin_normal_100"
+                        android:layout_toRightOf="@+id/ivEmail"
+                        android:background="@null"
+                        android:hint="Enter Email"
+                        android:inputType="textEmailAddress"
+                        android:textColorHint="@color/grey"
+                        android:textSize="@dimen/font_small_115"
+                        />
+
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/rlPasswordBox"
+                    android:layout_width="@dimen/zero"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal_100"
+                    android:background="@drawable/shape_email_pass"
+                    android:padding="@dimen/padding_normal_120"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rlEmailBox">
+
+                    <ImageView
+                        android:id="@+id/ivPasswordLock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        app:srcCompat="@drawable/ic_lock" />
+
+                    <EditText
+                        android:id="@+id/etPassword"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scrollHorizontally="true"
+                        android:singleLine="true"
+                        android:paddingEnd="@dimen/padding_small_50"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="@dimen/margin_normal_100"
+                        android:layout_toRightOf="@+id/ivPasswordLock"
+                        android:layout_toLeftOf="@id/ivEye"
+                        android:background="@null"
+                        android:hint="Enter Passwrod"
+                        android:inputType="textPassword"
+                        android:textColorHint="@color/grey"
+                        android:textSize="@dimen/font_small_115" />
+
+                    <ImageView
+                        android:id="@+id/ivEye"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        app:srcCompat="@drawable/ic_eye" />
+
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btnLogin"
+                    android:layout_width="@dimen/zero"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_large_200"
+                    android:background="@drawable/shape_circle_btn_orange"
+                    android:fontFamily="@font/avenir_next_demi_bold"
+                    android:paddingVertical="0dp"
+                    android:text="Login"
+                    android:textSize="@dimen/font_small_150"
+                    app:backgroundTint="@null"
+                    android:elevation="2dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rlPasswordBox"
+                    />
+                <RelativeLayout
+                    android:id="@+id/rl_google_facebook"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal_100"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnLogin" >
+                    <ImageButton
+                        android:id="@+id/btn_google_login"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_circle_grey"
+                        android:padding="@dimen/padding_small_50"
+                        android:scaleType="center"
+                        android:src="@drawable/ic_google" />
+
+                    <ImageButton
+                        android:id="@+id/btn_facebook_login"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/shape_circle_grey"
+                        android:padding="@dimen/padding_small_50"
+                        android:src="@drawable/ic_facebook"
+                        android:scaleType="center"
+                        android:layout_toRightOf="@id/btn_google_login"
+                        android:layout_marginStart="@dimen/margin_normal_100"
+                        />
+                </RelativeLayout>
+
+
+                <TextView
+                    android:id="@+id/tvForgetPass"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal_100"
+                    android:fontFamily="@font/avenir_next_medium"
+                    android:text="Forgot Password"
+                    android:textColor="@color/grey"
+                    android:textSize="@dimen/font_small_100"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rl_google_facebook" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,4 +12,28 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="my_cart">My Cart</string>
+    <string name="item_total">Item Total:</string>
+    <string name="delivery">Delivery Services:</string>
+    <string name="tax">Tax:</string>
+    <string name="total">Total:</string>
+    <string name="checkout">Checkout</string>
+    <string name="cart_empty">Your cart is empty</string>
+
+
+    <string name="enter_credentials">Enter your email and password to continue</string>
+    <string name="customer_info">Customer Information</string>
+    <string name="delivery_info">Delivery Information</string>
+    <string name="payment_info">Payment Information</string>
+    <string name="delivery_area_error">"Location is beyond the delivery area"</string>
+
+
+    <string name="name_required_error">Name field cannot be empty</string>
+    <string name="email_required_error">Email field cannot be empty</string>
+    <string name="password_required_error">Password field cannot be empty.</string>
+    <string name="mobile_required_error">Mobile Number field cannot be empty</string>
+    <string name="email_valid_error">"Provide a valid email address</string>
+    <string name="address_required_error">Address field cannot be empty.</string>
+
+
 </resources>

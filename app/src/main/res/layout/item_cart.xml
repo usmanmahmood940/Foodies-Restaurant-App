@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="cartItem"
+            type="com.example.foodorderingapp.models.CartItem" />
+    </data>
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="5dp"
+        android:layout_margin="@dimen/margin_small_100"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+
+            >
+
+            <ImageView
+                android:id="@+id/iv_cart_food_icon"
+                imageFromUrl="@{cartItem.foodItem.image}"
+                android:layout_width="@dimen/food_image_size"
+                android:layout_height="@dimen/food_image_size"
+                android:layout_marginVertical="@dimen/margin_small_100"
+                android:layout_marginStart="@dimen/margin_small_50"
+                android:paddingTop="@dimen/padding_small_100"
+                android:scaleType="fitCenter"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/pop_1" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_small_50"
+
+                android:text="@{cartItem.foodItem.title}"
+                android:textColor="@color/black"
+                android:textSize="@dimen/font_small_125"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/iv_decrease_cart"
+                app:layout_constraintStart_toEndOf="@+id/iv_cart_food_icon"
+                app:layout_constraintTop_toTopOf="@+id/iv_cart_food_icon" />
+
+            <ImageView
+                android:id="@+id/iv_decrease_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_cart_food_icon"
+                app:layout_constraintStart_toStartOf="@+id/tv_title"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title"
+                imageByQuantity="@{cartItem.quantity}"
+
+                />
+
+            <TextView
+                android:id="@+id/tv_item_quantity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_small_100"
+                android:text="@{String.valueOf(cartItem.quantity)}"
+                android:textColor="@color/black"
+                android:textSize="@dimen/font_small_100"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/iv_decrease_cart"
+                app:layout_constraintStart_toEndOf="@+id/iv_decrease_cart"
+                app:layout_constraintTop_toTopOf="@id/iv_decrease_cart" />
+
+            <ImageView
+                android:id="@+id/iv_increase_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_small_100"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_decrease_cart"
+                app:layout_constraintStart_toEndOf="@+id/tv_item_quantity"
+                app:layout_constraintTop_toTopOf="@+id/iv_decrease_cart"
+                app:srcCompat="@drawable/ic_plus" />
+
+            <TextView
+                android:id="@+id/tv_item_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_normal_100"
+                android:text="@{String.valueOf(cartItem.foodItem.price)}"
+                android:maxLength="5"
+                android:textColor="@color/black"
+                android:textSize="@dimen/font_small_100"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_title" />
+
+            <TextView
+                android:id="@+id/tv_dollar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_small_50"
+                android:text="$"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/font_small_75"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_item_price"
+                app:layout_constraintEnd_toStartOf="@+id/tv_item_price"
+                app:layout_constraintTop_toTopOf="@+id/tv_item_price" />
+
+            <TextView
+                android:id="@+id/tv_item_total_amount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_normal_100"
+                android:text="@{String.valueOf(cartItem.totalAmount)}"
+                android:textColor="@color/black"
+                android:textSize="@dimen/font_small_125"
+                android:textStyle="bold"
+                android:maxLength="6"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_increase_cart"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/iv_increase_cart" />
+
+            <TextView
+                android:id="@+id/tv_dollar2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/margin_small_50"
+                android:text="$"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/font_small_100"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_item_total_amount"
+                app:layout_constraintEnd_toStartOf="@+id/tv_item_total_amount"
+                app:layout_constraintTop_toTopOf="@+id/tv_item_total_amount" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/iv_cart_food_icon"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:text="Slide to remove item"
+                android:textColor="@color/orange"
+                android:paddingBottom="@dimen/padding_normal_100" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+
+</layout>

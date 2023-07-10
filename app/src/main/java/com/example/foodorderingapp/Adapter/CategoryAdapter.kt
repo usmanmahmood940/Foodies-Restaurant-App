@@ -8,17 +8,18 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.foodorderingapp.Listeners.CategoryClickListener
 import com.example.foodorderingapp.CategoryColors
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.models.Category
 
-class CategoryAdapter(private var categoryList: List<Category> = emptyList()) :
+class CategoryAdapter(private var categoryList: List<Category> = emptyList(),private val listener: CategoryClickListener) :
     RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
     private var backgroundColor = CategoryColors.PINK
+    private var currentItem :  CardView? = null
 
     fun setList(list: List<Category>) {
         categoryList = list
@@ -38,47 +39,69 @@ class CategoryAdapter(private var categoryList: List<Category> = emptyList()) :
 
         holder.apply {
             val category = categoryList[position]
+            
 
             tvCategoryName.text = category.name
-            val drawable = ContextCompat.getDrawable(ivCategoryIcon.context, category.icon)
-            ivCategoryIcon.setImageDrawable(drawable)
+            Glide.with(ivCategoryIcon.context).load(category.icon).into(ivCategoryIcon)
+//            val drawable = ContextCompat.getDrawable(ivCategoryIcon.context, category.icon)
+//            ivCategoryIcon.setImageDrawable(drawabivCategoryIconle)
 
-            backgroundColor?.let {
-                when(backgroundColor){
-                    CategoryColors.PINK ->{
 
-                        layout_category.backgroundTintList = getColor(hexCode = backgroundColor.hexCode)
-                        backgroundColor = CategoryColors.PURPLE
-                    }
-                    CategoryColors.PURPLE ->{
-                        layout_category.backgroundTintList = getColor(hexCode = backgroundColor.hexCode)
-                        backgroundColor = CategoryColors.BLUE
-                    }
-                    CategoryColors.BLUE ->{
-                        layout_category.backgroundTintList = getColor(hexCode = backgroundColor.hexCode)
-                        backgroundColor = CategoryColors.GREEN
-                    }
-                    CategoryColors.GREEN -> {
-                        layout_category.backgroundTintList = getColor(hexCode = backgroundColor.hexCode)
-                        backgroundColor = CategoryColors.PINK
-                    }
-                   
-                    else -> {}
+            setBackgrounds(layout_category)
+
+
+
+            layout_category.setOnClickListener{
+                currentItem?.let{
+                     if(currentItem == layout_category){
+                         currentItem?.cardElevation = 0F
+                         currentItem = null
+                         listener.onItemDeselect()
+                         return@setOnClickListener
+                     }
+                     currentItem?.cardElevation = 0F
+                     currentItem = layout_category
+                     currentItem?.cardElevation = 12F
+                     listener.onItemClick(category)
+                     return@setOnClickListener
                 }
-
-                return@apply
+                currentItem = layout_category
+                currentItem?.cardElevation = 12F
+                listener.onItemClick(category)
             }
 
-//            backgroundColor = CategoryColors.PURPLE
-//            backgroundColor?.apply {
-//                val color = Color.parseColor(hexCode)
-//                val colorStateList = ColorStateList.valueOf(color)
-//                layout_category.backgroundTintList = colorStateList
-//
-//            }
 
         }
 
+
+
+    }
+
+    private fun setBackgrounds(layout_category: CardView) {
+        backgroundColor?.let {
+            when(backgroundColor){
+                CategoryColors.PINK ->{
+                    layout_category.backgroundTintList = getColor(hexCode = backgroundColor.hexCode)
+                    backgroundColor = CategoryColors.PURPLE
+                }
+                CategoryColors.PURPLE ->{
+                    layout_category.backgroundTintList = getColor(hexCode = backgroundColor.hexCode)
+
+                    backgroundColor = CategoryColors.BLUE
+                }
+                CategoryColors.BLUE ->{
+                    layout_category.backgroundTintList = getColor(hexCode = backgroundColor.hexCode)
+                    backgroundColor = CategoryColors.GREEN
+                }
+                CategoryColors.GREEN -> {
+                    layout_category.backgroundTintList = getColor(hexCode = backgroundColor.hexCode)
+                    backgroundColor = CategoryColors.PINK
+                }
+
+                else -> {}
+            }
+            
+        }
     }
 
     fun getColor(hexCode:String):  ColorStateList{
