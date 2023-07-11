@@ -6,6 +6,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-parcelize'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+    id 'androidx.navigation.safeargs.kotlin'
 }
 
 android {
@@ -52,6 +53,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx:20.2.1'
     implementation 'com.google.firebase:firebase-auth-ktx:21.0.3'
     implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'androidx.work:work-runtime-ktx:2.8.1'
+    implementation 'androidx.hilt:hilt-common:1.0.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -86,6 +89,12 @@ dependencies {
 
     // for Icon generator
     implementation 'com.google.maps.android:android-maps-utils:2.2.0'
+
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0"
+
+    // For workManager
+    implementation "androidx.work:work-runtime:2.7.1"
+
 
 
 

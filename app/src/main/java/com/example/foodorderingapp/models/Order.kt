@@ -7,7 +7,7 @@ data class Order(
     val deliveryInfo: DeliveryInfo,
     val cartItemList:List<CartItem>,
     val paymentMethod: PaymentMethod,
-    val totalAmount:Double
+    val amounts: Amounts
 ){
-    constructor():this("", CustomerInfo(), DeliveryInfo(), emptyList(),PaymentMethod.CashOnDelivery(),0.0)
+    constructor():this("", CustomerInfo(), DeliveryInfo(), emptyList(),PaymentMethod.CashOnDelivery(""),Amounts())
 }

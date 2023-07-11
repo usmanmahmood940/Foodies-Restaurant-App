@@ -2,6 +2,7 @@ package com.example.foodorderingapp.Module
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.work.WorkManager
 
 import com.example.foodorderingapp.CartManager
 import com.google.firebase.auth.FirebaseAuth
@@ -34,5 +35,10 @@ class AppModule {
     fun provideFirebaseAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
     }
+
+    @Provides
+    @Singleton
+    fun provideWorkManager(@ApplicationContext appContext: Context): WorkManager =
+        WorkManager.getInstance(appContext)
 
 }

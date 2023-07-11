@@ -1,4 +1,4 @@
-package com.example.foodorderingapp.Fragments
+package com.example.foodorderingapp.fragments
 
 import android.app.AlertDialog
 import android.content.Context
@@ -10,10 +10,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.Utils.Constants
 import com.example.foodorderingapp.Utils.Constants.LATITUDE
@@ -22,6 +22,7 @@ import com.example.foodorderingapp.Utils.Constants.LONGITUDE
 import com.example.foodorderingapp.Utils.Constants.MY_LATITUDE
 import com.example.foodorderingapp.Utils.Constants.MY_LONGITUDE
 import com.example.foodorderingapp.Utils.Helper.isValidEmail
+import com.example.foodorderingapp.Utils.NetworkUtils.Companion.checkForInternet
 import com.example.foodorderingapp.databinding.FragmentCheckoutBinding
 import com.example.foodorderingapp.models.*
 import com.example.foodorderingapp.viewModels.CheckoutViewModel
@@ -30,8 +31,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collectLatest
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
@@ -51,11 +50,11 @@ class CheckoutFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
         binding = FragmentCheckoutBinding.inflate(inflater, container, false)
         navController = findNavController()
-        checkoutViewModel = ViewModelProvider(this).get(CheckoutViewModel::class.java)
+        checkoutViewModel = ViewModelProvider(this)[CheckoutViewModel::class.java]
 
         initListeners()
 
@@ -68,23 +67,23 @@ class CheckoutFragment : Fragment() {
             checkoutViewModel.longitude = longitude
 
             binding.etAddress.setText(getAddressFromLocation(requireContext(), latitude, longitude))
-            val choosedLatLng = LatLng(latitude, longitude)
+            val chosenLatLng = LatLng(latitude, longitude)
             val restaurantLatLng = LatLng(MY_LATITUDE, MY_LONGITUDE)
 
             checkoutViewModel.distance =
-                checkoutViewModel.calculateDistanceInKm(choosedLatLng, restaurantLatLng)
+                checkoutViewModel.calculateDistanceInKm(chosenLatLng, restaurantLatLng)
             if (!checkoutViewModel.validDistance()) {
-                showDeliveryError()
+                showDialogBox("Area out of Reach",getString(R.string.delivery_area_error))
             }
         }
 
         return binding.root
     }
 
-    private fun showDeliveryError() {
+    private fun showDialogBox(title:String, message:String) {
         val alertDialog = AlertDialog.Builder(requireActivity())
-        alertDialog.setTitle("Area out of Reach")
-        alertDialog.setMessage(getString(R.string.delivery_area_error))
+        alertDialog.setTitle(title)
+        alertDialog.setMessage(message)
         alertDialog.show()
     }
 
@@ -135,7 +134,7 @@ class CheckoutFragment : Fragment() {
 
                 }
                 !checkoutViewModel.validDistance() -> {
-                    showDeliveryError()
+                    showDialogBox("Area out of Reach",getString(R.string.delivery_area_error))
                 }
                 else -> {
 
@@ -148,7 +147,7 @@ class CheckoutFragment : Fragment() {
                         locationLatitude = checkoutViewModel.latitude,
                         locationLongitude = checkoutViewModel.latitude
                     )
-                    val paymentMethod = PaymentMethod.CashOnDelivery()
+                    val paymentMethod = PaymentMethod.CashOnDelivery("CashOnDelivery")
                     var cartItemList = emptyList<CartItem>()
                     val cartJson = sharedPreferences.getString(Constants.CART, null)
                     if (!cartJson.isNullOrEmpty()) {
@@ -156,26 +155,38 @@ class CheckoutFragment : Fragment() {
                         cartItemList = Gson().fromJson<MutableList<CartItem>>(cartJson, type)
                     }
                     val totalAmount = cartItemList.sumOf { it.totalAmount }
+                    val args: CheckoutFragmentArgs by navArgs()
+                    val amounts = args.amounts
+                    amounts.updateTotalItemAmount(totalAmount)
                     val order = Order(
                         customerInfo = customerInfo,
                         deliveryInfo = deliveryInfo,
                         paymentMethod = paymentMethod,
                         cartItemList = cartItemList,
-                        totalAmount = totalAmount
+                        amounts = amounts
                     )
-                    checkoutViewModel.placeOrder(order)
-                    // move to next fragment
-                    // pop this fragment and previous fragment
-
-
-                    Toast.makeText(requireContext(), "Form submitted", Toast.LENGTH_LONG).show()
+                    if(checkForInternet(requireActivity().applicationContext)) {
+                        checkoutViewModel.placeOrder(order){ success, exception ->
+                            if(success){
+                                showDialogBox("Order Confirmation","Your Order is Confirmed")
+                            }
+                            else{
+                                showDialogBox("Error",exception?.message.toString())
+                            }
+                        }
+                        findNavController().popBackStack(R.id.cartFragment,true)
+                    }
+                    else{
+                        showDialogBox("Internet Error","Internet connection error")
+                    }
+                    
 
                 }
             }
         }
     }
 
-    fun getAddressFromLocation(context: Context, latitude: Double, longitude: Double): String {
+    private fun getAddressFromLocation(context: Context, latitude: Double, longitude: Double): String {
         val geocoder = Geocoder(context, Locale.getDefault())
         var addressText = ""
         try {
@@ -194,6 +205,7 @@ class CheckoutFragment : Fragment() {
                 addressText = sb.toString()
             }
         } catch (e: IOException) {
+            showDialogBox("Address Exception",e.message?:"")
         }
 
         return addressText

@@ -1,4 +1,4 @@
-package com.example.foodorderingapp.Fragments
+package com.example.foodorderingapp.fragments
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -11,9 +11,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.example.foodorderingapp.Activities.LoginActivity
-import com.example.foodorderingapp.Adapter.CategoryAdapter
-import com.example.foodorderingapp.Adapter.FoodItemAdapter
+import com.example.foodorderingapp.activities.LoginActivity
+import com.example.foodorderingapp.adapter.CategoryAdapter
+import com.example.foodorderingapp.adapter.FoodItemAdapter
 import com.example.foodorderingapp.BottomSheet.AddToCartBottomSheet
 import com.example.foodorderingapp.Listeners.CategoryClickListener
 import com.example.foodorderingapp.Listeners.FoodItemClickListener
@@ -24,6 +24,8 @@ import com.example.foodorderingapp.Utils.Constants
 import com.example.foodorderingapp.databinding.FragmentHomeBinding
 import com.example.foodorderingapp.models.Category
 import com.example.foodorderingapp.models.FoodItem
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -57,6 +59,12 @@ class HomeFragment : Fragment() {
             override fun onAddClicked(foodItem: FoodItem) {
                 val addToCartBottomSheet = AddToCartBottomSheet.newInstance(foodItem)
                 addToCartBottomSheet.show(requireActivity().supportFragmentManager, "addToCartBottomSheet")
+
+                addToCartBottomSheet.dialog?.setOnShowListener {
+                    val dialog = addToCartBottomSheet.dialog as BottomSheetDialog
+                    val bottomSheetBehavior = dialog.behavior
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                }
             }
 
         })
@@ -153,8 +161,13 @@ class HomeFragment : Fragment() {
 
         }
      
-        binding.etSearch.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+        binding.apply {
+            etSearch.setOnClickListener {
+                findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+            }
+            tvSeeAll.setOnClickListener{
+                findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+            }
         }
 
         binding.ivProfile.setOnClickListener{

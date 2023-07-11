@@ -1,6 +1,7 @@
 package com.example.foodorderingapp.viewModels
 
 import androidx.lifecycle.ViewModel
+import com.example.foodorderingapp.CartManager
 import com.example.foodorderingapp.Repositories.OrderRepository
 import com.example.foodorderingapp.models.Order
 import com.google.android.gms.maps.model.LatLng
@@ -11,6 +12,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CheckoutViewModel @Inject constructor(
     private val orderRepository: OrderRepository,
+    private val cartManager: CartManager,
 ) : ViewModel() {
     var latitude: Double = 0.0
     var longitude: Double = 0.0
@@ -42,12 +44,14 @@ class CheckoutViewModel @Inject constructor(
         return Math.abs(distance)
     }
 
-    fun placeOrder(order: Order) {
+    fun placeOrder(order: Order,callback: (Boolean, Exception?) -> Unit) {
         orderRepository.createOrder(order) { success, exception ->
             if (success) {
-                successMessage.value= "Order Placed"
+                callback(success,null)
+                cartManager.clearCart()
             } else {
              errorMessage.value = exception?.message
+                callback(success,exception)
             }
 
         }

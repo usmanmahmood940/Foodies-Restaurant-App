@@ -1,4 +1,4 @@
-package com.example.foodorderingapp.Activities
+package com.example.foodorderingapp.activities
 
 import android.content.Intent
 import android.content.SharedPreferences

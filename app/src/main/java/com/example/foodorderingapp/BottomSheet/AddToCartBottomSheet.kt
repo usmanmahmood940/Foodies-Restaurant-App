@@ -7,9 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.example.foodorderingapp.CartManager
+import com.example.foodorderingapp.R
 import com.example.foodorderingapp.databinding.FragmentAddToCartBottomSheetBinding
 import com.example.foodorderingapp.models.CartItem
 import com.example.foodorderingapp.models.FoodItem
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -87,5 +90,13 @@ class AddToCartBottomSheet : RoundedBottomSheetDialogFragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        val myDialog = dialog as BottomSheetDialog
+        myDialog?.let { dialog ->
+            val bottomSheetBehavior = dialog.behavior
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+    }
 
 }

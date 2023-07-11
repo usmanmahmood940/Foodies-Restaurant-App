@@ -1,4 +1,4 @@
-package com.example.foodorderingapp.Fragments
+package com.example.foodorderingapp.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,8 +8,7 @@ import androidx.fragment.app.Fragment
 
 import com.example.foodorderingapp.R
 
-
-class SettingFragment : Fragment() {
+class ProfileFragment : Fragment() {
 
 
     override fun onCreateView(
@@ -17,7 +16,7 @@ class SettingFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_setting, container, false)
+        return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
 

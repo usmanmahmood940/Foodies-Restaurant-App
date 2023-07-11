@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Fragments.HomeFragment">
+    tools:context=".fragments.HomeFragment">
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -224,6 +224,17 @@
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="@+id/guide_start"
                     app:layout_constraintTop_toBottomOf="@+id/progressBar_category" />
+                <TextView
+                    android:id="@+id/tv_see_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="View all"
+                    android:textColor="@color/orange_2"
+                    android:textSize="@dimen/font_small_100"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_label_category"
+                    app:layout_constraintEnd_toStartOf="@+id/guide_end"
+                    app:layout_constraintTop_toTopOf="@+id/tv_label_category" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_popular"
@@ -247,6 +258,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/rv_popular"
                     />
+
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>

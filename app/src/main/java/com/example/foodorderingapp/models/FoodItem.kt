@@ -11,5 +11,5 @@ data class FoodItem(
     val description: String="",
     val price: Double=0.0,
     val categoryId: String="",
-    val salesCount:Int = 0,
+    var salesCount:Int = 0,
 ) : Parcelable

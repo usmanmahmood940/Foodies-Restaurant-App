@@ -1,21 +1,21 @@
-package com.example.foodorderingapp.Fragments
+package com.example.foodorderingapp.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.foodorderingapp.Adapter.CartAdapter
+import com.example.foodorderingapp.adapter.CartAdapter
 import com.example.foodorderingapp.CartItemTouchHelperCallback
-import com.example.foodorderingapp.R
 import com.example.foodorderingapp.viewModels.CartViewModel
 import com.example.foodorderingapp.databinding.FragmentCartBinding
+import com.example.foodorderingapp.models.Amounts
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class CartFragment : Fragment() {
@@ -29,8 +29,9 @@ class CartFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentCartBinding.inflate(inflater, container, false)
         cartViewModel = ViewModelProvider(this).get(CartViewModel::class.java)
+        val amounts = Amounts()
 
-        binding.cartViewModel = cartViewModel
+        binding.amounts = amounts
         binding.lifecycleOwner = this
 
 
@@ -61,7 +62,9 @@ class CartFragment : Fragment() {
                     binding.tvCartEmpty.visibility = View.GONE
                     binding.svCart.visibility = View.VISIBLE
                     cartAdapter.setList(it)
-                    cartViewModel.updateAmounts()
+                    amounts.updateTotalItemAmount(it.sumOf{ cartItem ->
+                        cartItem.totalAmount
+                    })
                     binding.invalidateAll()
                 }
                 else{
@@ -73,7 +76,8 @@ class CartFragment : Fragment() {
         }
 
         binding.btnCheckout.setOnClickListener {
-            findNavController().navigate(R.id.action_cartFragment_to_checkoutFragment)
+            val action =  CartFragmentDirections.actionCartFragmentToCheckoutFragment(amounts = amounts)
+            findNavController().navigate(action)
         }
 
 

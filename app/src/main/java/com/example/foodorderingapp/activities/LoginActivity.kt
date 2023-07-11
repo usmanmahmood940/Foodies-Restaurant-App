@@ -1,12 +1,10 @@
-package com.example.foodorderingapp.Activities
+package com.example.foodorderingapp.activities
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.foodorderingapp.R
@@ -22,10 +20,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
-import com.facebook.login.LoginManager
-import com.facebook.login.LoginResult
 import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.FacebookAuthProvider
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {

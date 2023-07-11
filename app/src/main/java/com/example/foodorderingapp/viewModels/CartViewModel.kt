@@ -17,15 +17,6 @@ class CartViewModel  @Inject constructor(
     val cartItemList: LiveData<MutableList<CartItem>>
         get() = cartManager.cartItemList
 
-    var tax:Double=0.0
-    var totalItemAmount:Double = 0.0
-    var totalAMount:Double = 0.0
-    var deliveryCharges:Int
-    init{
-        deliveryCharges = 200
-        updateAmounts()
-    }
-
     fun updateCart(){
         cartManager.updateSharedPref()
     }
@@ -35,11 +26,6 @@ class CartViewModel  @Inject constructor(
     }
 
 
-    fun updateAmounts(){
-        totalItemAmount = cartItemList.value?.sumOf { it.totalAmount }!!
-        tax = (totalItemAmount * 17) / 100
-        totalAMount = totalItemAmount + tax + deliveryCharges
 
-    }
 
 }

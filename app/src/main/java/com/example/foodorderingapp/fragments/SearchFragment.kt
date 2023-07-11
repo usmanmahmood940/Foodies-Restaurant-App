@@ -1,4 +1,4 @@
-package com.example.foodorderingapp.Fragments
+package com.example.foodorderingapp.fragments
 
 import android.os.Bundle
 import android.text.Editable
@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.foodorderingapp.Adapter.FoodItemAdapter
+import com.example.foodorderingapp.adapter.FoodItemAdapter
 import com.example.foodorderingapp.BottomSheet.AddToCartBottomSheet
 import com.example.foodorderingapp.Listeners.FoodItemClickListener
 import com.example.foodorderingapp.Response.CustomResponse

@@ -2,7 +2,7 @@ package com.example.foodorderingapp
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.example.foodorderingapp.Adapter.CartAdapter
+import com.example.foodorderingapp.adapter.CartAdapter
 
 class CartItemTouchHelperCallback(private val adapter: CartAdapter) : ItemTouchHelper.Callback() {
 

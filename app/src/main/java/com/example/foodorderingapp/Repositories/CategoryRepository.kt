@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.foodorderingapp.Response.CustomResponse
+import com.example.foodorderingapp.Utils.Constants.CATEGORY_REFRENCE
 import com.example.foodorderingapp.Utils.Helper.generateRandomStringWithTime
 import com.example.foodorderingapp.models.Category
 import com.google.firebase.database.DataSnapshot
@@ -16,7 +17,7 @@ import java.util.*
 import javax.inject.Inject
 
 class CategoryRepository @Inject constructor() {
-    private val databaseReference = FirebaseDatabase.getInstance().getReference().child("Category")
+    private val databaseReference = FirebaseDatabase.getInstance().getReference().child(CATEGORY_REFRENCE)
     private var valueEventListener: ValueEventListener? = null
 
     private val categoriesLiveData = MutableLiveData<CustomResponse<List<Category>>>()

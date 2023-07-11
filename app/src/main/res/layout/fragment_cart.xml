@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="com.example.foodorderingapp.models.Amounts" />
         <variable
-            name="cartViewModel"
-            type="com.example.foodorderingapp.viewModels.CartViewModel" />
+            name="amounts"
+            type="Amounts" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".Fragments.CartFragment">
+        tools:context=".fragments.CartFragment">
 
 
         <ScrollView
@@ -111,7 +112,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/margin_small_100"
-                        android:text="@{String.valueOf(cartViewModel.totalItemAmount)}"
+                        android:text="@{String.valueOf(amounts.totalItemAmount)}"
                         android:maxLength="6"
                         android:textColor="@color/black"
                         android:textSize="@dimen/font_small_115"
@@ -151,7 +152,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/margin_small_100"
-                        android:text="@{String.valueOf(cartViewModel.deliveryCharges)}"
+                        android:text="@{String.valueOf(amounts.deliveryCharges)}"
                         android:maxLength="5"
                         android:textColor="@color/black"
                         android:textSize="@dimen/font_small_115"
@@ -164,7 +165,7 @@
                         android:id="@+id/tv_tax_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/tax"
+                        android:text='@{@string/tax + "" + String.valueOf(amounts.taxPercent)+"%"}'
                         android:textStyle="bold"
                         android:textColor="@color/black"
                         android:textSize="@dimen/font_small_115"
@@ -191,7 +192,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/margin_small_100"
-                        android:text="@{String.valueOf(cartViewModel.tax)}"
+                        android:text="@{String.valueOf(amounts.taxAmount)}"
                         android:maxLength="5"
                         android:textColor="@color/black"
                         android:textSize="@dimen/font_small_115"
@@ -230,7 +231,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/margin_small_100"
-                        android:text="@{String.valueOf(cartViewModel.totalAMount)}"
+                        android:text="@{String.valueOf(amounts.totalAmount)}"
                         android:maxLength="6"
                         android:textColor="@color/black"
                         android:textSize="@dimen/font_small_150"

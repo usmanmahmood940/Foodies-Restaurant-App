@@ -13,4 +13,8 @@ object Constants {
 
     const val MY_LATITUDE  = 31.462638596129963
     const val MY_LONGITUDE = 74.29313003696404
+
+    const val FOOD_ITEM_REFRENCE = "FoodItem"
+    const val CATEGORY_REFRENCE = "Category"
+    const val ORDDER_REFRENCE = "Order"
 }

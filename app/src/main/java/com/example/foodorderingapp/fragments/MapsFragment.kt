@@ -1,9 +1,8 @@
-package com.example.foodorderingapp.Fragments
+package com.example.foodorderingapp.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import androidx.fragment.app.Fragment
 
 import android.os.Bundle
@@ -16,7 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.example.foodorderingapp.Activities.MainActivity
+import com.example.foodorderingapp.activities.MainActivity
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.Utils.Constants.LATITUDE
 import com.example.foodorderingapp.Utils.Constants.LOCATION_DATA

@@ -84,6 +84,11 @@ class CartManager(private val sharedPreferences: SharedPreferences) {
         cartChangeListener?.onCartChanged(getCartCount())
     }
 
+    fun clearCart(){
+        _cartItemList.value?.clear()
+        updateSharedPref()
+    }
+
 
     fun setCartChangeListener(listener: CartChangeListener) {
         cartChangeListener = listener

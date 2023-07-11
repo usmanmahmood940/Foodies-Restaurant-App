@@ -1,4 +1,4 @@
-package com.example.foodorderingapp.Adapter
+package com.example.foodorderingapp.adapter
 
 import android.content.res.ColorStateList
 import android.graphics.Color

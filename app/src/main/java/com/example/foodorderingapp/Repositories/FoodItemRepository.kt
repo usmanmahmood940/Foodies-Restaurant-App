@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.foodorderingapp.Response.CustomResponse
+import com.example.foodorderingapp.Utils.Constants
+import com.example.foodorderingapp.Utils.Constants.FOOD_ITEM_REFRENCE
 import com.example.foodorderingapp.Utils.Helper.generateRandomStringWithTime
 import com.example.foodorderingapp.models.FoodItem
 import com.google.firebase.database.DataSnapshot
@@ -13,7 +15,7 @@ import com.google.firebase.database.ValueEventListener
 import javax.inject.Inject
 
 class FoodItemRepository  @Inject constructor() {
-    private val databaseReference = FirebaseDatabase.getInstance().getReference().child("FoodItem")
+    private val databaseReference = FirebaseDatabase.getInstance().getReference().child(FOOD_ITEM_REFRENCE)
     private var valueEventListener: ValueEventListener? = null
 
     private val foodItemLiveData = MutableLiveData<CustomResponse<List<FoodItem>>>()
