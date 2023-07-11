@@ -35,5 +35,20 @@
     <string name="email_valid_error">"Provide a valid email address</string>
     <string name="address_required_error">Address field cannot be empty.</string>
 
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
+    <string name="support">Support</string>
+    <string name="setting">Setting</string>
+
+    <string name="full_name">Full Name</string>
+    <string name="email">Email</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="address">Address</string>
+    <string name="zipcode">Zipcode</string>
+    <string name="cash_on_delivery"> Cash On Delivery</string>
+    <string name="credit_debit_card"> Credit/Debit Card</string>
+    <string name="place_order">Place Order</string>
+
+
 
 </resources>

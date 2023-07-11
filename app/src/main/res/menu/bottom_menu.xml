@@ -6,14 +6,14 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_bottom_home"
-        android:title="Home"
+        android:title="@string/home"
         app:tint="@color/orange_2"
         />
 
     <item
         android:id="@+id/nav_profile"
         android:icon="@drawable/ic_person"
-        android:title="Profile"
+        android:title="@string/profile"
   
         app:tint="@color/grey" />
 
@@ -26,14 +26,14 @@
     <item
         android:id="@+id/nav_support"
         android:icon="@drawable/ic_chat"
-        android:title="Support"
+        android:title="@string/support"
         
         app:tint="@color/grey" />
 
     <item
         android:id="@+id/nav_setting"
         android:icon="@drawable/ic_setting"
-        android:title="Settings"
+        android:title="@string/setting"
      
         app:tint="@color/grey" />
 

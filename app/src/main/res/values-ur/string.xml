@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">فوڈ آرڈرنگ ایپ</string>
+
+    <string name="splash_label">براڈوے</string>
+    <string name="splash_msg">اپنا کھانا آرڈر کریں</string>
+    <string name="splash_btn_start">شروع کریں</string>
+
+    <string name="home_msg_1">آرڈر کریں اور کھائیں</string>
+    <string name="home_banner_title">مفت ہوم ڈلیوری</string>
+    <string name="label_categories">زمرے</string>
+    <string name="label_popular">مشہور</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">ہیلو خالی فریگمنٹ</string>
+
+    <string name="my_cart">میرا کارٹ</string>
+    <string name="item_total">سامان کا کل:</string>
+    <string name="delivery">ڈلیوری سروسز:</string>
+    <string name="tax">ٹیکس:</string>
+    <string name="total">کل:</string>
+    <string name="checkout">چیک آؤٹ</string>
+    <string name="cart_empty">آپ کا کارٹ خالی ہے</string>
+
+
+    <string name="enter_credentials">آگے بڑھنے کے لئے اپنا ای میل اور پاس ورڈ درج کریں</string>
+    <string name="customer_info">صارف کی معلومات</string>
+    <string name="delivery_info">ڈلیوری کی معلومات</string>
+    <string name="payment_info">ادائیگی کی معلومات</string>
+    <string name="delivery_area_error">"مقام ڈیلیوری علاقے سے باہر ہے"</string>
+
+
+    <string name="name_required_error">نام فیلڈ خالی نہیں ہو سکتا</string>
+    <string name="email_required_error">ای میل فیلڈ خالی نہیں ہو سکتا</string>
+    <string name="password_required_error">پاس ورڈ فیلڈ خالی نہیں ہو سکتا۔</string>
+    <string name="mobile_required_error">موبائل نمبر فیلڈ خالی نہیں ہو سکتا</string>
+    <string name="email_valid_error">"صحیح ای میل پتہ فراہم کریں</string>
+    <string name="address_required_error">پتہ فیلڈ خالی نہیں ہو سکتا۔</string>
+
+    <string name="home">ہوم</string>
+    <string name="profile">پروفائل</string>
+    <string name="support">سپورٹ</string>
+    <string name="setting">سیٹنگ</string>
+    
+    <string name="full_name">پورا نام</string>
+    <string name="email">ای میل</string>
+    <string name="mobile_number">موبائل نمبر</string>
+    <string name="address">پتہ</string>
+    <string name="zipcode">زپ کوڈ</string>
+    <string name="cash_on_delivery">کیش اون ڈیلیوری</string>
+    <string name="credit_debit_card">کریڈٹ / ڈیبٹ کارڈ</string>
+    <string name="place_order">آرڈر کریں</string>
+
+
+</resources>
