@@ -21,6 +21,7 @@ import com.example.foodorderingapp.Utils.Constants.LOCATION_DATA
 import com.example.foodorderingapp.Utils.Constants.LONGITUDE
 import com.example.foodorderingapp.Utils.Constants.MY_LATITUDE
 import com.example.foodorderingapp.Utils.Constants.MY_LONGITUDE
+import com.example.foodorderingapp.Utils.Constants.ZERO
 import com.example.foodorderingapp.Utils.Helper.isValidEmail
 import com.example.foodorderingapp.Utils.NetworkUtils.Companion.checkForInternet
 import com.example.foodorderingapp.databinding.FragmentCheckoutBinding
@@ -102,8 +103,6 @@ class CheckoutFragment : Fragment() {
                 placeOrder()
             }
 
-
-
         }
     }
 
@@ -179,7 +178,6 @@ class CheckoutFragment : Fragment() {
                     else{
                         showDialogBox("Internet Error","Internet connection error")
                     }
-                    
 
                 }
             }
@@ -192,7 +190,7 @@ class CheckoutFragment : Fragment() {
         try {
             val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
             if (addresses != null && addresses.isNotEmpty()) {
-                val address: Address = addresses[0]
+                val address: Address = addresses[ZERO]
                 val sb = StringBuilder()
 
                 for (i in 0 until address.maxAddressLineIndex + 1) {

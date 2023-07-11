@@ -22,14 +22,12 @@ class FoodItemAdapter(
         notifyDataSetChanged()
     }
 
-    // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_food_item, parent, false)
 
         return ViewHolder(view)
     }
-
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
@@ -51,7 +49,6 @@ class FoodItemAdapter(
         }
 
     }
-
 
     override fun getItemCount(): Int {
         return foodDomainList.size

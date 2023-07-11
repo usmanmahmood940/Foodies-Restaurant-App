@@ -51,6 +51,7 @@ class FoodItemRepository  @Inject constructor() {
     }
 
     fun getFoodItemList() {
+        foodItemLiveData.value = CustomResponse.Loading()
         valueEventListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val foodItemList: MutableList<FoodItem> = mutableListOf()

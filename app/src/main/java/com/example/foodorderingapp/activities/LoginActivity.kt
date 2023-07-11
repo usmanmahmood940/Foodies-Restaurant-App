@@ -35,20 +35,14 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
-
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-
         loginListeners()
-
-
     }
-
 
     private fun loginListeners() {
         auth.currentUser?.getIdToken(false)?.addOnSuccessListener {
@@ -58,29 +52,6 @@ class LoginActivity : AppCompatActivity() {
         binding.btnLogin.setOnClickListener {
             val email = binding.etEmail.text.toString().trim()
             val password = binding.etPassword.text.toString().trim()
-
-//            email.isNotBlank() && password.isNotBlank()
-//            if (email.isNotBlank() && password.isNotBlank()) {
-//                auth.signInWithEmailAndPassword(email, password)
-//                    .addOnCompleteListener(this) { task ->
-//                        if (task.isSuccessful) {
-//                            val user = auth.currentUser
-//                            Toast.makeText(
-//                                this,
-//                                "Name : ${auth.currentUser?.displayName}",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        } else {
-//                            Toast.makeText(
-//                                this,
-//                                "Firebase sign-in failed : ${task.exception.toString()}",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//
-//                        }
-//                    }
-//
-//            }
 
             when {
                 email.isBlank() -> {
@@ -92,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
                     binding.etEmail.requestFocus()
                 }
                 password.isBlank() -> {
-                    binding.etPassword.error =  getString(R.string.password_required_error)
+                    binding.etPassword.error = getString(R.string.password_required_error)
                     binding.etPassword.requestFocus()
                 }
                 else -> {
@@ -102,7 +73,8 @@ class LoginActivity : AppCompatActivity() {
                                 startActivity(Intent(this, MainActivity::class.java))
                                 finish()
                             } else {
-                                Toast.makeText(this, "Firebase sign-in failed", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this, "Firebase sign-in failed", Toast.LENGTH_SHORT)
+                                    .show()
                             }
                         }
                 }
@@ -130,7 +102,6 @@ class LoginActivity : AppCompatActivity() {
         launcher.launch(signInIntent)
     }
 
-
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -150,7 +121,6 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()
         }
     }
-
 
     private fun firebaseAuthentication(credentials: AuthCredential) {
         auth.signInWithCredential(credentials)

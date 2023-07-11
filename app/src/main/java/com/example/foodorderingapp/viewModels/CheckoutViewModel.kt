@@ -3,6 +3,8 @@ package com.example.foodorderingapp.viewModels
 import androidx.lifecycle.ViewModel
 import com.example.foodorderingapp.CartManager
 import com.example.foodorderingapp.Repositories.OrderRepository
+import com.example.foodorderingapp.Utils.Constants.VALID_DISTANCE
+import com.example.foodorderingapp.Utils.Constants.ZERO_DOUBLE
 import com.example.foodorderingapp.models.Order
 import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,8 +16,8 @@ class CheckoutViewModel @Inject constructor(
     private val orderRepository: OrderRepository,
     private val cartManager: CartManager,
 ) : ViewModel() {
-    var latitude: Double = 0.0
-    var longitude: Double = 0.0
+    var latitude: Double = ZERO_DOUBLE
+    var longitude: Double = ZERO_DOUBLE
     var distance: Double? = null
 
     val errorMessage: MutableStateFlow<String?> = MutableStateFlow(null)
@@ -23,7 +25,7 @@ class CheckoutViewModel @Inject constructor(
 
     fun validDistance(): Boolean {
         distance?.let { it ->
-            return it <= 5
+            return it <= VALID_DISTANCE
         }
         return false
     }
@@ -50,7 +52,7 @@ class CheckoutViewModel @Inject constructor(
                 callback(success,null)
                 cartManager.clearCart()
             } else {
-             errorMessage.value = exception?.message
+                errorMessage.value = exception?.message
                 callback(success,exception)
             }
 

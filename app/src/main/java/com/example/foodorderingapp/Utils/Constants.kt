@@ -17,4 +17,9 @@ object Constants {
     const val FOOD_ITEM_REFRENCE = "FoodItem"
     const val CATEGORY_REFRENCE = "Category"
     const val ORDDER_REFRENCE = "Order"
+
+    const val ZERO_DOUBLE = 0.0
+    const val ZERO = 0
+    const val ONE = 1
+    const val VALID_DISTANCE = 5
 }

@@ -20,7 +20,6 @@ class CategoryAdapter(private var categoryList: List<Category> = emptyList(),pri
 
     private var backgroundColor = CategoryColors.PINK
     private var currentItem :  CardView? = null
-
     fun setList(list: List<Category>) {
         categoryList = list
         notifyDataSetChanged()
@@ -30,26 +29,17 @@ class CategoryAdapter(private var categoryList: List<Category> = emptyList(),pri
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_category, parent, false)
-
         return ViewHolder(view)
     }
-
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         holder.apply {
             val category = categoryList[position]
-            
-
             tvCategoryName.text = category.name
             Glide.with(ivCategoryIcon.context).load(category.icon).into(ivCategoryIcon)
-//            val drawable = ContextCompat.getDrawable(ivCategoryIcon.context, category.icon)
-//            ivCategoryIcon.setImageDrawable(drawabivCategoryIconle)
-
 
             setBackgrounds(layout_category)
-
-
 
             layout_category.setOnClickListener{
                 currentItem?.let{
@@ -69,12 +59,7 @@ class CategoryAdapter(private var categoryList: List<Category> = emptyList(),pri
                 currentItem?.cardElevation = 12F
                 listener.onItemClick(category)
             }
-
-
         }
-
-
-
     }
 
     private fun setBackgrounds(layout_category: CardView) {
@@ -97,7 +82,6 @@ class CategoryAdapter(private var categoryList: List<Category> = emptyList(),pri
                     layout_category.backgroundTintList = getColor(hexCode = backgroundColor.hexCode)
                     backgroundColor = CategoryColors.PINK
                 }
-
                 else -> {}
             }
             
@@ -110,7 +94,6 @@ class CategoryAdapter(private var categoryList: List<Category> = emptyList(),pri
         return colorStateList
 
     }
-
     override fun getItemCount(): Int {
         return categoryList.size
     }

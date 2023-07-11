@@ -1,6 +1,7 @@
 package com.example.foodorderingapp.activities
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -45,8 +46,15 @@ class MainActivity : AppCompatActivity() {
             }
 
         })
+    }
 
-
+    fun hideShowBottomNav(){
+        if(binding.coordinatorLayout.visibility == View.VISIBLE){
+            binding.coordinatorLayout.visibility = View.GONE
+        }
+        else{
+            binding.coordinatorLayout.visibility = View.VISIBLE
+        }
     }
 
 

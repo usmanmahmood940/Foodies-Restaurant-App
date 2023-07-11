@@ -34,8 +34,6 @@ class OrderRepository  @Inject constructor(private val workManager: WorkManager)
                     val request = OneTimeWorkRequestBuilder<UpdateSalesCountWorker>()
                         .setInputData(inputData)
                         .build()
-
-
                     workManager.enqueue(request)
 
                 }

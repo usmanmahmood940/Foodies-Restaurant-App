@@ -1,5 +1,6 @@
 package com.example.foodorderingapp.fragments
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -55,9 +56,12 @@ class SearchFragment : Fragment() {
         searchViewModel.foodItemList.observe(viewLifecycleOwner){
             when(it){
                 is CustomResponse.Loading -> {
-
+                    binding.progressBarSearch.visibility = View.VISIBLE
+                    binding.rvSearchFood.visibility = View.INVISIBLE
                 }
                 is CustomResponse.Success -> {
+                    binding.progressBarSearch.visibility = View.GONE
+                    binding.rvSearchFood.visibility = View.VISIBLE
                     if(it.data != null){
                         if(searchViewModel.query == null) {
                             foodItemAdapter.setList(it.data)
@@ -69,7 +73,8 @@ class SearchFragment : Fragment() {
                     }
                 }
                 is CustomResponse.Error -> {
-
+                    binding.progressBarSearch.visibility = View.GONE
+                    showDialogBox("Error",it.errorMessage.toString())
                 }
                 else -> {}
             }
@@ -104,6 +109,13 @@ class SearchFragment : Fragment() {
             }
 
         })
+    }
+
+    fun showDialogBox(title:String, message:String) {
+        val alertDialog = AlertDialog.Builder(requireActivity())
+        alertDialog.setTitle(title)
+        alertDialog.setMessage(message)
+        alertDialog.show()
     }
 
 

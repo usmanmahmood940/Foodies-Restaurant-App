@@ -10,7 +10,6 @@ import com.example.foodorderingapp.models.CartItem
 class CartAdapter(private var cartItemList: List<CartItem> = mutableListOf(), private val listener: onCartListener) :
     RecyclerView.Adapter<CartAdapter.ViewHolder>() {
 
-
     fun setList(list: List<CartItem>) {
         cartItemList = list
         notifyDataSetChanged()
@@ -28,7 +27,6 @@ class CartAdapter(private var cartItemList: List<CartItem> = mutableListOf(), pr
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemCartBinding.inflate(inflater, parent, false)
         return ViewHolder(binding)
@@ -38,7 +36,6 @@ class CartAdapter(private var cartItemList: List<CartItem> = mutableListOf(), pr
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val cartItem = cartItemList[position]
         holder.bind(cartItem)
-
     }
 
 
@@ -59,8 +56,7 @@ class CartAdapter(private var cartItemList: List<CartItem> = mutableListOf(), pr
                 // Notify the data binding that the property has changed
             }
             binding.ivDecreaseCart.setOnClickListener {
-                // Increase the quantity of the CartItem
-
+                // Decrease the quantity of the CartItem
                 if (cartItem.quantity > 1) {
                     cartItem.quantity--
                     cartItem.updateTotalAmount()
@@ -68,7 +64,6 @@ class CartAdapter(private var cartItemList: List<CartItem> = mutableListOf(), pr
                     binding.invalidateAll()
                 }
 
-                // Notify the data binding that the property has changed
             }
             binding.executePendingBindings()
         }

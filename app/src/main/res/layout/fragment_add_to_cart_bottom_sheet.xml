@@ -25,7 +25,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/food_image_bottom_sheet_size"
                 android:adjustViewBounds="true"
-                android:src="@drawable/pop_1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

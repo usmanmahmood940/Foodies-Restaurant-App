@@ -61,7 +61,6 @@
         android:padding="@dimen/padding_normal_200"
         android:textSize="@dimen/font_small_100"
         android:textStyle="italic"
-
         app:layout_constraintEnd_toEndOf="@id/guide_end"
         app:layout_constraintStart_toEndOf="@id/iv_back"
         app:layout_constraintTop_toBottomOf="@+id/guide_top"
@@ -78,7 +77,16 @@
         android:layout_marginTop="@dimen/margin_normal_100"
         android:overScrollMode="never"
         tools:listitem="@layout/item_food_item"
-
+        />
+    <ProgressBar
+        android:id="@+id/progressBar_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_search"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:indeterminateTint="@color/orange"
         />
 
 

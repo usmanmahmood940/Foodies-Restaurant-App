@@ -34,8 +34,9 @@ import javax.inject.Inject
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var homeViewModel: HomeViewModel
+
     @Inject
-    lateinit var auth:FirebaseAuth
+    lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,21 +45,20 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater)
 
-
         auth.currentUser?.apply {
-            binding.tvName.text =  "Hi $displayName"
+            binding.tvName.text = "Hi $displayName"
             Glide.with(this@HomeFragment).load(photoUrl).into(binding.ivProfile)
-//            binding.ivProfile.setImageURI(photoUrl!!)
             println(photoUrl)
         }
 
-
-
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-        val foodDomainAdapter = FoodItemAdapter(listener = object : FoodItemClickListener{
+        val foodDomainAdapter = FoodItemAdapter(listener = object : FoodItemClickListener {
             override fun onAddClicked(foodItem: FoodItem) {
                 val addToCartBottomSheet = AddToCartBottomSheet.newInstance(foodItem)
-                addToCartBottomSheet.show(requireActivity().supportFragmentManager, "addToCartBottomSheet")
+                addToCartBottomSheet.show(
+                    requireActivity().supportFragmentManager,
+                    "addToCartBottomSheet"
+                )
 
                 addToCartBottomSheet.dialog?.setOnShowListener {
                     val dialog = addToCartBottomSheet.dialog as BottomSheetDialog
@@ -100,16 +100,16 @@ class HomeFragment : Fragment() {
             rvPopular.adapter = foodDomainAdapter
         }
 
-     
-        homeViewModel.categoryList.observe(viewLifecycleOwner){
-            when(it){
+
+        homeViewModel.categoryList.observe(viewLifecycleOwner) {
+            when (it) {
                 is CustomResponse.Loading -> {
                     binding.rvCategories.visibility = View.INVISIBLE
                     binding.progressBarCategory.visibility = View.VISIBLE
 
                 }
                 is CustomResponse.Success -> {
-                    if(it.data != null){
+                    if (it.data != null) {
                         binding.rvCategories.visibility = View.VISIBLE
                         binding.progressBarCategory.visibility = View.GONE
                         categoryAdapter.setList(it.data)
@@ -121,17 +121,14 @@ class HomeFragment : Fragment() {
                     alertDialog.setTitle("Error Message")
                     alertDialog.setMessage(it.errorMessage)
                     alertDialog.show()
-
-//                    binding.tvError.visibility = View.VISIBLE
-//                    binding.tvError.text = it.errorMessage
                 }
                 else -> {}
             }
 
         }
 
-        homeViewModel.foodItemList.observe(viewLifecycleOwner){
-            when(it){
+        homeViewModel.foodItemList.observe(viewLifecycleOwner) {
+            when (it) {
                 is CustomResponse.Loading -> {
                     binding.rvPopular.visibility = View.INVISIBLE
                     binding.progressBarFooditem.visibility = View.VISIBLE
@@ -140,51 +137,47 @@ class HomeFragment : Fragment() {
                 is CustomResponse.Success -> {
                     binding.rvPopular.visibility = View.VISIBLE
                     binding.progressBarFooditem.visibility = View.GONE
-                    if(it.data != null){
-                        if(homeViewModel.category == null){
+                    if (it.data != null) {
+                        if (homeViewModel.category == null) {
                             foodDomainAdapter.setList(it.data)
-                        }
-                        else{
-                            val list = homeViewModel.getFoodItemsByCategory(homeViewModel.category!!)
+                        } else {
+                            val list =
+                                homeViewModel.getFoodItemsByCategory(homeViewModel.category!!)
                             foodDomainAdapter.setList(list)
                         }
-
 
                     }
                 }
                 is CustomResponse.Error -> {
-                    
+                    binding.progressBarFooditem.visibility = View.GONE
+                    val alertDialog = AlertDialog.Builder(requireActivity())
+                    alertDialog.setTitle("Error Message")
+                    alertDialog.setMessage(it.errorMessage)
+                    alertDialog.show()
 
                 }
                 else -> {}
             }
 
         }
-     
+
         binding.apply {
             etSearch.setOnClickListener {
                 findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
             }
-            tvSeeAll.setOnClickListener{
+            tvSeeAll.setOnClickListener {
                 findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
             }
         }
 
-        binding.ivProfile.setOnClickListener{
+        binding.ivProfile.setOnClickListener {
             auth.signOut()
-            startActivity(Intent(requireContext(),LoginActivity::class.java))
+            startActivity(Intent(requireContext(), LoginActivity::class.java))
             requireActivity().finish()
         }
 
         return binding.root
     }
-
-
-    
-
-
-
-
 
 
 }

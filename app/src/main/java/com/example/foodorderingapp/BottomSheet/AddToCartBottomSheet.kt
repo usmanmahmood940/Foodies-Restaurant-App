@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.example.foodorderingapp.CartManager
 import com.example.foodorderingapp.R
+import com.example.foodorderingapp.Utils.Constants.ONE
 import com.example.foodorderingapp.databinding.FragmentAddToCartBottomSheetBinding
 import com.example.foodorderingapp.models.CartItem
 import com.example.foodorderingapp.models.FoodItem
@@ -62,7 +63,7 @@ class AddToCartBottomSheet : RoundedBottomSheetDialogFragment() {
         binding.tvPrice.text = foodItem?.price.toString()
         binding.tvTotalAmount.text = foodItem?.price.toString()
         val price = foodItem?.price!!
-        var quantity = 1
+        var quantity = ONE
         var totalAmount = quantity * price
         binding.tvQuantity.text = quantity.toString()
 
@@ -81,7 +82,6 @@ class AddToCartBottomSheet : RoundedBottomSheetDialogFragment() {
             }
         }
 
-        // Example logic for adding the item to the cart
         binding.tvAddToCart.setOnClickListener {
             // Perform the action
             val cartItem = CartItem(foodItem, quantity, totalAmount)

@@ -46,8 +46,7 @@ class MapsFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
         binding = FragmentMapsBinding.inflate(inflater, container, false)
-       mapViewModel = ViewModelProvider(this).get(MapViewModel::class.java)
-
+        mapViewModel = ViewModelProvider(this).get(MapViewModel::class.java)
 
         return binding.root
     }
@@ -63,13 +62,16 @@ class MapsFragment : Fragment() {
                 val previousFragment = findNavController().previousBackStackEntry
                 if (previousFragment != null) {
                     val data = Bundle().apply {
-                        putDouble(LATITUDE, mapViewModel.pinLocation?.latitude ?: 0.0)
-                        putDouble(LONGITUDE, mapViewModel.pinLocation?.longitude ?: 0.0)
+                        mapViewModel.pinLocation.apply {
+                            putDouble(LATITUDE, latitude )
+                            putDouble(LONGITUDE,longitude )
+                        }
+
                     }
                     previousFragment.savedStateHandle.set(LOCATION_DATA, data)
                     findNavController().popBackStack()
-                    val activity = requireActivity() as MainActivity
-                    activity.binding.coordinatorLayout.visibility = View.VISIBLE
+                    (requireActivity() as MainActivity).hideShowBottomNav()
+
                 }
             }
         }
@@ -88,7 +90,12 @@ class MapsFragment : Fragment() {
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
         val iconGenerator = IconGenerator(context)
-        iconGenerator.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.ic_location_pin))
+        iconGenerator.setBackground(
+            ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.ic_location_pin
+            )
+        )
         val customIconBitmap = iconGenerator.makeIcon()
         val customIcon = BitmapDescriptorFactory.fromBitmap(customIconBitmap)
         if (ContextCompat.checkSelfPermission(
