@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -26,8 +27,10 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
 import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -39,6 +42,7 @@ class MapsFragment : Fragment() {
     private lateinit var onBackPressedCallback: OnBackPressedCallback
     private lateinit var binding: FragmentMapsBinding
     private lateinit var mapViewModel: MapViewModel
+    private var myGoogleMap: GoogleMap? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -63,8 +67,8 @@ class MapsFragment : Fragment() {
                 if (previousFragment != null) {
                     val data = Bundle().apply {
                         mapViewModel.pinLocation.apply {
-                            putDouble(LATITUDE, latitude )
-                            putDouble(LONGITUDE,longitude )
+                            putDouble(LATITUDE, latitude)
+                            putDouble(LONGITUDE, longitude)
                         }
 
                     }
@@ -87,8 +91,61 @@ class MapsFragment : Fragment() {
         activity.binding.coordinatorLayout.visibility = View.GONE
     }
 
-    @SuppressLint("MissingPermission")
+
     private val callback = OnMapReadyCallback { googleMap ->
+        myGoogleMap = googleMap
+        updateMap()
+    }
+
+    private fun updateMap() {
+        val customIcon = getCustomMapIcon()
+        myGoogleMap?.apply {
+
+            getLocation() { locationLatLng ->
+                mapViewModel.pinLocation = locationLatLng
+                mapViewModel.pinLocation.apply {
+                    addMarker(MarkerOptions().position(this).icon(customIcon))
+                    moveCamera(
+                        CameraUpdateFactory.newLatLngZoom(
+                            this,
+                            15f
+                        )
+                    )
+                }
+            }
+
+            setOnMapClickListener { point ->
+                clear()
+                mapViewModel.pinLocation = point
+                addMarker(MarkerOptions().position(point).icon(customIcon))
+            }
+        }
+    }
+
+    private fun getLocation(callback: (locationLatLng: LatLng) -> Unit) {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            getPermissions()
+        } else {
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location ->
+                    if (location != null) {
+                        callback(
+                            LatLng(location.latitude, location.longitude)
+                        )
+
+                    }
+                }
+        }
+    }
+
+    private fun getCustomMapIcon(): BitmapDescriptor {
         val iconGenerator = IconGenerator(context)
         iconGenerator.setBackground(
             ContextCompat.getDrawable(
@@ -96,44 +153,7 @@ class MapsFragment : Fragment() {
                 R.drawable.ic_location_pin
             )
         )
-        val customIconBitmap = iconGenerator.makeIcon()
-        val customIcon = BitmapDescriptorFactory.fromBitmap(customIconBitmap)
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            fusedLocationClient.lastLocation
-                .addOnSuccessListener { location ->
-                    if (location != null) {
-                        mapViewModel.pinLocation = LatLng(location.latitude, location.longitude)
-                        mapViewModel.pinLocation.apply {
-                            googleMap.addMarker(MarkerOptions().position(this).icon(customIcon))
-
-                            googleMap.moveCamera(
-                                CameraUpdateFactory.newLatLngZoom(
-                                    this,
-                                    15f
-                                )
-                            )
-                        }
-                    }
-                }
-        } else {
-            getPermissions()
-        }
-
-
-        googleMap.setOnMapClickListener { point ->
-            // Handle map click event and update pin marker
-            googleMap.clear() // Remove previous markers
-            mapViewModel.pinLocation = point
-            googleMap.addMarker(MarkerOptions().position(point).icon(customIcon))
-            // Do something with the new location (point.latitude, point.longitude)
-        }
+        return BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon())
     }
 
     private fun getPermissions() {
@@ -149,7 +169,7 @@ class MapsFragment : Fragment() {
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val isGranted = permissions.all { it.value }
             if (isGranted) {
-
+                updateMap()
             } else {
                 Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
             }
@@ -160,4 +180,6 @@ class MapsFragment : Fragment() {
         onBackPressedCallback.remove()
         super.onDestroyView()
     }
+
+
 }

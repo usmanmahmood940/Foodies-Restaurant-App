@@ -42,6 +42,7 @@ class LoginActivity : AppCompatActivity() {
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         loginListeners()
+        
     }
 
     private fun loginListeners() {
