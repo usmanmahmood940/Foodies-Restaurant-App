@@ -168,12 +168,13 @@ class CheckoutFragment : Fragment() {
                         checkoutViewModel.placeOrder(order){ success, exception ->
                             if(success){
                                 showDialogBox("Order Confirmation","Your Order is Confirmed")
+                                findNavController().popBackStack(R.id.cartFragment,true)
                             }
                             else{
                                 showDialogBox("Error",exception?.message.toString())
                             }
                         }
-                        findNavController().popBackStack(R.id.cartFragment,true)
+
                     }
                     else{
                         showDialogBox("Internet Error","Internet connection error")
