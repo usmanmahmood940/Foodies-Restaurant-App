@@ -1,5 +1,7 @@
 package com.example.foodorderingapp.activities
 
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -8,6 +10,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.foodorderingapp.CartManager
 import com.example.foodorderingapp.R
+import com.example.foodorderingapp.Utils.Constants
+import com.example.foodorderingapp.Utils.Constants.RUNNING_ORDER
 import com.example.foodorderingapp.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -21,11 +25,23 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var cartManager: CartManager
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+        if(sharedPreferences.getBoolean(RUNNING_ORDER,false)){
+            binding.fragmentContainerView.alpha = 0.5f
+            binding.progressBarMain.visibility = View.INVISIBLE
+            startActivity(Intent(this,OrderTrackingActivity::class.java))
+            binding.fragmentContainerView.alpha = 1f
+            binding.progressBarMain.visibility = View.GONE
+        }
+        
 
         navController = supportFragmentManager.findFragmentById(R.id.fragmentContainerView)!!
             .findNavController()
@@ -47,6 +63,8 @@ class MainActivity : AppCompatActivity() {
 
         })
     }
+
+
 
     fun hideShowBottomNav(){
         if(binding.coordinatorLayout.visibility == View.VISIBLE){

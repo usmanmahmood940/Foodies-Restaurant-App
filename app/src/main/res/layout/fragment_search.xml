@@ -6,8 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.SearchFragment">
 
-
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guide_start"
         android:layout_width="wrap_content"

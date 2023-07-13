@@ -50,5 +50,18 @@
     <string name="credit_debit_card">کریڈٹ / ڈیبٹ کارڈ</string>
     <string name="place_order">آرڈر کریں</string>
 
+    <string name="area_error">علاقہ رسائی سے باہر</string>
+    <string name="track_order">آرڈر کی ریکارڈ کریں</string>
+    <string name="order_placed">آرڈر دیا گیا</string>
+    <string name="order_proceeding">آرڈر جاری ہے</string>
+    <string name="order_proceed">آرڈر جاری کریں</string>
+    <string name="out_for_delivery">ترسیل کے لئے باہر</string>
+    <string name="order_delivered">آرڈر پہنچا دیا گیا</string>
+    <string name="internet_error_msg">جیسے ٹوٹے ہوئے انٹرنیٹ کے مسائل</string>
+    <string name="information">معلومات</string>
+    <string name="error">خرابی</string>
+    <string name="order_confirmed">آپ کا آرڈر تصدیق شدہ ہوا ہے</string>
+
+
 
 </resources>

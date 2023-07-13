@@ -2,6 +2,7 @@ package com.example.foodorderingapp.fragments
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.location.Address
 import android.location.Geocoder
@@ -24,6 +25,7 @@ import com.example.foodorderingapp.Utils.Constants.MY_LONGITUDE
 import com.example.foodorderingapp.Utils.Constants.ZERO
 import com.example.foodorderingapp.Utils.Helper.isValidEmail
 import com.example.foodorderingapp.Utils.NetworkUtils.Companion.checkForInternet
+import com.example.foodorderingapp.activities.OrderTrackingActivity
 import com.example.foodorderingapp.databinding.FragmentCheckoutBinding
 import com.example.foodorderingapp.models.*
 import com.example.foodorderingapp.viewModels.CheckoutViewModel
@@ -72,9 +74,10 @@ class CheckoutFragment : Fragment() {
             val restaurantLatLng = LatLng(MY_LATITUDE, MY_LONGITUDE)
 
             checkoutViewModel.distance =
-                checkoutViewModel.calculateDistanceInKm(chosenLatLng, restaurantLatLng)
+                checkoutViewModel.calculateDistanceInKm(restaurantLatLng,chosenLatLng)
+
             if (!checkoutViewModel.validDistance()) {
-                showDialogBox("Area out of Reach",getString(R.string.delivery_area_error))
+                showDialogBox(getString(R.string.area_error),getString(R.string.delivery_area_error))
             }
         }
 
@@ -133,7 +136,7 @@ class CheckoutFragment : Fragment() {
 
                 }
                 !checkoutViewModel.validDistance() -> {
-                    showDialogBox("Area out of Reach",getString(R.string.delivery_area_error))
+                    showDialogBox(getString(R.string.area_error),getString(R.string.delivery_area_error))
                 }
                 else -> {
 
@@ -162,22 +165,27 @@ class CheckoutFragment : Fragment() {
                         deliveryInfo = deliveryInfo,
                         paymentMethod = paymentMethod,
                         cartItemList = cartItemList,
-                        amounts = amounts
+                        amounts = amounts,
+                        orderStatus = OrderStatus.OrderPlaced("Order Placed")
                     )
                     if(checkForInternet(requireActivity().applicationContext)) {
                         checkoutViewModel.placeOrder(order){ success, exception ->
                             if(success){
-                                showDialogBox("Order Confirmation","Your Order is Confirmed")
+                                showDialogBox(getString(R.string.information),getString(R.string.order_confirmed))
                                 findNavController().popBackStack(R.id.cartFragment,true)
+                                requireActivity().startActivity(
+                                    Intent(requireActivity(),OrderTrackingActivity::class.java)
+                                )
+
                             }
                             else{
-                                showDialogBox("Error",exception?.message.toString())
+                                showDialogBox(getString(R.string.error),exception?.message.toString())
                             }
                         }
 
                     }
                     else{
-                        showDialogBox("Internet Error","Internet connection error")
+                        showDialogBox(getString(R.string.information),getString(R.string.internet_error_msg))
                     }
 
                 }

@@ -9,7 +9,6 @@
     <string name="home_banner_title">Free Deliviery</string>
     <string name="label_categories">Categories</string>
     <string name="label_popular">Popular</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="my_cart">My Cart</string>
@@ -48,5 +47,20 @@
     <string name="cash_on_delivery"> Cash On Delivery</string>
     <string name="credit_debit_card"> Credit/Debit Card</string>
     <string name="place_order">Place Order</string>
+
+    <string name="area_error">Area out of Reach</string>
+    <string name="track_order">Track Order</string>
+    <string name="order_placed">Order Placed</string>
+    <string name="order_proceeding">Order Proceeding</string>
+    <string name="order_proceed">Order Proceed</string>
+    <string name="out_for_delivery">Out For Delivery</string>
+    <string name="order_delivered">Order Diliverd</string>
+    <string name="internet_error_msg">Looks like you\'re having internet issues</string>
+    <string name="information">Information</string>
+    <string name="error">Error</string>
+    <string name="order_confirmed">Your Order is Confirmed</string>
+
+
+
 
 </resources>

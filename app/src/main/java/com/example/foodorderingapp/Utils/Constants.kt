@@ -22,4 +22,6 @@ object Constants {
     const val ZERO = 0
     const val ONE = 1
     const val VALID_DISTANCE = 5
+
+    const val RUNNING_ORDER = "RunningOrder"
 }

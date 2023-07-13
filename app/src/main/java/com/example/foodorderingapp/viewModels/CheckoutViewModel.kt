@@ -1,5 +1,6 @@
 package com.example.foodorderingapp.viewModels
 
+import android.location.Location
 import androidx.lifecycle.ViewModel
 import com.example.foodorderingapp.CartManager
 import com.example.foodorderingapp.Repositories.OrderRepository
@@ -30,20 +31,21 @@ class CheckoutViewModel @Inject constructor(
         return false
     }
 
+
     fun calculateDistanceInKm(firstLatLng: LatLng, secondLatLng: LatLng): Double {
-        val earthRadius = 6371.0 // Earth's radius in kilometers
-        val dLat = Math.toRadians(secondLatLng.latitude - firstLatLng.latitude)
-        val dLon = Math.toRadians(secondLatLng.longitude - firstLatLng.longitude)
-        val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(Math.toRadians(firstLatLng.latitude)) * Math.cos(
-            Math.toRadians(
-                secondLatLng.longitude
-            )
-        ) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2)
-        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-        val distance = earthRadius * c
-        return Math.abs(distance)
+
+        val startLocation = Location("StartLocation")
+        startLocation.latitude = firstLatLng.latitude
+        startLocation.longitude = firstLatLng.longitude
+
+        val endLocation = Location("EndLocation")
+        endLocation.latitude = secondLatLng.latitude
+        endLocation.longitude = secondLatLng.longitude
+
+        val distance = startLocation.distanceTo(endLocation)
+
+        val distanceInKilometers = distance / 1000.0
+        return distanceInKilometers
     }
 
     fun placeOrder(order: Order,callback: (Boolean, Exception?) -> Unit) {
