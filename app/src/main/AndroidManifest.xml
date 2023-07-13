@@ -18,6 +18,9 @@
         android:theme="@style/Theme.FoodOrderingApp"
         tools:targetApi="31">
         <activity
+            android:name=".RiderHomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".OrderTrackingActivity"
             android:exported="false" />
         <!--

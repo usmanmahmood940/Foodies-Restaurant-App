@@ -24,4 +24,11 @@ object Constants {
     const val VALID_DISTANCE = 5
 
     const val RUNNING_ORDER = "RunningOrder"
+    const val ORDER_ID = "OrderId"
+
+    const val MY_TAG="USMAN CODE"
+
+    const val ORDER_PLACED = "Order Placed"
+    const val ORDER_PROCEED = "Order Proceeded"
+    const val ORDER_IN_DELIVERY = "Order In Delivery"
 }

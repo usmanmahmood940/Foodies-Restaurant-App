@@ -35,6 +35,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
+import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -166,7 +167,9 @@ class CheckoutFragment : Fragment() {
                         paymentMethod = paymentMethod,
                         cartItemList = cartItemList,
                         amounts = amounts,
-                        orderStatus = OrderStatus.OrderPlaced("Order Placed")
+                        orderDelivery = OrderDelivery().apply {
+                            placeOrder()
+                        }
                     )
                     if(checkForInternet(requireActivity().applicationContext)) {
                         checkoutViewModel.placeOrder(order){ success, exception ->

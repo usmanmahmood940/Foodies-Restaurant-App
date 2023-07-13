@@ -1,9 +1,12 @@
 package com.example.foodorderingapp.viewModels
 
+import android.content.SharedPreferences
 import android.location.Location
+import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import com.example.foodorderingapp.CartManager
 import com.example.foodorderingapp.Repositories.OrderRepository
+import com.example.foodorderingapp.Utils.Constants.ORDER_ID
 import com.example.foodorderingapp.Utils.Constants.VALID_DISTANCE
 import com.example.foodorderingapp.Utils.Constants.ZERO_DOUBLE
 import com.example.foodorderingapp.models.Order
@@ -16,6 +19,7 @@ import javax.inject.Inject
 class CheckoutViewModel @Inject constructor(
     private val orderRepository: OrderRepository,
     private val cartManager: CartManager,
+    private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
     var latitude: Double = ZERO_DOUBLE
     var longitude: Double = ZERO_DOUBLE
@@ -49,10 +53,14 @@ class CheckoutViewModel @Inject constructor(
     }
 
     fun placeOrder(order: Order,callback: (Boolean, Exception?) -> Unit) {
-        orderRepository.createOrder(order) { success, exception ->
+        orderRepository.createOrder(order) { success, exception,orderId ->
             if (success) {
-                callback(success,null)
                 cartManager.clearCart()
+                sharedPreferences.edit{
+                   putString(ORDER_ID,orderId)
+                   apply()
+                }
+                callback(success,null)
             } else {
                 errorMessage.value = exception?.message
                 callback(success,exception)
