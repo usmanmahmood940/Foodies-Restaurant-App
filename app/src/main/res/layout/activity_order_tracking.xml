@@ -120,7 +120,7 @@
         android:layout_height="@dimen/track_circle_size"
         android:background="@drawable/shape_circle_btn_grey"
         android:gravity="center"
-        android:text="2"
+        android:text="3"
         android:textColor="@color/white"
         android:textSize="@dimen/font_small_150"
         app:layout_constraintBottom_toBottomOf="@+id/pb_tracking"

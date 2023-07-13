@@ -61,10 +61,6 @@ class HomeViewModel  @Inject constructor(
 
     }
 
-    fun stopObservingData(){
-        categoryRepository.stopObservingData()
-        foodItemRepository.stopObservingData()
-    }
 
     override fun onCleared() {
         super.onCleared()

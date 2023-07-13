@@ -7,6 +7,7 @@ import androidx.work.WorkManager
 import androidx.work.workDataOf
 import com.example.foodorderingapp.Response.CustomResponse
 import com.example.foodorderingapp.Utils.Constants.ORDDER_REFRENCE
+import com.example.foodorderingapp.Utils.Constants.ORDER_PROCEED
 import com.example.foodorderingapp.Utils.Helper
 import com.example.foodorderingapp.Worker.UpdateSalesCountWorker
 import com.example.foodorderingapp.models.*
@@ -19,10 +20,16 @@ import javax.inject.Inject
 class OrderRepository @Inject constructor(private val workManager: WorkManager) {
     private val databaseReference = FirebaseDatabase.getInstance().getReference()
     private var valueEventListener: ValueEventListener? = null
+    private var valueEventListenerOrdersList: ValueEventListener? = null
 
     private val _orderDelivery = MutableLiveData<CustomResponse<OrderDelivery>>()
     val orderDelivery: LiveData<CustomResponse<OrderDelivery>>
         get() = _orderDelivery
+
+    private val _proceededOrderList =
+        MutableLiveData<CustomResponse<List<Order>>>(CustomResponse.Loading())
+    val proceededOrderList: LiveData<CustomResponse<List<Order>>>
+        get() = _proceededOrderList
 
 
     fun createOrder(order: Order, callback: (Boolean, Exception?, String?) -> Unit) {
@@ -58,7 +65,8 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        databaseReference.child(ORDDER_REFRENCE).child(orderId).child("orderDelivery")
+                        databaseReference.child(ORDDER_REFRENCE).child(orderId)
+                            .child("orderDelivery")
                             .setValue(orderStatus)
                             .addOnSuccessListener {
                                 callback(true, null)
@@ -77,12 +85,13 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
             })
     }
 
-    fun startObservingOrder(orderId: String) {
+    fun startTrackingOrder(orderId: String) {
         valueEventListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
 
-                    val tempOrderStatus: OrderDelivery? =  dataSnapshot.getValue(OrderDelivery::class.java)
+                    val tempOrderStatus: OrderDelivery? =
+                        dataSnapshot.getValue(OrderDelivery::class.java)
 
                     _orderDelivery.value = CustomResponse.Success(tempOrderStatus)
                 } catch (e: Exception) {
@@ -100,12 +109,52 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
             .addValueEventListener(valueEventListener as ValueEventListener)
     }
 
-    fun stopObservingData(orderId: String) {
+    fun stopTrackingOrder(orderId: String) {
         valueEventListener?.let {
-            databaseReference.child(ORDDER_REFRENCE).child(orderId).child("orderDelivery").removeEventListener(it)
+            databaseReference.child(ORDDER_REFRENCE).child(orderId).child("orderDelivery")
+                .removeEventListener(it)
         }
     }
 
+    fun startObservingProceededOrders() {
+
+        valueEventListenerOrdersList = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val orderList = mutableListOf<Order>()
+
+                try {
+                    for (orderSnapshot in dataSnapshot.children) {
+                        val order = orderSnapshot.getValue(Order::class.java)
+                        order?.let {
+                            orderList.add(it)
+                        }
+                    }
+
+                    _proceededOrderList.value = CustomResponse.Success(orderList)
+
+                } catch (e: Exception) {
+                    _proceededOrderList.value = CustomResponse.Error(e.message.toString())
+                }
+
+
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Handle any errors that occurred during the query
+            }
+        }
+
+        databaseReference.child(ORDDER_REFRENCE).orderByChild("orderDelivery/status")
+            .equalTo(ORDER_PROCEED)
+            .addValueEventListener(valueEventListenerOrdersList as ValueEventListener)
+
+    }
+
+    fun stopObservingProceededOrders() {
+        valueEventListenerOrdersList?.let {
+            databaseReference.child(ORDDER_REFRENCE).removeEventListener(it)
+        }
+    }
 }
 
 

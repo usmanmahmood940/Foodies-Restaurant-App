@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/padding_normal_200"
+    android:layout_margin="@dimen/margin_normal_100"
+    android:background="@drawable/shape_cart_item"
+    android:id="@+id/cl_rider_order"
+    android:elevation="5dp"
+    >
+
+    <TextView
+        android:id="@+id/tv_person_name_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name : "
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="@dimen/font_small_150"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/tv_person_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_small_125"
+        app:layout_constraintStart_toEndOf="@+id/tv_person_name_label"
+        app:layout_constraintTop_toTopOf="@+id/tv_person_name_label"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_person_name_label"
+        />
+    <TextView
+        android:id="@+id/tv_mobile_number_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mobile Number : "
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_small_125"
+        android:layout_marginTop="@dimen/margin_normal_100"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_person_name_label"
+        />
+
+    <TextView
+        android:id="@+id/tv_mobile_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_small_125"
+        app:layout_constraintStart_toEndOf="@+id/tv_mobile_number_label"
+        app:layout_constraintTop_toTopOf="@+id/tv_mobile_number_label"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_mobile_number_label"
+        />
+    <TextView
+        android:id="@+id/tv_order_location_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location : "
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="@dimen/font_small_125"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/margin_normal_100"
+        app:layout_constraintTop_toBottomOf="@+id/tv_mobile_number_label"/>
+
+    <TextView
+        android:id="@+id/tv_order_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_small_125"
+        app:layout_constraintStart_toEndOf="@+id/tv_order_location_label"
+        app:layout_constraintTop_toTopOf="@+id/tv_order_location_label"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_order_location_label"
+        />
+
+    <Button
+        android:id="@+id/btn_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_circle_btn_orange"
+        android:text="Confirm"
+        android:textColor="@color/white"
+        app:backgroundTint="@null"
+        android:layout_marginTop="@dimen/margin_normal_200"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_order_location_label" />
+</androidx.constraintlayout.widget.ConstraintLayout>

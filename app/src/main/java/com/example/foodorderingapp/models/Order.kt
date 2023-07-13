@@ -7,7 +7,7 @@ data class Order(
     val customerInfo: CustomerInfo,
     val deliveryInfo: DeliveryInfo,
     val cartItemList:List<CartItem>,
-    val paymentMethod: PaymentMethod,
+    val paymentMethod: String,
     val amounts: Amounts,
     val orderDelivery : OrderDelivery,
 ){
@@ -16,7 +16,7 @@ data class Order(
         CustomerInfo(),
         DeliveryInfo(),
         emptyList(),
-        PaymentMethod.CashOnDelivery(""),
+        "",
         Amounts(),
         OrderDelivery()
     )

@@ -8,6 +8,7 @@ import android.text.InputType
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.foodorderingapp.R
+import com.example.foodorderingapp.RiderApp.RiderHomeActivity
 import com.example.foodorderingapp.Utils.Helper.isValidEmail
 import com.example.foodorderingapp.databinding.ActivityLoginBinding
 import com.facebook.*
@@ -71,7 +72,11 @@ class LoginActivity : AppCompatActivity() {
                     auth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this) { task ->
                             if (task.isSuccessful) {
-                                startActivity(Intent(this, MainActivity::class.java))
+                                if(auth.currentUser?.uid == "E5ODMiUXLkahCFBSv0WRh6q2jh83"){
+                                    startActivity(Intent(this, RiderHomeActivity::class.java))
+                                }else {
+                                    startActivity(Intent(this, MainActivity::class.java))
+                                }
                                 finish()
                             } else {
                                 Toast.makeText(this, "Firebase sign-in failed", Toast.LENGTH_SHORT)
