@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.content.edit
+import com.example.foodorderingapp.RiderApp.RiderHomeActivity
 import com.example.foodorderingapp.Utils.Constants.FIRST_TIME_OPEN
 import com.example.foodorderingapp.databinding.ActivitySplashBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -28,7 +29,12 @@ class SplashActivity : AppCompatActivity() {
         val firstTimeOpen = sharedPreferences.getBoolean(FIRST_TIME_OPEN, true)
         if (!firstTimeOpen) {
             val intent = if (auth.currentUser != null) {
-                Intent(this, MainActivity::class.java)
+                if(auth.currentUser?.uid == "E5ODMiUXLkahCFBSv0WRh6q2jh83"){
+                    Intent(this, RiderHomeActivity::class.java)
+                }
+                else {
+                    Intent(this, MainActivity::class.java)
+                }
             } else {
                 Intent(this, LoginActivity::class.java)
             }

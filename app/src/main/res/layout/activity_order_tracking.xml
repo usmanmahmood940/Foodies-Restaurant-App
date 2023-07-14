@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.OrderTrackingActivity">
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/left_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="@dimen/horizontal_guideline" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/top_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/right_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="@dimen/horizontal_guideline" />
+
+    <TextView
+        android:id="@+id/tv_checkout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/track_order"
+        android:textColor="@color/orange"
+        android:textSize="@dimen/font_normal_100"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@id/right_guideline"
+        app:layout_constraintStart_toStartOf="@id/left_guideline"
+        app:layout_constraintTop_toTopOf="@id/top_guideline" />
+
+    <!--                <View-->
+    <!--                    android:layout_width="match_parent"-->
+    <!--                    android:layout_height="20dp"-->
+    <!--                    android:background="@color/orange_2"/>-->
+
+    <ProgressBar
+        android:id="@+id/pb_tracking"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal_200"
+        android:progress="15"
+        android:progressTint="@color/orange"
+        android:scaleY="2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_checkout" />
+
+    <TextView
+        android:id="@+id/tv_order_placed_circle"
+        android:layout_width="@dimen/track_circle_size"
+        android:layout_height="@dimen/track_circle_size"
+        android:background="@drawable/shape_circle_btn_orange"
+        android:gravity="center"
+        android:text="1"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_small_150"
+        app:layout_constraintBottom_toBottomOf="@+id/pb_tracking"
+        app:layout_constraintEnd_toEndOf="@+id/pb_tracking"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="@+id/pb_tracking"
+        app:layout_constraintTop_toTopOf="@+id/pb_tracking" />
+
+    <TextView
+        android:id="@+id/tv_order_placed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small_100"
+        android:text="@string/order_placed"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_small_75"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tv_order_placed_circle"
+        app:layout_constraintStart_toStartOf="@+id/tv_order_placed_circle"
+        app:layout_constraintTop_toBottomOf="@+id/tv_order_placed_circle" />
+
+    <TextView
+        android:id="@+id/tv_order_proceed_circle"
+        android:layout_width="@dimen/track_circle_size"
+        android:layout_height="@dimen/track_circle_size"
+        android:background="@drawable/shape_circle_btn_grey"
+        android:gravity="center"
+        android:text="2"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_small_150"
+        app:layout_constraintBottom_toBottomOf="@+id/pb_tracking"
+        app:layout_constraintEnd_toEndOf="@+id/pb_tracking"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/pb_tracking"
+        app:layout_constraintTop_toTopOf="@+id/pb_tracking" />
+
+    <TextView
+        android:id="@+id/tv_order_proceed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small_100"
+        android:text="@string/order_proceeding"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_small_75"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tv_order_proceed_circle"
+        app:layout_constraintStart_toStartOf="@+id/tv_order_proceed_circle"
+        app:layout_constraintTop_toBottomOf="@+id/tv_order_proceed_circle" />
+
+    <TextView
+        android:id="@+id/tv_dilevery_circle"
+        android:layout_width="@dimen/track_circle_size"
+        android:layout_height="@dimen/track_circle_size"
+        android:background="@drawable/shape_circle_btn_grey"
+        android:gravity="center"
+        android:text="3"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_small_150"
+        app:layout_constraintBottom_toBottomOf="@+id/pb_tracking"
+        app:layout_constraintEnd_toEndOf="@+id/pb_tracking"
+        app:layout_constraintHorizontal_bias="0.85"
+        app:layout_constraintStart_toStartOf="@+id/pb_tracking"
+        app:layout_constraintTop_toTopOf="@+id/pb_tracking" />
+
+    <TextView
+        android:id="@+id/tv_dilevery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small_100"
+        android:text="@string/out_for_delivery"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_small_75"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/tv_dilevery_circle"
+        app:layout_constraintStart_toStartOf="@+id/tv_dilevery_circle"
+        app:layout_constraintTop_toBottomOf="@+id/tv_dilevery_circle" />
+
+    <TextView
+        android:id="@+id/tv_tracking_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Order Proceeding"
+        android:textColor="@color/black"
+        android:textSize="@dimen/font_small_150"
+        app:layout_constraintBottom_toTopOf="@+id/ivPersonsGroup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_order_proceed" />
+
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/ivPersonsGroup"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/cooking"
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toStartOf="@id/right_guideline"
+        app:layout_constraintStart_toEndOf="@id/left_guideline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <!--    <fragment-->
+    <!--        android:id="@+id/map_rider"-->
+    <!--        android:name="com.google.android.gms.maps.SupportMapFragment"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="0dp"-->
+    <!--        tools:context=".fragments.MapsFragment"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/tv_order_proceed"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        android:visibility="gone"-->
+    <!--        />-->
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

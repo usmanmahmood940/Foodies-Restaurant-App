@@ -1,13 +1,23 @@
 package com.example.foodorderingapp.models
 
 
+
 data class Order(
     var orderId:String="",
     val customerInfo: CustomerInfo,
     val deliveryInfo: DeliveryInfo,
     val cartItemList:List<CartItem>,
-    val paymentMethod: PaymentMethod,
-    val amounts: Amounts
+    val paymentMethod: String,
+    val amounts: Amounts,
+    val orderTracking : OrderTracking,
 ){
-    constructor():this("", CustomerInfo(), DeliveryInfo(), emptyList(),PaymentMethod.CashOnDelivery(""),Amounts())
+    constructor():this(
+        "",
+        CustomerInfo(),
+        DeliveryInfo(),
+        emptyList(),
+        "",
+        Amounts(),
+        OrderTracking()
+    )
 }

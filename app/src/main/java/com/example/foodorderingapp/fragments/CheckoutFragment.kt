@@ -1,9 +1,8 @@
 package com.example.foodorderingapp.fragments
 
 import android.app.AlertDialog
-import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
-import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -16,14 +15,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.Utils.Constants
+import com.example.foodorderingapp.Utils.Constants.CASH_ON_DELIVERY
 import com.example.foodorderingapp.Utils.Constants.LATITUDE
 import com.example.foodorderingapp.Utils.Constants.LOCATION_DATA
 import com.example.foodorderingapp.Utils.Constants.LONGITUDE
 import com.example.foodorderingapp.Utils.Constants.MY_LATITUDE
 import com.example.foodorderingapp.Utils.Constants.MY_LONGITUDE
-import com.example.foodorderingapp.Utils.Constants.ZERO
+import com.example.foodorderingapp.Utils.Helper.getAddressFromLocation
 import com.example.foodorderingapp.Utils.Helper.isValidEmail
 import com.example.foodorderingapp.Utils.NetworkUtils.Companion.checkForInternet
+import com.example.foodorderingapp.activities.OrderTrackingActivity
 import com.example.foodorderingapp.databinding.FragmentCheckoutBinding
 import com.example.foodorderingapp.models.*
 import com.example.foodorderingapp.viewModels.CheckoutViewModel
@@ -32,7 +33,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.IOException
 import java.util.*
 import javax.inject.Inject
 
@@ -67,14 +67,19 @@ class CheckoutFragment : Fragment() {
             checkoutViewModel.latitude = latitude
             checkoutViewModel.longitude = longitude
 
-            binding.etAddress.setText(getAddressFromLocation(requireContext(), latitude, longitude))
+            val geocoder = Geocoder(requireContext(), Locale.getDefault())
+            binding.etAddress.setText(
+                getAddressFromLocation(geocoder, latitude, longitude)
+            )
             val chosenLatLng = LatLng(latitude, longitude)
             val restaurantLatLng = LatLng(MY_LATITUDE, MY_LONGITUDE)
-
+            showDialogBox("Location","$latitude   + $longitude")
             checkoutViewModel.distance =
-                checkoutViewModel.calculateDistanceInKm(chosenLatLng, restaurantLatLng)
+                checkoutViewModel.calculateDistanceInKm(restaurantLatLng,chosenLatLng)
+
+
             if (!checkoutViewModel.validDistance()) {
-                showDialogBox("Area out of Reach",getString(R.string.delivery_area_error))
+                showDialogBox(getString(R.string.area_error),getString(R.string.delivery_area_error))
             }
         }
 
@@ -133,7 +138,7 @@ class CheckoutFragment : Fragment() {
 
                 }
                 !checkoutViewModel.validDistance() -> {
-                    showDialogBox("Area out of Reach",getString(R.string.delivery_area_error))
+                    showDialogBox(getString(R.string.area_error),getString(R.string.delivery_area_error))
                 }
                 else -> {
 
@@ -144,9 +149,9 @@ class CheckoutFragment : Fragment() {
                     )
                     val deliveryInfo = DeliveryInfo(
                         locationLatitude = checkoutViewModel.latitude,
-                        locationLongitude = checkoutViewModel.latitude
+                        locationLongitude = checkoutViewModel.longitude
                     )
-                    val paymentMethod = PaymentMethod.CashOnDelivery("CashOnDelivery")
+
                     var cartItemList = emptyList<CartItem>()
                     val cartJson = sharedPreferences.getString(Constants.CART, null)
                     if (!cartJson.isNullOrEmpty()) {
@@ -160,24 +165,31 @@ class CheckoutFragment : Fragment() {
                     val order = Order(
                         customerInfo = customerInfo,
                         deliveryInfo = deliveryInfo,
-                        paymentMethod = paymentMethod,
+                        paymentMethod = CASH_ON_DELIVERY,
                         cartItemList = cartItemList,
-                        amounts = amounts
+                        amounts = amounts,
+                        orderDelivery = OrderTracking().apply {
+                            placeOrder()
+                        }
                     )
                     if(checkForInternet(requireActivity().applicationContext)) {
                         checkoutViewModel.placeOrder(order){ success, exception ->
                             if(success){
-                                showDialogBox("Order Confirmation","Your Order is Confirmed")
+                                showDialogBox(getString(R.string.information),getString(R.string.order_confirmed))
                                 findNavController().popBackStack(R.id.cartFragment,true)
+                                requireActivity().startActivity(
+                                    Intent(requireActivity(),OrderTrackingActivity::class.java)
+                                )
+
                             }
                             else{
-                                showDialogBox("Error",exception?.message.toString())
+                                showDialogBox(getString(R.string.error),exception?.message.toString())
                             }
                         }
 
                     }
                     else{
-                        showDialogBox("Internet Error","Internet connection error")
+                        showDialogBox(getString(R.string.information),getString(R.string.internet_error_msg))
                     }
 
                 }
@@ -185,30 +197,7 @@ class CheckoutFragment : Fragment() {
         }
     }
 
-    private fun getAddressFromLocation(context: Context, latitude: Double, longitude: Double): String {
-        val geocoder = Geocoder(context, Locale.getDefault())
-        var addressText = ""
-        try {
-            val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
-            if (addresses != null && addresses.isNotEmpty()) {
-                val address: Address = addresses[ZERO]
-                val sb = StringBuilder()
 
-                for (i in 0 until address.maxAddressLineIndex + 1) {
-                    sb.append(address.getAddressLine(i))
-                    if (i < address.maxAddressLineIndex) {
-                        sb.append(", ")
-                    }
-                }
-
-                addressText = sb.toString()
-            }
-        } catch (e: IOException) {
-            showDialogBox("Address Exception",e.message?:"")
-        }
-
-        return addressText
-    }
 
 
 }

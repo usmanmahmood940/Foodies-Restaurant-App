@@ -3,6 +3,7 @@
     <dimen name="zero">0dp</dimen>
 
     <dimen name="font_small_75">12sp</dimen>
+    <dimen name="font_small_85">13sp</dimen>
     <dimen name="font_small_100">14sp</dimen>
     <dimen name="font_small_115">16sp</dimen>
     <dimen name="font_small_125">18sp</dimen>
@@ -45,6 +46,8 @@
     <dimen name="food_image_bottom_sheet_size">250dp</dimen>
 
     <dimen name="mtrl_badge_with_text_radius">22dp</dimen>
+
+    <dimen name="track_circle_size">35dp</dimen>
 
 
 

@@ -17,4 +17,6 @@ data class CartItem(
         return foodItem.id == other.foodItem.id
     }
 
+    constructor():this(FoodItem(),0,0.0)
+
 }

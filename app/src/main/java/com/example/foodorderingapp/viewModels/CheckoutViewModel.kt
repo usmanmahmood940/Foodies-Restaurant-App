@@ -1,8 +1,12 @@
 package com.example.foodorderingapp.viewModels
 
+import android.content.SharedPreferences
+import android.location.Location
+import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import com.example.foodorderingapp.CartManager
 import com.example.foodorderingapp.Repositories.OrderRepository
+import com.example.foodorderingapp.Utils.Constants.ORDER_ID
 import com.example.foodorderingapp.Utils.Constants.VALID_DISTANCE
 import com.example.foodorderingapp.Utils.Constants.ZERO_DOUBLE
 import com.example.foodorderingapp.models.Order
@@ -15,6 +19,7 @@ import javax.inject.Inject
 class CheckoutViewModel @Inject constructor(
     private val orderRepository: OrderRepository,
     private val cartManager: CartManager,
+    private val sharedPreferences: SharedPreferences
 ) : ViewModel() {
     var latitude: Double = ZERO_DOUBLE
     var longitude: Double = ZERO_DOUBLE
@@ -30,27 +35,32 @@ class CheckoutViewModel @Inject constructor(
         return false
     }
 
+
     fun calculateDistanceInKm(firstLatLng: LatLng, secondLatLng: LatLng): Double {
-        val earthRadius = 6371.0 // Earth's radius in kilometers
-        val dLat = Math.toRadians(secondLatLng.latitude - firstLatLng.latitude)
-        val dLon = Math.toRadians(secondLatLng.longitude - firstLatLng.longitude)
-        val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(Math.toRadians(firstLatLng.latitude)) * Math.cos(
-            Math.toRadians(
-                secondLatLng.longitude
-            )
-        ) *
-                Math.sin(dLon / 2) * Math.sin(dLon / 2)
-        val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-        val distance = earthRadius * c
-        return Math.abs(distance)
+
+        val startLocation = Location("StartLocation")
+        startLocation.latitude = firstLatLng.latitude
+        startLocation.longitude = firstLatLng.longitude
+
+        val endLocation = Location("EndLocation")
+        endLocation.latitude = secondLatLng.latitude
+        endLocation.longitude = secondLatLng.longitude
+
+        val distance = startLocation.distanceTo(endLocation)
+
+        val distanceInKilometers = distance / 1000.0
+        return distanceInKilometers
     }
 
     fun placeOrder(order: Order,callback: (Boolean, Exception?) -> Unit) {
-        orderRepository.createOrder(order) { success, exception ->
+        orderRepository.createOrder(order) { success, exception,orderId ->
             if (success) {
-                callback(success,null)
                 cartManager.clearCart()
+                sharedPreferences.edit{
+                   putString(ORDER_ID,orderId)
+                   apply()
+                }
+                callback(success,null)
             } else {
                 errorMessage.value = exception?.message
                 callback(success,exception)
