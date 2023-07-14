@@ -16,8 +16,9 @@ object Constants {
 
     const val FOOD_ITEM_REFRENCE = "FoodItem"
     const val CATEGORY_REFRENCE = "Category"
-    const val ORDDER_REFRENCE = "Order"
+    const val ORDER_REFRENCE = "Order"
     const val ORDER_TRACKING_REFRENCE = "orderTracking"
+    const val ORDER_DELIVERY_INFO_REFRENCE = "deliveryInfo"
     const val STATUS_REFRENCE = "status"
 
     const val ZERO_DOUBLE = 0.0
@@ -34,9 +35,13 @@ object Constants {
     const val ORDER_PLACED = "Order Placed"
     const val ORDER_PROCEED = "Order Proceeded"
     const val ORDER_IN_DELIVERY = "Order In Delivery"
+    const val ORDER_DELIVERED = "Order Delivered"
 
     const val CASH_ON_DELIVERY = "CashOnDelivery"
 
     const val CUSTOMER_LATITUDE = "CustomerLat"
     const val CUSTOMER_LONGITUDE = "CustomerLong"
+
+    const val NOTIFICATION_ID = 1
+
 }

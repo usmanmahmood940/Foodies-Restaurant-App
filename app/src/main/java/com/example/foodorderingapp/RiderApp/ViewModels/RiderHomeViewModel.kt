@@ -1,13 +1,11 @@
 package com.example.foodorderingapp.RiderApp.ViewModels
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.foodorderingapp.Repositories.OrderRepository
 import com.example.foodorderingapp.Response.CustomResponse
-import com.example.foodorderingapp.Utils.Constants
 import com.example.foodorderingapp.Utils.Constants.CUSTOMER_LATITUDE
 import com.example.foodorderingapp.Utils.Constants.CUSTOMER_LONGITUDE
 import com.example.foodorderingapp.Utils.Constants.RIDER_RUNNING_ORDER
@@ -15,7 +13,6 @@ import com.example.foodorderingapp.models.DeliveryInfo
 import com.example.foodorderingapp.models.Order
 import com.example.foodorderingapp.models.OrderTracking
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,7 +34,7 @@ class RiderHomeViewModel @Inject constructor(
 
 
      fun updateOrderStatus(orderId:String, orderTracking: OrderTracking, callback: (Boolean, Exception?) -> Unit,){
-        orderRepository.updateOrderStatus(orderId,orderTracking){ success, exception ->
+        orderRepository.updateOrderTracking(orderId,orderTracking){ success, exception ->
            callback(success,exception)
         }
     }

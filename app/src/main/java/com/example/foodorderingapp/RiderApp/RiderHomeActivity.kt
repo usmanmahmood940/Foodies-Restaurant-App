@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +16,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodorderingapp.Response.CustomResponse
+import com.example.foodorderingapp.RiderApp.Services.RiderLocationService
 import com.example.foodorderingapp.RiderApp.ViewModels.RiderHomeViewModel
 import com.example.foodorderingapp.Utils.Constants
 import com.example.foodorderingapp.Utils.Constants.ORDER_IN_DELIVERY
@@ -41,7 +43,7 @@ class RiderHomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRiderHomeBinding
     private lateinit var riderViewModel: RiderHomeViewModel
     private val locationPermission:MutableStateFlow<Boolean> = MutableStateFlow(false)
-    private var orderPickedTracking: OrderTracking? = null
+    private var orderPickedTracking: MutableLiveData<OrderTracking?> = MutableLiveData()
 
     @Inject
     lateinit var auth: FirebaseAuth
@@ -81,38 +83,54 @@ class RiderHomeActivity : AppCompatActivity() {
                     locationPermission.collectLatest {
                         if(it){
                             getCurrentLocation()
-                            orderPickedTracking?.let {
-                                riderViewModel.updateOrderStatus(
-                                    order.orderId,
-                                    it
-                                ) { success, exception ->
-                                    if (success) {
-                                        riderViewModel.setRunningOrder(order.orderId)
-                                        riderViewModel.setCustomerLatLng(order.customerDeliveryInfo)
-                                        startActivity(
-                                            Intent(
-                                                this@RiderHomeActivity,
-                                                RiderMapActivity::class.java
+                            orderPickedTracking.observe(this@RiderHomeActivity) {
+                                it?.let {
+                                    riderViewModel.updateOrderStatus(
+                                        order.orderId,
+                                        it
+                                    ) { success, exception ->
+                                        if (success) {
+                                            riderViewModel.setRunningOrder(order.orderId)
+                                            riderViewModel.setCustomerLatLng(order.customerDeliveryInfo)
+                                            startActivity(
+                                                Intent(
+                                                    this@RiderHomeActivity,
+                                                    RiderMapActivity::class.java
+                                                )
                                             )
-                                        )
-                                        finish()
-                                    } else {
-                                        exception?.let {
-                                            Log.e(Constants.MY_TAG, exception?.message.toString())
-                                            return@updateOrderStatus
+                                            finish()
+                                        } else {
+                                            exception?.let {
+                                                Log.e(
+                                                    Constants.MY_TAG,
+                                                    exception?.message.toString()
+                                                )
+                                                return@updateOrderStatus
+                                            }
+                                            Log.e(Constants.MY_TAG, "Order Does not exist")
+
                                         }
-                                        Log.e(Constants.MY_TAG, "Order Does not exist")
 
                                     }
 
+                                    val serviceIntent = Intent(
+                                        this@RiderHomeActivity,
+                                        RiderLocationService::class.java
+                                    )
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        startForegroundService(serviceIntent)
+                                    } else {
+                                        startService(serviceIntent)
+                                    }
+                                }
+                                if(it == null){
+                                    val alertDialog = AlertDialog.Builder(this@RiderHomeActivity)
+                                    alertDialog.setTitle("Information")
+                                    alertDialog.setMessage("Enable Location")
+                                    alertDialog.show()
                                 }
                             }
-                            if(orderPickedTracking == null){
-                                val alertDialog = AlertDialog.Builder(this@RiderHomeActivity)
-                                alertDialog.setTitle("Information")
-                                alertDialog.setMessage("Enable Location")
-                                alertDialog.show()
-                            }
+
                         }
                         else{
                             getPermissions()
@@ -163,15 +181,14 @@ class RiderHomeActivity : AppCompatActivity() {
 
         var deliveryInfo = DeliveryInfo(latLng.latitude,latLng.longitude)
 
-        orderPickedTracking =  OrderTracking(
+        orderPickedTracking.postValue(OrderTracking(
             status = ORDER_IN_DELIVERY,
             driverInfo = driverInfo,
             deliveryInfo = deliveryInfo
-
-        )
+        ) )
     }
 
-    fun getCurrentLocation():Boolean {
+    fun getCurrentLocation() {
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -183,14 +200,18 @@ class RiderHomeActivity : AppCompatActivity() {
                 .addOnSuccessListener { location ->
                     if (location != null) {
                         setOrderTracking(LatLng(location.latitude, location.longitude))
+
                     }
                     else{
                         Toast.makeText(this@RiderHomeActivity,"Please Enable Location",Toast.LENGTH_SHORT).show()
+                        orderPickedTracking.postValue(null)
+
                     }
                 }
-            return true
+
+
         }
-        return false
+
     }
 
     fun checkPermission(): Boolean {

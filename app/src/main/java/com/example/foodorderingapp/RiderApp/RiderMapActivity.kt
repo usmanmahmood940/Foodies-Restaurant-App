@@ -5,10 +5,13 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.Response.CustomResponse
+import com.example.foodorderingapp.RiderApp.Services.RiderLocationService
 import com.example.foodorderingapp.RiderApp.ViewModels.RiderMapViewModel
+import com.example.foodorderingapp.Utils.Constants.ORDER_DELIVERED
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -40,7 +43,6 @@ class RiderMapActivity : AppCompatActivity(), OnMapReadyCallback {
     private var riderMarker: MutableStateFlow<Marker?> = MutableStateFlow(null)
 
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -58,12 +60,19 @@ class RiderMapActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        buttonListeners()
+
+
+    }
+
+    private fun buttonListeners() {
         binding.btnOpnGoogleMap.setOnClickListener {
             CoroutineScope(Dispatchers.Main).launch {
                 riderMarker.collectLatest {
                     if (it != null && customerLatLng != null) {
 
-                        val destinationLatLng = "${customerLatLng?.latitude},${customerLatLng?.longitude}"
+                        val destinationLatLng =
+                            "${customerLatLng?.latitude},${customerLatLng?.longitude}"
                         val startingLatLng = "${it.position.latitude},${it.position.longitude}"
                         val intentUri =
                             Uri.parse("https://www.google.com/maps/dir/?api=1&destination=$destinationLatLng&origin=$startingLatLng")
@@ -77,6 +86,22 @@ class RiderMapActivity : AppCompatActivity(), OnMapReadyCallback {
                         alertDialog.setMessage("Wait for a while")
                         alertDialog.show()
                     }
+                }
+            }
+
+        }
+        binding.btnOrderCompleted.setOnClickListener {
+            riderMapViewModel.updateOrderStatus(
+                orderId = riderMapViewModel.checkRunningOrder()!!,
+                orderStatus =  ORDER_DELIVERED
+            ){success,exception ->
+                if(success){
+                    val serviceIntent = Intent(this, RiderLocationService::class.java)
+                    stopService(serviceIntent)
+                    startActivity(
+                        Intent(this@RiderMapActivity,RiderHomeActivity::class.java)
+                    )
+                    finish()
                 }
             }
 
@@ -96,32 +121,29 @@ class RiderMapActivity : AppCompatActivity(), OnMapReadyCallback {
             when (it) {
                 is CustomResponse.Success -> {
                     it.data?.orderTracking?.deliveryInfo?.apply {
-
-
+                        
                         riderLatLng = LatLng(locationLatitude, locationLongitude)
                         googleMap.addMarker(
                             MarkerOptions().position(customerLatLng!!).title("Customer Location")
                         )
+                        boundsBuilder = LatLngBounds.Builder()
+                        boundsBuilder.include(customerLatLng!!)
+                        boundsBuilder.include(riderLatLng)
                         if (riderMarker.value == null) {
                             riderMarker.value = googleMap.addMarker(
                                 MarkerOptions().position(riderLatLng).title("Your Location")
                             )
+                            googleMap.moveCamera(
+                                CameraUpdateFactory.newLatLngBounds(
+                                    boundsBuilder.build(),
+                                    500,
+                                    500,
+                                    0
+                                )
+                            )
                         } else {
                             riderMarker?.value?.position = riderLatLng
                         }
-
-                        boundsBuilder = LatLngBounds.Builder()
-                        boundsBuilder.include(customerLatLng!!)
-                        boundsBuilder.include(riderLatLng)
-
-                        googleMap.moveCamera(
-                            CameraUpdateFactory.newLatLngBounds(
-                                boundsBuilder.build(),
-                                500,
-                                500,
-                                0
-                            )
-                        )
 
 
                     }

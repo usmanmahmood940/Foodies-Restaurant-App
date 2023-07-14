@@ -37,14 +37,14 @@ class OrderTrackingViewModel @Inject constructor(
 
     suspend fun updateOrderStatus(orderId:String,orderStatus: OrderTracking){
         delay(5000)
-        orderRepository.updateOrderStatus(orderId,orderStatus){ success,exception ->
+        orderRepository.updateOrderTracking(orderId,orderStatus){ success, exception ->
             if(success){
                Log.d(MY_TAG,"Order Status Updated")
             }
             else{
                 exception?.let {
                     Log.e(MY_TAG,exception?.message.toString())
-                    return@updateOrderStatus
+                    return@updateOrderTracking
                 }
                 Log.e(MY_TAG,"Order Does not exist")
 

@@ -33,10 +33,10 @@ class RiderMapViewModel @Inject constructor(
 
     fun updateOrderStatus(
         orderId: String,
-        orderTracking: OrderTracking,
+        orderStatus: String,
         callback: (Boolean, Exception?) -> Unit,
     ) {
-        orderRepository.updateOrderStatus(orderId, orderTracking) { success, exception ->
+        orderRepository.updateOrderStatus(orderId, orderStatus) { success, exception ->
             callback(success, exception)
         }
     }
