@@ -9,7 +9,7 @@ data class Order(
     val cartItemList:List<CartItem>,
     val paymentMethod: String,
     val amounts: Amounts,
-    val orderDelivery : OrderDelivery,
+    val orderTracking : OrderTracking,
 ){
     constructor():this(
         "",
@@ -18,6 +18,6 @@ data class Order(
         emptyList(),
         "",
         Amounts(),
-        OrderDelivery()
+        OrderTracking()
     )
 }

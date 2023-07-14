@@ -25,7 +25,7 @@ class RiderHomeActivity : AppCompatActivity() {
         riderHomeViewModel = ViewModelProvider(this).get(RiderHomeViewModel::class.java)
         val adapter = RiderOrderAdapter(listener = object : RiderOrderConfirmClickListener {
             override fun onConfirm(order: Order) {
-
+                order.orderId
             }
         })
         binding.rlNewOrders.layoutManager = LinearLayoutManager(this)

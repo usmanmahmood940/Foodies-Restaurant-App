@@ -1,10 +1,8 @@
 package com.example.foodorderingapp.fragments
 
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -23,7 +21,6 @@ import com.example.foodorderingapp.Utils.Constants.LOCATION_DATA
 import com.example.foodorderingapp.Utils.Constants.LONGITUDE
 import com.example.foodorderingapp.Utils.Constants.MY_LATITUDE
 import com.example.foodorderingapp.Utils.Constants.MY_LONGITUDE
-import com.example.foodorderingapp.Utils.Constants.ZERO
 import com.example.foodorderingapp.Utils.Helper.getAddressFromLocation
 import com.example.foodorderingapp.Utils.Helper.isValidEmail
 import com.example.foodorderingapp.Utils.NetworkUtils.Companion.checkForInternet
@@ -36,8 +33,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.IOException
-import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -173,7 +168,7 @@ class CheckoutFragment : Fragment() {
                         paymentMethod = CASH_ON_DELIVERY,
                         cartItemList = cartItemList,
                         amounts = amounts,
-                        orderDelivery = OrderDelivery().apply {
+                        orderDelivery = OrderTracking().apply {
                             placeOrder()
                         }
                     )

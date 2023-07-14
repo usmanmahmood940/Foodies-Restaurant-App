@@ -9,7 +9,7 @@ import com.example.foodorderingapp.Repositories.OrderRepository
 import com.example.foodorderingapp.Response.CustomResponse
 import com.example.foodorderingapp.Utils.Constants
 import com.example.foodorderingapp.Utils.Constants.MY_TAG
-import com.example.foodorderingapp.models.OrderDelivery
+import com.example.foodorderingapp.models.OrderTracking
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import javax.inject.Inject
@@ -20,7 +20,7 @@ class OrderTrackingViewModel @Inject constructor(
     private val sharedPreferences: SharedPreferences
 ):ViewModel() {
 
-    val orderDelivery: LiveData<CustomResponse<OrderDelivery>>
+    val orderDelivery: LiveData<CustomResponse<OrderTracking>>
         get() = orderRepository.orderDelivery
 
     init {
@@ -34,7 +34,7 @@ class OrderTrackingViewModel @Inject constructor(
         orderRepository.startTrackingOrder(orderId)
     }
 
-    suspend fun updateOrderStatus(orderId:String,orderStatus: OrderDelivery){
+    suspend fun updateOrderStatus(orderId:String,orderStatus: OrderTracking){
         delay(5000)
         orderRepository.updateOrderStatus(orderId,orderStatus){ success,exception ->
             if(success){

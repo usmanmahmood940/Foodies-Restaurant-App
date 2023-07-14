@@ -22,8 +22,8 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
     private var valueEventListener: ValueEventListener? = null
     private var valueEventListenerOrdersList: ValueEventListener? = null
 
-    private val _orderDelivery = MutableLiveData<CustomResponse<OrderDelivery>>()
-    val orderDelivery: LiveData<CustomResponse<OrderDelivery>>
+    private val _orderDelivery = MutableLiveData<CustomResponse<OrderTracking>>()
+    val orderDelivery: LiveData<CustomResponse<OrderTracking>>
         get() = _orderDelivery
 
     private val _proceededOrderList =
@@ -58,7 +58,7 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
 
     fun updateOrderStatus(
         orderId: String,
-        orderStatus: OrderDelivery,
+        orderStatus: OrderTracking,
         callback: (Boolean, Exception?) -> Unit,
     ) {
         databaseReference.child(ORDDER_REFRENCE).child(orderId)
@@ -90,8 +90,8 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
 
-                    val tempOrderStatus: OrderDelivery? =
-                        dataSnapshot.getValue(OrderDelivery::class.java)
+                    val tempOrderStatus: OrderTracking? =
+                        dataSnapshot.getValue(OrderTracking::class.java)
 
                     _orderDelivery.value = CustomResponse.Success(tempOrderStatus)
                 } catch (e: Exception) {
