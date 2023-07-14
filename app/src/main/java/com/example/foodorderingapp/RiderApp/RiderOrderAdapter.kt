@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodorderingapp.R
@@ -40,8 +39,8 @@ class RiderOrderAdapter(
             val geocoder = Geocoder(tvOrderLocation.context, Locale.getDefault())
             val address = getAddressFromLocation(
                 geocoder,
-                order.deliveryInfo.locationLatitude,
-                order.deliveryInfo.locationLongitude
+                order.customerDeliveryInfo.locationLatitude,
+                order.customerDeliveryInfo.locationLongitude
             )
             tvOrderLocation.text = address
 

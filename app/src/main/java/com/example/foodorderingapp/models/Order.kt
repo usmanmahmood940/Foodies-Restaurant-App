@@ -5,7 +5,7 @@ package com.example.foodorderingapp.models
 data class Order(
     var orderId:String="",
     val customerInfo: CustomerInfo,
-    val deliveryInfo: DeliveryInfo,
+    val customerDeliveryInfo: DeliveryInfo,
     val cartItemList:List<CartItem>,
     val paymentMethod: String,
     val amounts: Amounts,

@@ -164,11 +164,11 @@ class CheckoutFragment : Fragment() {
                     amounts.updateTotalItemAmount(totalAmount)
                     val order = Order(
                         customerInfo = customerInfo,
-                        deliveryInfo = deliveryInfo,
+                        customerDeliveryInfo = deliveryInfo,
                         paymentMethod = CASH_ON_DELIVERY,
                         cartItemList = cartItemList,
                         amounts = amounts,
-                        orderDelivery = OrderTracking().apply {
+                        orderTracking = OrderTracking().apply {
                             placeOrder()
                         }
                     )

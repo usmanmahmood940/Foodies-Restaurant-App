@@ -8,6 +8,8 @@ import androidx.work.workDataOf
 import com.example.foodorderingapp.Response.CustomResponse
 import com.example.foodorderingapp.Utils.Constants.ORDDER_REFRENCE
 import com.example.foodorderingapp.Utils.Constants.ORDER_PROCEED
+import com.example.foodorderingapp.Utils.Constants.ORDER_TRACKING_REFRENCE
+import com.example.foodorderingapp.Utils.Constants.STATUS_REFRENCE
 import com.example.foodorderingapp.Utils.Helper
 import com.example.foodorderingapp.Worker.UpdateSalesCountWorker
 import com.example.foodorderingapp.models.*
@@ -22,9 +24,9 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
     private var valueEventListener: ValueEventListener? = null
     private var valueEventListenerOrdersList: ValueEventListener? = null
 
-    private val _orderDelivery = MutableLiveData<CustomResponse<OrderTracking>>()
-    val orderDelivery: LiveData<CustomResponse<OrderTracking>>
-        get() = _orderDelivery
+    private val _runningOrder = MutableLiveData<CustomResponse<Order>>()
+    val runningOrder: LiveData<CustomResponse<Order>>
+        get() = _runningOrder
 
     private val _proceededOrderList =
         MutableLiveData<CustomResponse<List<Order>>>(CustomResponse.Loading())
@@ -66,7 +68,7 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                     if (dataSnapshot.exists()) {
                         databaseReference.child(ORDDER_REFRENCE).child(orderId)
-                            .child("orderDelivery")
+                            .child(ORDER_TRACKING_REFRENCE)
                             .setValue(orderStatus)
                             .addOnSuccessListener {
                                 callback(true, null)
@@ -90,28 +92,27 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
 
-                    val tempOrderStatus: OrderTracking? =
-                        dataSnapshot.getValue(OrderTracking::class.java)
+                    val tempOrder: Order? = dataSnapshot.getValue(Order::class.java)
 
-                    _orderDelivery.value = CustomResponse.Success(tempOrderStatus)
+                    _runningOrder.value = CustomResponse.Success(tempOrder)
                 } catch (e: Exception) {
-                    _orderDelivery.value = CustomResponse.Error(e.message.toString())
+                    _runningOrder.value = CustomResponse.Error(e.message.toString())
                 }
 
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                _orderDelivery.value =
+                _runningOrder.value =
                     CustomResponse.Error(databaseError.toException().message.toString())
             }
         }
-        databaseReference.child(ORDDER_REFRENCE).child(orderId).child("orderDelivery")
+        databaseReference.child(ORDDER_REFRENCE).child(orderId)
             .addValueEventListener(valueEventListener as ValueEventListener)
     }
 
     fun stopTrackingOrder(orderId: String) {
         valueEventListener?.let {
-            databaseReference.child(ORDDER_REFRENCE).child(orderId).child("orderDelivery")
+            databaseReference.child(ORDDER_REFRENCE).child(orderId).child(ORDER_TRACKING_REFRENCE)
                 .removeEventListener(it)
         }
     }
@@ -144,7 +145,7 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
             }
         }
 
-        databaseReference.child(ORDDER_REFRENCE).orderByChild("orderDelivery/status")
+        databaseReference.child(ORDDER_REFRENCE).orderByChild("$ORDER_TRACKING_REFRENCE/$STATUS_REFRENCE")
             .equalTo(ORDER_PROCEED)
             .addValueEventListener(valueEventListenerOrdersList as ValueEventListener)
 

@@ -35,10 +35,10 @@ class OrderTrackingActivity : AppCompatActivity() {
 
         orderTrackingViewModel = ViewModelProvider(this).get(OrderTrackingViewModel::class.java)
 
-        orderTrackingViewModel.orderDelivery.observe(this) {
+        orderTrackingViewModel.runningOrder.observe(this) {
             when (it) {
                 is CustomResponse.Success -> {
-                    when (it.data?.status) {
+                    when (it.data?.orderTracking?.status) {
 
                         ORDER_PROCEED -> {
                             binding.pbTracking.progress = 50
@@ -46,9 +46,16 @@ class OrderTrackingActivity : AppCompatActivity() {
                                 this, R.drawable.shape_circle_btn_orange
                             )
                             binding.tvOrderProceed.text = ORDER_PROCEED
+                            binding.tvTrackingLabel.text = "Order Assigning to Rider"
 
                         }
                         ORDER_IN_DELIVERY -> {
+                            binding.pbTracking.progress = 85
+                            binding.tvDileveryCircle.background = ContextCompat.getDrawable(
+                                this, R.drawable.shape_circle_btn_orange
+                            )
+                            binding.tvDilevery.text = ORDER_IN_DELIVERY
+                            binding.tvTrackingLabel.text = ORDER_IN_DELIVERY
 
                         }
                     }

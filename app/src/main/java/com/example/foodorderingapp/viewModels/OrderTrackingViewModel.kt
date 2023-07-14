@@ -9,6 +9,7 @@ import com.example.foodorderingapp.Repositories.OrderRepository
 import com.example.foodorderingapp.Response.CustomResponse
 import com.example.foodorderingapp.Utils.Constants
 import com.example.foodorderingapp.Utils.Constants.MY_TAG
+import com.example.foodorderingapp.models.Order
 import com.example.foodorderingapp.models.OrderTracking
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -20,8 +21,8 @@ class OrderTrackingViewModel @Inject constructor(
     private val sharedPreferences: SharedPreferences
 ):ViewModel() {
 
-    val orderDelivery: LiveData<CustomResponse<OrderTracking>>
-        get() = orderRepository.orderDelivery
+    val runningOrder: LiveData<CustomResponse<Order>>
+        get() = orderRepository.runningOrder
 
     init {
         sharedPreferences.edit{

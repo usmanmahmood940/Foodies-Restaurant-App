@@ -17,6 +17,8 @@ object Constants {
     const val FOOD_ITEM_REFRENCE = "FoodItem"
     const val CATEGORY_REFRENCE = "Category"
     const val ORDDER_REFRENCE = "Order"
+    const val ORDER_TRACKING_REFRENCE = "orderTracking"
+    const val STATUS_REFRENCE = "status"
 
     const val ZERO_DOUBLE = 0.0
     const val ZERO = 0
@@ -26,7 +28,7 @@ object Constants {
     const val RUNNING_ORDER = "RunningOrder"
     const val RIDER_RUNNING_ORDER = "RiderRunningOrder"
     const val ORDER_ID = "OrderId"
-
+    const val RIDER_ORDER_ID = "RiderOrderId"
     const val MY_TAG="USMAN CODE"
 
     const val ORDER_PLACED = "Order Placed"
@@ -34,4 +36,7 @@ object Constants {
     const val ORDER_IN_DELIVERY = "Order In Delivery"
 
     const val CASH_ON_DELIVERY = "CashOnDelivery"
+
+    const val CUSTOMER_LATITUDE = "CustomerLat"
+    const val CUSTOMER_LONGITUDE = "CustomerLong"
 }

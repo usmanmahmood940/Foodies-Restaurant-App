@@ -1,7 +1,6 @@
 package com.example.foodorderingapp.fragments
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import androidx.fragment.app.Fragment
 
@@ -101,7 +100,7 @@ class MapsFragment : Fragment() {
         val customIcon = getCustomMapIcon()
         myGoogleMap?.apply {
 
-            getLocation() { locationLatLng ->
+            getCurrentLocation() { locationLatLng ->
                 mapViewModel.pinLocation = locationLatLng
                 mapViewModel.pinLocation.apply {
                     addMarker(MarkerOptions().position(this).icon(customIcon))
@@ -122,7 +121,7 @@ class MapsFragment : Fragment() {
         }
     }
 
-    private fun getLocation(callback: (locationLatLng: LatLng) -> Unit) {
+    private fun getCurrentLocation(callback: (locationLatLng: LatLng) -> Unit) {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION

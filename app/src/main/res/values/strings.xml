@@ -59,6 +59,7 @@
     <string name="information">Information</string>
     <string name="error">Error</string>
     <string name="order_confirmed">Your Order is Confirmed</string>
+    <string name="title_activity_rider_map">RiderMapActivity</string>
 
 
 </resources>
