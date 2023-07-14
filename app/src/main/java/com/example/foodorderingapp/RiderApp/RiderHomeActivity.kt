@@ -70,6 +70,13 @@ class RiderHomeActivity : AppCompatActivity() {
     fun showOrders() {
         val adapter = RiderOrderAdapter(listener = object : RiderOrderConfirmClickListener {
             override fun onConfirm(order: Order) {
+                locationPermission.value = checkPermission()
+                if(checkPermission()){
+                    locationPermission.value = true
+                }
+                else{
+                    getPermissions()
+                }
                 CoroutineScope(Dispatchers.Main).launch {
                     locationPermission.collectLatest {
                         if(it){
@@ -168,7 +175,6 @@ class RiderHomeActivity : AppCompatActivity() {
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
         ) {
-            locationPermission.value = false
             getPermissions()
         } else {
             val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
@@ -187,6 +193,14 @@ class RiderHomeActivity : AppCompatActivity() {
         return false
     }
 
+    fun checkPermission(): Boolean {
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+            checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        ){
+            return true
+        }
+        return false
+    }
     fun getPermissions() {
         requestMultiplePermissionsLauncher.launch(
             arrayOf(
