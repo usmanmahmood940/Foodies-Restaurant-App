@@ -149,13 +149,14 @@
         android:text="Order Proceeding"
         android:textColor="@color/black"
         android:textSize="@dimen/font_small_150"
-        app:layout_constraintBottom_toTopOf="@+id/ivPersonsGroup"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/margin_normal_100"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_order_proceed" />
 
     <pl.droidsonroids.gif.GifImageView
-        android:id="@+id/ivPersonsGroup"
+        android:id="@+id/iv_gif_cooking"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:adjustViewBounds="true"
@@ -167,6 +168,26 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
+
+    <RelativeLayout
+        android:id="@+id/rl_map"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/margin_normal_100"
+        app:layout_constraintTop_toBottomOf="@id/tv_tracking_label"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <fragment
+            android:id="@+id/map_order_tracking"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </RelativeLayout>
 
     <!--    <fragment-->
     <!--        android:id="@+id/map_rider"-->

@@ -28,7 +28,7 @@
                 >
 
                 <pl.droidsonroids.gif.GifImageView
-                    android:id="@+id/ivPersonsGroup"
+                    android:id="@+id/iv_gif_cooking"
                     android:layout_width="@dimen/food_image_size"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
@@ -49,7 +49,7 @@
                     android:textSize="@dimen/font_normal_100"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/ivPersonsGroup" />
+                    app:layout_constraintTop_toBottomOf="@+id/iv_gif_cooking" />
 
 
                 <TextView

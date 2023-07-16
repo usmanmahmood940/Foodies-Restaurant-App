@@ -4,7 +4,9 @@ import android.app.AlertDialog
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ReportFragment.Companion.reportFragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.Response.CustomResponse
@@ -14,6 +16,9 @@ import com.example.foodorderingapp.Utils.Constants.ORDER_PROCEED
 import com.example.foodorderingapp.databinding.ActivityOrderTrackingBinding
 import com.example.foodorderingapp.models.OrderTracking
 import com.example.foodorderingapp.viewModels.OrderTrackingViewModel
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.LatLng
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,9 +26,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class OrderTrackingActivity : AppCompatActivity() {
+class OrderTrackingActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var binding: ActivityOrderTrackingBinding
     private lateinit var orderTrackingViewModel: OrderTrackingViewModel
+
+    private lateinit var googleMap: GoogleMap
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
@@ -41,6 +48,8 @@ class OrderTrackingActivity : AppCompatActivity() {
                     when (it.data?.orderTracking?.status) {
 
                         ORDER_PROCEED -> {
+                            binding.ivGifCooking.visibility = View.VISIBLE
+                            binding.rlMap.visibility = View.GONE
                             binding.pbTracking.progress = 50
                             binding.tvOrderProceedCircle.background = ContextCompat.getDrawable(
                                 this, R.drawable.shape_circle_btn_orange
@@ -50,12 +59,18 @@ class OrderTrackingActivity : AppCompatActivity() {
 
                         }
                         ORDER_IN_DELIVERY -> {
+                            binding.ivGifCooking.visibility = View.GONE
+                            binding.rlMap.visibility = View.VISIBLE
                             binding.pbTracking.progress = 85
                             binding.tvDileveryCircle.background = ContextCompat.getDrawable(
                                 this, R.drawable.shape_circle_btn_orange
                             )
                             binding.tvDilevery.text = ORDER_IN_DELIVERY
                             binding.tvTrackingLabel.text = ORDER_IN_DELIVERY
+
+                            it.data.orderTracking.deliveryInfo?.let {
+                                LatLng(it.locationLatitude,it.locationLongitude)
+                            }
 
                         }
                     }
@@ -84,6 +99,10 @@ class OrderTrackingActivity : AppCompatActivity() {
 
         }
 
+
+    }
+    override fun onMapReady(googleMap: GoogleMap) {
+        this.googleMap = googleMap
 
     }
 }
