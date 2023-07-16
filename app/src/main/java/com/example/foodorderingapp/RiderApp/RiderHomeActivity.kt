@@ -181,11 +181,13 @@ class RiderHomeActivity : AppCompatActivity() {
 
         var deliveryInfo = DeliveryInfo(latLng.latitude,latLng.longitude)
 
-        orderPickedTracking.postValue(OrderTracking(
-            status = ORDER_IN_DELIVERY,
+        val orderTracking =  OrderTracking(
             driverInfo = driverInfo,
             deliveryInfo = deliveryInfo
-        ) )
+        )
+        orderTracking.sendForDelivery()
+
+        orderPickedTracking.value = orderTracking
     }
 
     fun getCurrentLocation() {
@@ -204,7 +206,7 @@ class RiderHomeActivity : AppCompatActivity() {
                     }
                     else{
                         Toast.makeText(this@RiderHomeActivity,"Please Enable Location",Toast.LENGTH_SHORT).show()
-                        orderPickedTracking.postValue(null)
+                        orderPickedTracking.value = null
 
                     }
                 }

@@ -12,6 +12,7 @@ import com.example.foodorderingapp.Response.CustomResponse
 import com.example.foodorderingapp.RiderApp.Services.RiderLocationService
 import com.example.foodorderingapp.RiderApp.ViewModels.RiderMapViewModel
 import com.example.foodorderingapp.Utils.Constants.ORDER_DELIVERED
+import com.example.foodorderingapp.Utils.Helper
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -40,7 +41,7 @@ class RiderMapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var riderLatLng: LatLng
     private var customerLatLng: LatLng? = null
     private lateinit var boundsBuilder: LatLngBounds.Builder
-    private var riderMarker: MutableStateFlow<Marker?> = MutableStateFlow(null)
+    private var riderMarker: Marker? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,39 +68,38 @@ class RiderMapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun buttonListeners() {
         binding.btnOpnGoogleMap.setOnClickListener {
-            CoroutineScope(Dispatchers.Main).launch {
-                riderMarker.collectLatest {
-                    if (it != null && customerLatLng != null) {
 
-                        val destinationLatLng =
-                            "${customerLatLng?.latitude},${customerLatLng?.longitude}"
-                        val startingLatLng = "${it.position.latitude},${it.position.longitude}"
-                        val intentUri =
-                            Uri.parse("https://www.google.com/maps/dir/?api=1&destination=$destinationLatLng&origin=$startingLatLng")
-                        val intent = Intent(Intent.ACTION_VIEW, intentUri)
-                        intent.setPackage("com.google.android.apps.maps")
-                        startActivity(intent)
 
-                    } else {
-                        val alertDialog = AlertDialog.Builder(this@RiderMapActivity)
-                        alertDialog.setTitle("Information")
-                        alertDialog.setMessage("Wait for a while")
-                        alertDialog.show()
-                    }
-                }
+            if (riderMarker != null && customerLatLng != null) {
+
+                val destinationLatLng =
+                    "${customerLatLng?.latitude},${customerLatLng?.longitude}"
+                val startingLatLng = "${riderMarker!!.position.latitude},${riderMarker!!.position.longitude}"
+                val intentUri =
+                    Uri.parse("https://www.google.com/maps/dir/?api=1&destination=$destinationLatLng&origin=$startingLatLng")
+                val intent = Intent(Intent.ACTION_VIEW, intentUri)
+                intent.setPackage("com.google.android.apps.maps")
+                startActivity(intent)
+
+            } else {
+                val alertDialog = AlertDialog.Builder(this@RiderMapActivity)
+                alertDialog.setTitle("Information")
+                alertDialog.setMessage("Wait for a while")
+                alertDialog.show()
             }
+
 
         }
         binding.btnOrderCompleted.setOnClickListener {
             riderMapViewModel.updateOrderStatus(
                 orderId = riderMapViewModel.checkRunningOrder()!!,
-                orderStatus =  ORDER_DELIVERED
-            ){success,exception ->
-                if(success){
+                orderStatus = ORDER_DELIVERED
+            ) { success, exception ->
+                if (success) {
                     val serviceIntent = Intent(this, RiderLocationService::class.java)
                     stopService(serviceIntent)
                     startActivity(
-                        Intent(this@RiderMapActivity,RiderHomeActivity::class.java)
+                        Intent(this@RiderMapActivity, RiderHomeActivity::class.java)
                     )
                     finish()
                 }
@@ -121,19 +121,36 @@ class RiderMapActivity : AppCompatActivity(), OnMapReadyCallback {
             when (it) {
                 is CustomResponse.Success -> {
                     it.data?.orderTracking?.deliveryInfo?.apply {
-                        
+
                         riderLatLng = LatLng(locationLatitude, locationLongitude)
                         googleMap.addMarker(
-                            MarkerOptions().position(customerLatLng!!).title("Customer Location")
+                            MarkerOptions()
+                                .position(customerLatLng!!)
+                                .title("Customer Location")
+                                .icon(
+                                    Helper.getCustomMapIcon(
+                                        applicationContext,
+                                        R.drawable.ic_location_pin
+                                    )
+                                )
+
                         )
                         boundsBuilder = LatLngBounds.Builder()
                         boundsBuilder.include(customerLatLng!!)
                         boundsBuilder.include(riderLatLng)
-                        if (riderMarker.value == null) {
-                            riderMarker.value = googleMap.addMarker(
-                                MarkerOptions().position(riderLatLng).title("Your Location")
+                        if (riderMarker == null) {
+                            riderMarker = googleMap.addMarker(
+                                MarkerOptions()
+                                    .position(riderLatLng)
+                                    .title("Your Location")
+                                    .icon(
+                                        Helper.getCustomMapIcon(
+                                            applicationContext,
+                                            R.drawable.ic_delivery_bike_24
+                                        )
+                                    )
                             )
-                            googleMap.moveCamera(
+                            googleMap.animateCamera(
                                 CameraUpdateFactory.newLatLngBounds(
                                     boundsBuilder.build(),
                                     500,
@@ -142,7 +159,7 @@ class RiderMapActivity : AppCompatActivity(), OnMapReadyCallback {
                                 )
                             )
                         } else {
-                            riderMarker?.value?.position = riderLatLng
+                            riderMarker?.position = riderLatLng
                         }
 
 

@@ -2,10 +2,16 @@ package com.example.foodorderingapp.Utils
 
 import android.app.AlertDialog
 import android.content.ContentResolver
+import android.content.Context
 import android.content.res.Resources
 import android.location.Address
 import android.location.Geocoder
 import android.net.Uri
+import androidx.core.content.ContextCompat
+import com.example.foodorderingapp.R
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.maps.android.ui.IconGenerator
 import java.io.IOException
 import java.util.*
 
@@ -45,6 +51,17 @@ object Helper {
         return addressText
     }
 
+
+    fun getCustomMapIcon(context:Context,icon: Int): BitmapDescriptor {
+        val iconGenerator = IconGenerator(context)
+        iconGenerator.setBackground(
+            ContextCompat.getDrawable(
+                context,
+                icon
+            )
+        )
+        return BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon())
+    }
 
 
 }
