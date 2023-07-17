@@ -26,10 +26,6 @@ class RiderHomeViewModel @Inject constructor(
 
     init {
         orderRepository.startObservingProceededOrders()
-//        sharedPreferences.edit{
-//            putBoolean(Constants.RIDER_RUNNING_ORDER, true)
-//            apply()
-//        }
     }
 
 

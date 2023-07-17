@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.example.foodorderingapp.R
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.ui.IconGenerator
 import java.io.IOException
 import java.lang.ref.WeakReference
@@ -68,6 +69,14 @@ object Helper {
         return BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon())
     }
 
+    fun googleMapUri(destination:LatLng,source:LatLng): Uri? {
+        val destinationLatLng =
+            "${destination.latitude},${destination.longitude}"
+        val startingLatLng = "${source.latitude},${source.longitude}"
+        val uri =  "https://www.google.com/maps/dir/?api=1&destination=$destinationLatLng&origin=$startingLatLng"
+
+        return  Uri.parse(uri)
+    }
     fun showAlertDialog(context: WeakReference<Context>, title: String, message: String) {
         val contextRef = context.get()
         if (contextRef != null) {

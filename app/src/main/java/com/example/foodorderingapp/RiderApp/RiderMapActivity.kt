@@ -11,8 +11,11 @@ import com.example.foodorderingapp.R
 import com.example.foodorderingapp.Response.CustomResponse
 import com.example.foodorderingapp.RiderApp.Services.RiderLocationService
 import com.example.foodorderingapp.RiderApp.ViewModels.RiderMapViewModel
+import com.example.foodorderingapp.Utils.Constants.ERROR
+import com.example.foodorderingapp.Utils.Constants.INFORMATION
 import com.example.foodorderingapp.Utils.Constants.ORDER_DELIVERED
 import com.example.foodorderingapp.Utils.Helper
+import com.example.foodorderingapp.Utils.Helper.googleMapUri
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -24,13 +27,6 @@ import com.example.foodorderingapp.databinding.ActivityRiderMapBinding
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
 
 @AndroidEntryPoint
 class RiderMapActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -62,40 +58,29 @@ class RiderMapActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         buttonListeners()
-
-
     }
 
     private fun buttonListeners() {
         binding.btnOpnGoogleMap.setOnClickListener {
 
-
             if (riderMarker != null && customerLatLng != null) {
 
-                val destinationLatLng =
-                    "${customerLatLng?.latitude},${customerLatLng?.longitude}"
-                val startingLatLng = "${riderMarker!!.position.latitude},${riderMarker!!.position.longitude}"
-                val intentUri =
-                    Uri.parse("https://www.google.com/maps/dir/?api=1&destination=$destinationLatLng&origin=$startingLatLng")
+                val intentUri =  googleMapUri(customerLatLng!!,riderMarker!!.position)
                 val intent = Intent(Intent.ACTION_VIEW, intentUri)
                 intent.setPackage("com.google.android.apps.maps")
                 startActivity(intent)
 
             } else {
-                val alertDialog = AlertDialog.Builder(this@RiderMapActivity)
-                alertDialog.setTitle("Information")
-                alertDialog.setMessage("Wait for a while")
-                alertDialog.show()
+                showDialogBox(INFORMATION, "Wait for a while")
             }
-
 
         }
         binding.btnOrderCompleted.setOnClickListener {
-            riderMapViewModel.updateOrderStatus(
-                orderId = riderMapViewModel.checkRunningOrder()!!,
-                orderStatus = ORDER_DELIVERED
-            ) { success, exception ->
+            val orderId = riderMapViewModel.checkRunningOrder()
+            riderMapViewModel.updateOrderStatus(orderId = orderId!!, orderStatus = ORDER_DELIVERED)
+            { success, exception ->
                 if (success) {
+                    riderMapViewModel.stopTrackingOrder(orderId)
                     val serviceIntent = Intent(this, RiderLocationService::class.java)
                     stopService(serviceIntent)
                     startActivity(
@@ -166,13 +151,17 @@ class RiderMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
                 is CustomResponse.Error -> {
-                    val alertDialog = AlertDialog.Builder(this)
-                    alertDialog.setTitle("Error Message")
-                    alertDialog.setMessage(it.errorMessage)
-                    alertDialog.show()
+                    showDialogBox(ERROR, it.errorMessage)
                 }
                 else -> {}
             }
         }
+    }
+
+    private fun showDialogBox(title: String, message: String?) {
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.setTitle(title)
+        alertDialog.setMessage(message)
+        alertDialog.show()
     }
 }

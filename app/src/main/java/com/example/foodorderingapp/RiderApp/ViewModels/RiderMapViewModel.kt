@@ -30,7 +30,6 @@ class RiderMapViewModel @Inject constructor(
         }
     }
 
-
     fun updateOrderStatus(
         orderId: String,
         orderStatus: String,

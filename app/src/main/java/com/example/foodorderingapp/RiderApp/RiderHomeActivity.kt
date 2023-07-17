@@ -19,6 +19,8 @@ import com.example.foodorderingapp.Response.CustomResponse
 import com.example.foodorderingapp.RiderApp.Services.RiderLocationService
 import com.example.foodorderingapp.RiderApp.ViewModels.RiderHomeViewModel
 import com.example.foodorderingapp.Utils.Constants
+import com.example.foodorderingapp.Utils.Constants.ERROR
+import com.example.foodorderingapp.Utils.Constants.INFORMATION
 import com.example.foodorderingapp.Utils.Constants.ORDER_IN_DELIVERY
 import com.example.foodorderingapp.Utils.Constants.RIDER_ORDER_ID
 import com.example.foodorderingapp.databinding.ActivityRiderHomeBinding
@@ -42,46 +44,42 @@ import javax.inject.Inject
 class RiderHomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRiderHomeBinding
     private lateinit var riderViewModel: RiderHomeViewModel
-    private val locationPermission:MutableStateFlow<Boolean> = MutableStateFlow(false)
+    private val locationPermission: MutableStateFlow<Boolean> = MutableStateFlow(false)
     private var orderPickedTracking: MutableLiveData<OrderTracking?> = MutableLiveData()
 
     @Inject
     lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRiderHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         riderViewModel = ViewModelProvider(this).get(RiderHomeViewModel::class.java)
 
         val orderId = riderViewModel.checkRunningOrder()
-        orderId?.let {
-
-            startActivity(
-                Intent(this, RiderMapActivity::class.java).apply {
-                    putExtra(RIDER_ORDER_ID,orderId)
-                }
-            )
+        if (orderId != null) {
+            startActivity(Intent(this, RiderMapActivity::class.java).apply {
+                putExtra(RIDER_ORDER_ID, orderId)
+            })
             finish()
-            return
+        } else {
+            showOrders()
         }
-        showOrders()
     }
 
     fun showOrders() {
         val adapter = RiderOrderAdapter(listener = object : RiderOrderConfirmClickListener {
             override fun onConfirm(order: Order) {
                 locationPermission.value = checkPermission()
-                if(checkPermission()){
+                if (checkPermission()) {
                     locationPermission.value = true
-                }
-                else{
+                } else {
                     getPermissions()
                 }
                 CoroutineScope(Dispatchers.Main).launch {
                     locationPermission.collectLatest {
-                        if(it){
+                        if (it) {
                             getCurrentLocation()
                             orderPickedTracking.observe(this@RiderHomeActivity) {
                                 it?.let {
@@ -123,22 +121,16 @@ class RiderHomeActivity : AppCompatActivity() {
                                         startService(serviceIntent)
                                     }
                                 }
-                                if(it == null){
-                                    val alertDialog = AlertDialog.Builder(this@RiderHomeActivity)
-                                    alertDialog.setTitle("Information")
-                                    alertDialog.setMessage("Enable Location")
-                                    alertDialog.show()
+                                if (it == null) {
+                                    showDialogBox(INFORMATION, "Enable Location")
                                 }
                             }
 
-                        }
-                        else{
+                        } else {
                             getPermissions()
                         }
                     }
                 }
-
-
             }
         })
         binding.rlNewOrders.layoutManager = LinearLayoutManager(this)
@@ -159,10 +151,7 @@ class RiderHomeActivity : AppCompatActivity() {
                     }
                 }
                 is CustomResponse.Error -> {
-                    val alertDialog = AlertDialog.Builder(this)
-                    alertDialog.setTitle("Error Message")
-                    alertDialog.setMessage(it.errorMessage)
-                    alertDialog.show()
+                    showDialogBox(ERROR, it.errorMessage)
                 }
                 else -> {}
             }
@@ -179,9 +168,9 @@ class RiderHomeActivity : AppCompatActivity() {
             )
         }
 
-        var deliveryInfo = DeliveryInfo(latLng.latitude,latLng.longitude)
+        var deliveryInfo = DeliveryInfo(latLng.latitude, latLng.longitude)
 
-        val orderTracking =  OrderTracking(
+        val orderTracking = OrderTracking(
             driverInfo = driverInfo,
             deliveryInfo = deliveryInfo
         )
@@ -203,9 +192,12 @@ class RiderHomeActivity : AppCompatActivity() {
                     if (location != null) {
                         setOrderTracking(LatLng(location.latitude, location.longitude))
 
-                    }
-                    else{
-                        Toast.makeText(this@RiderHomeActivity,"Please Enable Location",Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(
+                            this@RiderHomeActivity,
+                            "Please Enable Location",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         orderPickedTracking.value = null
 
                     }
@@ -219,11 +211,12 @@ class RiderHomeActivity : AppCompatActivity() {
     fun checkPermission(): Boolean {
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
             checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-        ){
+        ) {
             return true
         }
         return false
     }
+
     fun getPermissions() {
         requestMultiplePermissionsLauncher.launch(
             arrayOf(
@@ -240,13 +233,21 @@ class RiderHomeActivity : AppCompatActivity() {
                 locationPermission.value = true
             } else {
                 locationPermission.value = false
-                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+                showDialogBox("Permission Denied", "Location permission denied.")
             }
 
         }
+
+    private fun showDialogBox(title: String, message: String?) {
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.setTitle(title)
+        alertDialog.setMessage(message)
+        alertDialog.show()
+    }
 
     override fun onBackPressed() {
         super.onBackPressed()
         auth.signOut()
     }
+
 }

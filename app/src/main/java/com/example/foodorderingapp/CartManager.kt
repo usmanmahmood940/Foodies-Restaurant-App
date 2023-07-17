@@ -53,17 +53,12 @@ class CartManager(private val sharedPreferences: SharedPreferences) {
 
     fun removeFromCart(cartItem: CartItem) {
         _cartItemList.value?.remove(cartItem)
-
         updateSharedPref()
-
-
     }
     fun removeFromCart(position: Int) {
         _cartItemList.value?.removeAt(position)
         _cartItemList.value = _cartItemList.value
         updateSharedPref()
-
-
     }
     fun decreaseQuantity(cartItem: CartItem){
         if (_cartItemList.value?.contains(cartItem) == true) {
