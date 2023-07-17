@@ -11,6 +11,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.foodorderingapp.CartManager
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.Utils.Constants
+import com.example.foodorderingapp.Utils.Constants.FULL_SCREEN_OPACITY
+import com.example.foodorderingapp.Utils.Constants.HALF_SCREEN_OPACITY
 import com.example.foodorderingapp.Utils.Constants.RUNNING_ORDER
 import com.example.foodorderingapp.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -20,7 +22,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
 
     @Inject
@@ -33,47 +35,53 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupNavController()
+        setupCartButton()
 
-        if(sharedPreferences.getBoolean(RUNNING_ORDER,false)){
-            binding.fragmentContainerView.alpha = 0.5f
-            binding.progressBarMain.visibility = View.INVISIBLE
-            startActivity(Intent(this,OrderTrackingActivity::class.java))
-            binding.fragmentContainerView.alpha = 1f
-            binding.progressBarMain.visibility = View.GONE
-        }
-        
-
-        navController = supportFragmentManager.findFragmentById(R.id.fragmentContainerView)!!
-            .findNavController()
-
-        binding.bottomNavigationView.setupWithNavController(navController)
-
-
-        binding.btnCart.setOnClickListener {
-            binding.bottomNavigationView.menu.findItem(R.id.nav_cart)?.isEnabled = true
-            binding.bottomNavigationView.selectedItemId = R.id.nav_cart
-            binding.bottomNavigationView.menu.findItem(R.id.nav_cart)?.isEnabled = false
-        }
-        binding.btnCart.count = cartManager.getCartCount()
-
-        cartManager.setCartChangeListener(object :CartManager.CartChangeListener{
+        cartManager.setCartChangeListener(object : CartManager.CartChangeListener {
             override fun onCartChanged(cartCount: Int) {
                 binding.btnCart.count = cartCount
             }
-
         })
     }
 
+    private fun setupNavController() {
+        navController = supportFragmentManager.findFragmentById(R.id.fragmentContainerView)!!
+            .findNavController()
+        binding.bottomNavigationView.setupWithNavController(navController)
+    }
 
-
-    fun hideShowBottomNav(){
-        if(binding.coordinatorLayout.visibility == View.VISIBLE){
-            binding.coordinatorLayout.visibility = View.GONE
+    private fun setupCartButton() {
+        binding.btnCart.setOnClickListener {
+            binding.bottomNavigationView.apply {
+                menu.findItem(R.id.nav_cart)?.isEnabled = true
+                selectedItemId = R.id.nav_cart
+                menu.findItem(R.id.nav_cart)?.isEnabled = false
+            }
         }
-        else{
-            binding.coordinatorLayout.visibility = View.VISIBLE
+        binding.btnCart.count = cartManager.getCartCount()
+    }
+
+    fun hideShowBottomNav() {
+        binding.coordinatorLayout.visibility = if (binding.coordinatorLayout.visibility == View.VISIBLE) {
+            View.GONE
+        } else {
+            View.VISIBLE
         }
     }
 
+    private fun checkRunningOrder() {
+        if (sharedPreferences.getBoolean(RUNNING_ORDER, false)) {
+            binding.fragmentContainerView.alpha = HALF_SCREEN_OPACITY
+            binding.progressBarMain.visibility = View.INVISIBLE
+            startActivity(Intent(this, OrderTrackingActivity::class.java))
+            binding.fragmentContainerView.alpha = FULL_SCREEN_OPACITY
+            binding.progressBarMain.visibility = View.GONE
+        }
+    }
 
+    override fun onResume() {
+        super.onResume()
+        checkRunningOrder()
+    }
 }

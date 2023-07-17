@@ -44,7 +44,6 @@ class FoodItemRepository  @Inject constructor() {
                 callback(true, null) // Success: FoodItem created
             }
             .addOnFailureListener { exception ->
-                Log.d("usman error",exception.message.toString())
                 callback(false, exception) // Error: Failed to create FoodItem
             }
 
@@ -76,9 +75,6 @@ class FoodItemRepository  @Inject constructor() {
             databaseReference.removeEventListener(it)
         }
     }
-
-
-
 
 }
 

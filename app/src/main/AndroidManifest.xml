@@ -36,8 +36,7 @@
 
         <activity
             android:name=".RiderApp.RiderMapActivity"
-            android:exported="false"
-            android:label="@string/title_activity_rider_map" />
+            android:exported="false" />
         <activity
             android:name=".RiderApp.RiderHomeActivity"
             android:exported="false" />

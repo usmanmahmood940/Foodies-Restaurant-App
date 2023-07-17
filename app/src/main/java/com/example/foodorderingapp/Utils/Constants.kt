@@ -36,12 +36,31 @@ object Constants {
     const val ORDER_PROCEED = "Order Proceeded"
     const val ORDER_IN_DELIVERY = "Order In Delivery"
     const val ORDER_DELIVERED = "Order Delivered"
+    const val ORDER_ASSIGNING = "Order Assigning to Rider"
 
     const val CASH_ON_DELIVERY = "CashOnDelivery"
 
     const val CUSTOMER_LATITUDE = "CustomerLat"
     const val CUSTOMER_LONGITUDE = "CustomerLong"
+    const val MY_LOCATION = "My Location"
+    const val RIDER_LOCATION = "Rider Location"
 
+    // Notification
     const val NOTIFICATION_ID = 1
+    const val CHANNEL_ID = "LocationService"
+    const val CHANNEL_NAME = "Location Service Channel"
+    const val NOTIFICATION_TITLE = "Location Service"
+    const val NOTIFICATION_CONTENT ="Service Running"
+
+    const val TEN_SECONDS = 10000L
+
+    const val PROGRESS_50 = 50
+    const val PROGRESS_85 = 85
+    const val HALF_SCREEN_OPACITY = 0.5f
+    const val FULL_SCREEN_OPACITY = 1f
+
+    const val INFORMATION = "Information"
+    const val ERROR = "Error"
+
 
 }

@@ -5,11 +5,13 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.RiderApp.RiderHomeActivity
 import com.example.foodorderingapp.Utils.Helper.isValidEmail
+import com.example.foodorderingapp.Utils.Helper.showError
 import com.example.foodorderingapp.databinding.ActivityLoginBinding
 import com.facebook.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -25,82 +27,92 @@ import com.google.firebase.auth.AuthCredential
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityLoginBinding
 
+    private lateinit var binding: ActivityLoginBinding
     @Inject
     lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var callbackManager: CallbackManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupGoogleSignInClient()
+        setupLoginListeners()
+    }
+
+    private fun setupGoogleSignInClient() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
-
-        loginListeners()
-        
     }
 
-    private fun loginListeners() {
+    private fun setupLoginListeners() {
         auth.currentUser?.getIdToken(false)?.addOnSuccessListener {
             Toast.makeText(this, it.token.toString(), Toast.LENGTH_LONG).show()
         }
 
-        binding.btnLogin.setOnClickListener {
-            val email = binding.etEmail.text.toString().trim()
-            val password = binding.etPassword.text.toString().trim()
 
-            when {
-                email.isBlank() -> {
-                    binding.etEmail.error = getString(R.string.email_required_error)
-                    binding.etEmail.requestFocus()
-                }
-                !email.isValidEmail() -> {
-                    binding.etEmail.error = getString(R.string.email_valid_error)
-                    binding.etEmail.requestFocus()
-                }
-                password.isBlank() -> {
-                    binding.etPassword.error = getString(R.string.password_required_error)
-                    binding.etPassword.requestFocus()
-                }
-                else -> {
-                    auth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(this) { task ->
-                            if (task.isSuccessful) {
-                                if(auth.currentUser?.uid == "E5ODMiUXLkahCFBSv0WRh6q2jh83"){
-                                    startActivity(Intent(this, RiderHomeActivity::class.java))
-                                }else {
-                                    startActivity(Intent(this, MainActivity::class.java))
+        with(binding) {
+            btnLogin.setOnClickListener {
+                val email = etEmail.text.toString().trim()
+                val password = etPassword.text.toString().trim()
+
+                when {
+                    email.isBlank() -> {
+                        etEmail.showError(getString(R.string.email_required_error))
+                    }
+                    !email.isValidEmail() -> {
+                        etEmail.showError(getString(R.string.email_valid_error))
+                    }
+                    password.isBlank() -> {
+                        etPassword.showError(getString(R.string.password_required_error))
+                    }
+                    else -> {
+                        auth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(this@LoginActivity) { task ->
+                                if (task.isSuccessful) {
+                                    val destinationClass =
+                                        if (auth.currentUser?.uid == "E5ODMiUXLkahCFBSv0WRh6q2jh83") {
+                                            RiderHomeActivity::class.java
+                                        } else {
+                                            MainActivity::class.java
+                                        }
+                                    startActivity(Intent(this@LoginActivity, destinationClass))
+                                    finish()
+                                } else {
+                                    Toast.makeText(this@LoginActivity, "Firebase sign-in failed", Toast.LENGTH_SHORT)
+                                        .show()
                                 }
-                                finish()
-                            } else {
-                                Toast.makeText(this, "Firebase sign-in failed", Toast.LENGTH_SHORT)
-                                    .show()
                             }
-                        }
+                    }
                 }
             }
-
         }
+
+
 
         binding.btnGoogleLogin.setOnClickListener {
             signInGoogle()
         }
 
         binding.ivEye.setOnClickListener {
-            if (binding.etPassword.inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD) {
-                binding.etPassword.inputType =
-                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-            } else {
-                binding.etPassword.inputType =
-                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            }
+            togglePasswordVisibility()
         }
+    }
+
+    private fun togglePasswordVisibility() {
+        val inputType = binding.etPassword.inputType
+        val newInputType = if (inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD) {
+            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+        } else {
+            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        }
+        binding.etPassword.inputType = newInputType
     }
 
     private fun signInGoogle() {
@@ -108,18 +120,17 @@ class LoginActivity : AppCompatActivity() {
         launcher.launch(signInIntent)
     }
 
-    private val launcher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                handleResults(task)
-            }
+    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            handleResults(task)
         }
+    }
 
     private fun handleResults(task: Task<GoogleSignInAccount>) {
         if (task.isSuccessful) {
             val account: GoogleSignInAccount? = task.result
-            if (account != null) {
+            account?.let {
                 val credentials = GoogleAuthProvider.getCredential(account.idToken, null)
                 firebaseAuthentication(credentials)
             }
@@ -140,5 +151,3 @@ class LoginActivity : AppCompatActivity() {
             }
     }
 }
-
-

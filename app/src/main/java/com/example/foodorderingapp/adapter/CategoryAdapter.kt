@@ -15,17 +15,19 @@ import com.example.foodorderingapp.CategoryColors
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.models.Category
 
-class CategoryAdapter(private var categoryList: List<Category> = emptyList(),private val listener: CategoryClickListener) :
-    RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
+class CategoryAdapter(
+    private var categoryList: List<Category> = emptyList(),
+    private val listener: CategoryClickListener
+) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
     private var backgroundColor = CategoryColors.PINK
-    private var currentItem :  CardView? = null
+    private var currentItem: CardView? = null
+
     fun setList(list: List<Category>) {
         categoryList = list
         notifyDataSetChanged()
     }
 
-    // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_category, parent, false)
@@ -33,74 +35,68 @@ class CategoryAdapter(private var categoryList: List<Category> = emptyList(),pri
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-        holder.apply {
-            val category = categoryList[position]
-            tvCategoryName.text = category.name
-            Glide.with(ivCategoryIcon.context).load(category.icon).into(ivCategoryIcon)
-
-            setBackgrounds(layout_category)
-
-            layout_category.setOnClickListener{
-                currentItem?.let{
-                     if(currentItem == layout_category){
-                         currentItem?.cardElevation = 0F
-                         currentItem = null
-                         listener.onItemDeselect()
-                         return@setOnClickListener
-                     }
-                     currentItem?.cardElevation = 0F
-                     currentItem = layout_category
-                     currentItem?.cardElevation = 12F
-                     listener.onItemClick(category)
-                     return@setOnClickListener
-                }
-                currentItem = layout_category
-                currentItem?.cardElevation = 12F
-                listener.onItemClick(category)
-            }
-        }
+        holder.bind(categoryList[position])
     }
 
-    private fun setBackgrounds(layout_category: CardView) {
-        backgroundColor?.let {
-            when(backgroundColor){
-                CategoryColors.PINK ->{
-                    layout_category.backgroundTintList = getColor(hexCode = backgroundColor.hexCode)
-                    backgroundColor = CategoryColors.PURPLE
-                }
-                CategoryColors.PURPLE ->{
-                    layout_category.backgroundTintList = getColor(hexCode = backgroundColor.hexCode)
-
-                    backgroundColor = CategoryColors.BLUE
-                }
-                CategoryColors.BLUE ->{
-                    layout_category.backgroundTintList = getColor(hexCode = backgroundColor.hexCode)
-                    backgroundColor = CategoryColors.GREEN
-                }
-                CategoryColors.GREEN -> {
-                    layout_category.backgroundTintList = getColor(hexCode = backgroundColor.hexCode)
-                    backgroundColor = CategoryColors.PINK
-                }
-                else -> {}
-            }
-            
-        }
-    }
-
-    fun getColor(hexCode:String):  ColorStateList{
-        val color = Color.parseColor(hexCode)
-        val colorStateList = ColorStateList.valueOf(color)
-        return colorStateList
-
-    }
     override fun getItemCount(): Int {
         return categoryList.size
     }
 
-    class ViewHolder(CategoryView: View) : RecyclerView.ViewHolder(CategoryView) {
-        val layout_category: CardView = CategoryView.findViewById(R.id.card_item)
-        val tvCategoryName: TextView = CategoryView.findViewById(R.id.tv_category_name)
-        val ivCategoryIcon: ImageView = CategoryView.findViewById(R.id.iv_category)
+    inner class ViewHolder(private val categoryView: View) : RecyclerView.ViewHolder(categoryView) {
+        private val layoutCategory: CardView = categoryView.findViewById(R.id.card_item)
+        private val tvCategoryName: TextView = categoryView.findViewById(R.id.tv_category_name)
+        private val ivCategoryIcon: ImageView = categoryView.findViewById(R.id.iv_category)
+
+        init {
+            layoutCategory.setOnClickListener {
+                onCategoryClick()
+            }
+        }
+
+        fun bind(category: Category) {
+            tvCategoryName.text = category.name
+            Glide.with(ivCategoryIcon.context).load(category.icon).into(ivCategoryIcon)
+            setBackgrounds(layoutCategory)
+        }
+
+        private fun onCategoryClick() {
+            if (currentItem == layoutCategory) {
+                currentItem?.cardElevation = 0F
+                currentItem = null
+                listener.onItemDeselect()
+            } else {
+                currentItem?.cardElevation = 0F
+                currentItem = layoutCategory
+                currentItem?.cardElevation = 12F
+                listener.onItemClick(categoryList[adapterPosition])
+            }
+        }
+    }
+
+    private fun setBackgrounds(layoutCategory: CardView) {
+        when (backgroundColor) {
+            CategoryColors.PINK -> {
+                layoutCategory.backgroundTintList = getColorStateList(CategoryColors.PINK.hexCode)
+                backgroundColor = CategoryColors.PURPLE
+            }
+            CategoryColors.PURPLE -> {
+                layoutCategory.backgroundTintList = getColorStateList(CategoryColors.PURPLE.hexCode)
+                backgroundColor = CategoryColors.BLUE
+            }
+            CategoryColors.BLUE -> {
+                layoutCategory.backgroundTintList = getColorStateList(CategoryColors.BLUE.hexCode)
+                backgroundColor = CategoryColors.GREEN
+            }
+            CategoryColors.GREEN -> {
+                layoutCategory.backgroundTintList = getColorStateList(CategoryColors.GREEN.hexCode)
+                backgroundColor = CategoryColors.PINK
+            }
+            else -> {}
+        }
+    }
+
+    private fun getColorStateList(hexCode: String): ColorStateList {
+        val color = Color.parseColor(hexCode)
+        return ColorStateList.valueOf(color)
     }
 }

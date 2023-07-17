@@ -45,23 +45,7 @@ class HomeViewModel  @Inject constructor(
         return filteredItems
 
     }
-
-
-    fun setFoodItem(foodItem: FoodItem){
-        foodItemRepository.createFoodItem(foodItem){ success, exception ->
-            if(success){
-//                successMessage.value = "Category Added Successfully"
-            }
-            else{
-//                errorMessage.value = exception?.message
-            }
-
-        }
-
-
-    }
-
-
+    
     override fun onCleared() {
         super.onCleared()
         categoryRepository.stopObservingData()

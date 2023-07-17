@@ -26,35 +26,41 @@ class SearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
     private lateinit var searchViewModel: SearchViewModel
     private lateinit var foodItemAdapter: FoodItemAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // Inflate the layout for this fragment
         binding = FragmentSearchBinding.inflate(inflater)
         initListeners()
-
-
         searchViewModel = ViewModelProvider(this).get(SearchViewModel::class.java)
+        setupFoodItemAdapter()
+        observeFoodItemList()
+        return binding.root
+    }
 
+    private fun initListeners() {
+        binding.etSearch.requestFocus()
+        setupSearchBar()
+        binding.ivBack.setOnClickListener {
+            findNavController().navigateUp()
+        }
+    }
 
-
+    private fun setupFoodItemAdapter() {
         foodItemAdapter = FoodItemAdapter(listener = object : FoodItemClickListener {
             override fun onAddClicked(foodItem: FoodItem) {
                 val addToCartBottomSheet = AddToCartBottomSheet.newInstance(foodItem)
                 addToCartBottomSheet.show(requireActivity().supportFragmentManager, "addToCartBottomSheet")
             }
-
         })
+        binding.rvSearchFood.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rvSearchFood.adapter = foodItemAdapter
+    }
 
-        binding.apply {
-            rvSearchFood.layoutManager = GridLayoutManager(requireContext(), 2)
-            rvSearchFood.adapter = foodItemAdapter
-
-        }
-
-        searchViewModel.foodItemList.observe(viewLifecycleOwner){
-            when(it){
+    private fun observeFoodItemList() {
+        searchViewModel.foodItemList.observe(viewLifecycleOwner) { response ->
+            when (response) {
                 is CustomResponse.Loading -> {
                     binding.progressBarSearch.visibility = View.VISIBLE
                     binding.rvSearchFood.visibility = View.INVISIBLE
@@ -62,61 +68,37 @@ class SearchFragment : Fragment() {
                 is CustomResponse.Success -> {
                     binding.progressBarSearch.visibility = View.GONE
                     binding.rvSearchFood.visibility = View.VISIBLE
-                    if(it.data != null){
-                        if(searchViewModel.query == null) {
-                            foodItemAdapter.setList(it.data)
-                        }
-                        else{
-                           val list = searchViewModel.getFoodItemsByQuery(searchViewModel.query!!)
-                            foodItemAdapter.setList(list)
-                        }
+                    if (response.data != null) {
+                        val list = searchViewModel.getFoodItemsByQuery(searchViewModel.query?:"")
+                        foodItemAdapter.setList(list)
                     }
                 }
                 is CustomResponse.Error -> {
                     binding.progressBarSearch.visibility = View.GONE
-                    showDialogBox("Error",it.errorMessage.toString())
+                    showDialogBox("Error", response.errorMessage.toString())
                 }
                 else -> {}
             }
-
-        }
-
-        return binding.root
-    }
-
-    private fun initListeners() {
-        binding.etSearch.requestFocus()
-        searchBarSetup()
-        binding.ivBack.setOnClickListener {
-            findNavController().navigateUp()
         }
     }
 
-    private fun searchBarSetup() {
+    private fun setupSearchBar() {
         binding.etSearch.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun afterTextChanged(editable: Editable?) {
-
                 val query = editable.toString()
                 searchViewModel.query = query
                 val list = searchViewModel.getFoodItemsByQuery(query)
                 foodItemAdapter.setList(list)
             }
-
         })
     }
 
-    fun showDialogBox(title:String, message:String) {
+    private fun showDialogBox(title: String, message: String) {
         val alertDialog = AlertDialog.Builder(requireActivity())
         alertDialog.setTitle(title)
         alertDialog.setMessage(message)
         alertDialog.show()
     }
-
-
 }

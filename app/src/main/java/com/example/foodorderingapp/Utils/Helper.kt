@@ -7,12 +7,14 @@ import android.content.res.Resources
 import android.location.Address
 import android.location.Geocoder
 import android.net.Uri
+import android.widget.EditText
 import androidx.core.content.ContextCompat
 import com.example.foodorderingapp.R
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.maps.android.ui.IconGenerator
 import java.io.IOException
+import java.lang.ref.WeakReference
 import java.util.*
 
 object Helper {
@@ -26,6 +28,11 @@ object Helper {
     fun String.isValidEmail(): Boolean {
         val emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$"
         return Regex(emailRegex).matches(this)
+    }
+
+    fun EditText.showError(errorMsg: String) {
+        error = errorMsg
+        requestFocus()
     }
 
     fun getAddressFromLocation(geocoder: Geocoder, latitude: Double, longitude: Double): String {
@@ -50,8 +57,6 @@ object Helper {
 
         return addressText
     }
-
-
     fun getCustomMapIcon(context:Context,icon: Int): BitmapDescriptor {
         val iconGenerator = IconGenerator(context)
         iconGenerator.setBackground(
@@ -61,6 +66,16 @@ object Helper {
             )
         )
         return BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon())
+    }
+
+    fun showAlertDialog(context: WeakReference<Context>, title: String, message: String) {
+        val contextRef = context.get()
+        if (contextRef != null) {
+            val alertDialog = AlertDialog.Builder(contextRef)
+            alertDialog.setTitle(title)
+            alertDialog.setMessage(message)
+            alertDialog.show()
+        }
     }
 
 

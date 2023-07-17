@@ -15,7 +15,7 @@ import com.example.foodorderingapp.models.FoodItem
 class FoodItemAdapter(
     private var foodDomainList: List<FoodItem> = emptyList(),
     private val listener: FoodItemClickListener,
-    ) : RecyclerView.Adapter<FoodItemAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<FoodItemAdapter.ViewHolder>() {
 
     fun setList(list: List<FoodItem>) {
         foodDomainList = list
@@ -25,42 +25,36 @@ class FoodItemAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_food_item, parent, false)
-
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-        holder.apply {
-            val foodItem = foodDomainList[position]
-
-            tvTitle.text = foodItem.title
-            tvPrice.text = foodItem.price.toString()
-            Glide.with(ivFoodImage.context).load(foodItem.image).into(ivFoodImage)
-
-            tvAdd.setOnClickListener{
-                listener.onAddClicked(foodItem)
-            }
-
-            foodItemLayout.setOnClickListener{
-                listener.onAddClicked(foodItem)
-            }
-            
-        }
-
+        holder.bind(foodDomainList[position])
     }
 
     override fun getItemCount(): Int {
         return foodDomainList.size
     }
 
-    class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val tvTitle: TextView = itemView.findViewById(R.id.tv_title)
+        private val tvPrice: TextView = itemView.findViewById(R.id.tv_price)
+        private val tvAdd: TextView = itemView.findViewById(R.id.tv_add)
+        private val ivFoodImage: ImageView = itemView.findViewById(R.id.iv_foodImage)
+        private val foodItemLayout: ConstraintLayout = itemView.findViewById(R.id.layout_food_item)
 
-        val tvTitle: TextView = ItemView.findViewById(R.id.tv_title)
-        val tvPrice: TextView = ItemView.findViewById(R.id.tv_price)
-        val tvAdd: TextView = ItemView.findViewById(R.id.tv_add)
-        val ivFoodImage: ImageView = ItemView.findViewById(R.id.iv_foodImage)
-        val foodItemLayout:ConstraintLayout = ItemView.findViewById(R.id.layout_food_item)
+        fun bind(foodItem: FoodItem) {
+            tvTitle.text = foodItem.title
+            tvPrice.text = foodItem.price.toString()
+            Glide.with(ivFoodImage.context).load(foodItem.image).into(ivFoodImage)
 
+            tvAdd.setOnClickListener {
+                listener.onAddClicked(foodItem)
+            }
+
+            foodItemLayout.setOnClickListener {
+                listener.onAddClicked(foodItem)
+            }
+        }
     }
 }

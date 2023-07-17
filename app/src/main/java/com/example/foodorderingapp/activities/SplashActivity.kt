@@ -28,28 +28,31 @@ class SplashActivity : AppCompatActivity() {
 
         val firstTimeOpen = sharedPreferences.getBoolean(FIRST_TIME_OPEN, true)
         if (!firstTimeOpen) {
-            val intent = if (auth.currentUser != null) {
-                if(auth.currentUser?.uid == "E5ODMiUXLkahCFBSv0WRh6q2jh83"){
-                    Intent(this, RiderHomeActivity::class.java)
-                }
-                else {
-                    Intent(this, MainActivity::class.java)
-                }
-            } else {
-                Intent(this, LoginActivity::class.java)
-            }
+            val intent = getStartActivityIntent()
             startActivity(intent)
             finish()
-      
         }
+
         binding.btnStart.setOnClickListener {
-            sharedPreferences.edit{
+            sharedPreferences.edit {
                 putBoolean(FIRST_TIME_OPEN, false)
                 apply()
             }
             val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
+        }
+    }
+
+    private fun getStartActivityIntent(): Intent {
+        return if (auth.currentUser != null) {
+            if (auth.currentUser?.uid == "E5ODMiUXLkahCFBSv0WRh6q2jh83") {
+                Intent(this, RiderHomeActivity::class.java)
+            } else {
+                Intent(this, MainActivity::class.java)
+            }
+        } else {
+            Intent(this, LoginActivity::class.java)
         }
     }
 }

@@ -17,7 +17,12 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.edit
 import com.example.foodorderingapp.Repositories.OrderRepository
 import com.example.foodorderingapp.Utils.Constants
+import com.example.foodorderingapp.Utils.Constants.CHANNEL_ID
+import com.example.foodorderingapp.Utils.Constants.CHANNEL_NAME
+import com.example.foodorderingapp.Utils.Constants.NOTIFICATION_CONTENT
 import com.example.foodorderingapp.Utils.Constants.NOTIFICATION_ID
+import com.example.foodorderingapp.Utils.Constants.NOTIFICATION_TITLE
+import com.example.foodorderingapp.Utils.Constants.TEN_SECONDS
 import com.example.foodorderingapp.models.DeliveryInfo
 import com.google.android.gms.location.*
 import com.google.firebase.database.DatabaseReference
@@ -33,7 +38,6 @@ class RiderLocationService() : Service() {
     @Inject
     lateinit var sharedPreferences:SharedPreferences
 
-
     override fun onCreate() {
         super.onCreate()
         locationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -46,16 +50,16 @@ class RiderLocationService() : Service() {
         return START_STICKY
     }
     private fun createNotification(): Notification {
-        val channelId = "YOUR_CHANNEL_ID"
+        val channelId = CHANNEL_ID
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setContentTitle("Location Service")
-            .setContentText("Service Running")
+            .setContentTitle(NOTIFICATION_TITLE)
+            .setContentText(NOTIFICATION_CONTENT)
             .setSmallIcon(com.example.foodorderingapp.R.drawable.logo)
             .setAutoCancel(true)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
-                "Location Service Channel",
+                CHANNEL_NAME,
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -64,20 +68,16 @@ class RiderLocationService() : Service() {
         return notificationBuilder.build()
     }
 
-
     private fun startLocationUpdates() {
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY,10000)
-            .setMinUpdateIntervalMillis(10000)
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY,TEN_SECONDS)
+            .setMinUpdateIntervalMillis(TEN_SECONDS)
             .build()
-
-
 
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-
             locationClient.requestLocationUpdates(
                 locationRequest,
                 locationCallback,

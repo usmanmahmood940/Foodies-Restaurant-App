@@ -42,142 +42,174 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // Inflate the layout for this fragment
         binding = FragmentHomeBinding.inflate(inflater)
 
+        setupUserProfile()
+        setupViewModels()
+        setupAdapters()
+
+        setListeners()
+
+        observeCategoryList()
+        observeFoodItemList()
+
+        return binding.root
+    }
+
+    private fun setupUserProfile() {
         auth.currentUser?.apply {
             binding.tvName.text = "Hi $displayName"
             Glide.with(this@HomeFragment).load(photoUrl).into(binding.ivProfile)
             println(photoUrl)
         }
+    }
 
+    private fun setupViewModels() {
         homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
-        val foodDomainAdapter = FoodItemAdapter(listener = object : FoodItemClickListener {
+    }
+
+    private fun setupAdapters() {
+        val foodDomainAdapter = createFoodDomainAdapter()
+        val categoryAdapter = createCategoryAdapter()
+
+        binding.rvCategories.apply {
+            layoutManager = createHorizontalLayoutManager()
+            adapter = categoryAdapter
+        }
+
+        binding.rvPopular.apply {
+            layoutManager = createHorizontalLayoutManager()
+            adapter = foodDomainAdapter
+        }
+    }
+
+    private fun createFoodDomainAdapter(): FoodItemAdapter {
+        return FoodItemAdapter(listener = object : FoodItemClickListener {
             override fun onAddClicked(foodItem: FoodItem) {
-                val addToCartBottomSheet = AddToCartBottomSheet.newInstance(foodItem)
-                addToCartBottomSheet.show(
-                    requireActivity().supportFragmentManager,
-                    "addToCartBottomSheet"
-                )
-
-                addToCartBottomSheet.dialog?.setOnShowListener {
-                    val dialog = addToCartBottomSheet.dialog as BottomSheetDialog
-                    val bottomSheetBehavior = dialog.behavior
-                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                }
+                showAddToCartBottomSheet(foodItem)
             }
-
         })
+    }
 
-
-        val categoryAdapter = CategoryAdapter(listener = object : CategoryClickListener {
+    private fun createCategoryAdapter(): CategoryAdapter {
+        return CategoryAdapter(listener = object : CategoryClickListener {
             override fun onItemClick(category: Category) {
                 val filteredList = homeViewModel.getFoodItemsByCategory(category)
-                foodDomainAdapter.setList(filteredList)
+                binding.rvPopular.adapter?.let { adapter ->
+                    if (adapter is FoodItemAdapter) {
+                        adapter.setList(filteredList)
+                    }
+                }
                 binding.tvLabelCategory.text = category.name
             }
 
             override fun onItemDeselect() {
-                val list = homeViewModel.foodItemList.value?.data
-                foodDomainAdapter.setList(list ?: emptyList())
+                binding.rvPopular.adapter?.let { adapter ->
+                    if (adapter is FoodItemAdapter) {
+                        val list = homeViewModel.foodItemList.value?.data
+                        adapter.setList(list ?: emptyList())
+                    }
+                }
                 binding.tvLabelCategory.text = Constants.POPULAR
             }
-
         })
+    }
 
+    private fun createHorizontalLayoutManager(): LinearLayoutManager {
+        return LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+    }
 
-        binding.apply {
-            rvCategories.layoutManager = LinearLayoutManager(
-                requireContext(),
-                LinearLayoutManager.HORIZONTAL, false
-            )
-            rvCategories.adapter = categoryAdapter
-
-            rvPopular.layoutManager = LinearLayoutManager(
-                requireContext(),
-                LinearLayoutManager.HORIZONTAL, false
-            )
-            rvPopular.adapter = foodDomainAdapter
+    private fun setListeners() {
+        binding.etSearch.setOnClickListener {
+            navigateToSearchFragment()
         }
 
+        binding.tvSeeAll.setOnClickListener {
+            navigateToSearchFragment()
+        }
 
-        homeViewModel.categoryList.observe(viewLifecycleOwner) {
-            when (it) {
+        binding.ivProfile.setOnClickListener {
+            signOutAndNavigateToLogin()
+        }
+    }
+
+    private fun navigateToSearchFragment() {
+        findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
+    }
+
+    private fun signOutAndNavigateToLogin() {
+        auth.signOut()
+        startActivity(Intent(requireContext(), LoginActivity::class.java))
+        requireActivity().finish()
+    }
+
+    private fun observeCategoryList() {
+        homeViewModel.categoryList.observe(viewLifecycleOwner) { response ->
+            when (response) {
                 is CustomResponse.Loading -> {
                     binding.rvCategories.visibility = View.INVISIBLE
                     binding.progressBarCategory.visibility = View.VISIBLE
-
                 }
                 is CustomResponse.Success -> {
-                    if (it.data != null) {
-                        binding.rvCategories.visibility = View.VISIBLE
-                        binding.progressBarCategory.visibility = View.GONE
-                        categoryAdapter.setList(it.data)
+                    binding.rvCategories.visibility = View.VISIBLE
+                    binding.progressBarCategory.visibility = View.GONE
+                    response.data?.let { categoryList ->
+                        (binding.rvCategories.adapter as? CategoryAdapter)?.setList(categoryList)
                     }
                 }
                 is CustomResponse.Error -> {
                     binding.progressBarCategory.visibility = View.GONE
-                    val alertDialog = AlertDialog.Builder(requireActivity())
-                    alertDialog.setTitle("Error Message")
-                    alertDialog.setMessage(it.errorMessage)
-                    alertDialog.show()
+                    showDialogBox("Error Message", response.errorMessage.toString())
                 }
-                else -> {}
             }
-
         }
+    }
 
-        homeViewModel.foodItemList.observe(viewLifecycleOwner) {
-            when (it) {
+    private fun observeFoodItemList() {
+        homeViewModel.foodItemList.observe(viewLifecycleOwner) { response ->
+            when (response) {
                 is CustomResponse.Loading -> {
                     binding.rvPopular.visibility = View.INVISIBLE
                     binding.progressBarFooditem.visibility = View.VISIBLE
-
                 }
                 is CustomResponse.Success -> {
                     binding.rvPopular.visibility = View.VISIBLE
                     binding.progressBarFooditem.visibility = View.GONE
-                    if (it.data != null) {
-                        if (homeViewModel.category == null) {
-                            foodDomainAdapter.setList(it.data)
-                        } else {
-                            val list =
-                                homeViewModel.getFoodItemsByCategory(homeViewModel.category!!)
-                            foodDomainAdapter.setList(list)
+                    response.data?.let { foodItemList ->
+                        (binding.rvPopular.adapter as? FoodItemAdapter)?.apply {
+                            val list = homeViewModel.category?.let {
+                                homeViewModel.getFoodItemsByCategory(it)
+                            } ?: foodItemList
+                            setList(list)
                         }
-
                     }
                 }
                 is CustomResponse.Error -> {
                     binding.progressBarFooditem.visibility = View.GONE
-                    val alertDialog = AlertDialog.Builder(requireActivity())
-                    alertDialog.setTitle("Error Message")
-                    alertDialog.setMessage(it.errorMessage)
-                    alertDialog.show()
-
+                    showDialogBox("Error Message", response.errorMessage.toString())
                 }
-                else -> {}
-            }
-
-        }
-
-        binding.apply {
-            etSearch.setOnClickListener {
-                findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
-            }
-            tvSeeAll.setOnClickListener {
-                findNavController().navigate(R.id.action_homeFragment_to_searchFragment)
             }
         }
-
-        binding.ivProfile.setOnClickListener {
-            auth.signOut()
-            startActivity(Intent(requireContext(), LoginActivity::class.java))
-            requireActivity().finish()
-        }
-
-        return binding.root
     }
 
+    private fun showAddToCartBottomSheet(foodItem: FoodItem) {
+        val addToCartBottomSheet = AddToCartBottomSheet.newInstance(foodItem)
+        addToCartBottomSheet.show(
+            requireActivity().supportFragmentManager,
+            "addToCartBottomSheet"
+        )
 
+        addToCartBottomSheet.dialog?.setOnShowListener {
+            val dialog = addToCartBottomSheet.dialog as BottomSheetDialog
+            val bottomSheetBehavior = dialog.behavior
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+    }
+
+    private fun showDialogBox(title: String, message: String) {
+        val alertDialog = AlertDialog.Builder(requireActivity())
+        alertDialog.setTitle(title)
+        alertDialog.setMessage(message)
+        alertDialog.show()
+    }
 }

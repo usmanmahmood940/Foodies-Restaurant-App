@@ -21,6 +21,7 @@ import com.google.firebase.database.ValueEventListener
 import javax.inject.Inject
 
 class OrderRepository @Inject constructor(private val workManager: WorkManager) {
+
     private val databaseReference = FirebaseDatabase.getInstance().getReference()
     private var valueEventListener: ValueEventListener? = null
     private var valueEventListenerOrdersList: ValueEventListener? = null
@@ -33,7 +34,6 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
         MutableLiveData<CustomResponse<List<Order>>>(CustomResponse.Loading())
     val proceededOrderList: LiveData<CustomResponse<List<Order>>>
         get() = _proceededOrderList
-
 
     fun createOrder(order: Order, callback: (Boolean, Exception?, String?) -> Unit) {
         val id = databaseReference.push().key ?: Helper.generateRandomStringWithTime()
@@ -51,7 +51,6 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
                         .setInputData(inputData)
                         .build()
                     workManager.enqueue(request)
-
                 }
             }
             .addOnFailureListener { exception ->
@@ -64,39 +63,38 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
         orderStatus: OrderTracking,
         callback: (Boolean, Exception?) -> Unit,
     ) {
-        databaseReference.child(ORDER_REFRENCE).child(orderId)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        databaseReference.child(ORDER_REFRENCE).child(orderId)
-                            .child(ORDER_TRACKING_REFRENCE)
-                            .setValue(orderStatus)
-                            .addOnSuccessListener {
-                                callback(true, null)
-                            }
-                            .addOnFailureListener { exception ->
-                                callback(false, exception)
-                            }
-                    } else {
-                        callback(false, null)
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-
-                }
-            })
-    }
-
-    
-    fun updateRiderLocation(orderId: String,deliveryInfo: DeliveryInfo){
-
         val orderReference = databaseReference.child(ORDER_REFRENCE).child(orderId)
 
         orderReference.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    val deliveryInfoReference = orderReference.child(ORDER_TRACKING_REFRENCE).child(ORDER_DELIVERY_INFO_REFRENCE)
+                    orderReference.child(ORDER_TRACKING_REFRENCE)
+                        .setValue(orderStatus)
+                        .addOnSuccessListener {
+                            callback(true, null)
+                        }
+                        .addOnFailureListener { exception ->
+                            callback(false, exception)
+                        }
+                } else {
+                    callback(false, null)
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Handle any errors that occurred during the query
+            }
+        })
+    }
+
+    fun updateRiderLocation(orderId: String, deliveryInfo: DeliveryInfo) {
+        val orderReference = databaseReference.child(ORDER_REFRENCE).child(orderId)
+
+        orderReference.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    val deliveryInfoReference = orderReference.child(ORDER_TRACKING_REFRENCE)
+                        .child(ORDER_DELIVERY_INFO_REFRENCE)
                     deliveryInfoReference.setValue(deliveryInfo)
                 }
             }
@@ -111,14 +109,11 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
         valueEventListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 try {
-
                     val tempOrder: Order? = dataSnapshot.getValue(Order::class.java)
-
                     _runningOrder.value = CustomResponse.Success(tempOrder)
                 } catch (e: Exception) {
                     _runningOrder.value = CustomResponse.Error(e.message.toString())
                 }
-
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -138,7 +133,6 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
     }
 
     fun startObservingProceededOrders() {
-
         valueEventListenerOrdersList = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val orderList = mutableListOf<Order>()
@@ -152,12 +146,9 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
                     }
 
                     _proceededOrderList.value = CustomResponse.Success(orderList)
-
                 } catch (e: Exception) {
                     _proceededOrderList.value = CustomResponse.Error(e.message.toString())
                 }
-
-
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
@@ -165,10 +156,10 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
             }
         }
 
-        databaseReference.child(ORDER_REFRENCE).orderByChild("$ORDER_TRACKING_REFRENCE/$STATUS_REFRENCE")
+        databaseReference.child(ORDER_REFRENCE)
+            .orderByChild("$ORDER_TRACKING_REFRENCE/$STATUS_REFRENCE")
             .equalTo(ORDER_PROCEED)
             .addValueEventListener(valueEventListenerOrdersList as ValueEventListener)
-
     }
 
     fun stopObservingProceededOrders() {
@@ -184,24 +175,22 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     try {
-                        val statusRef = orderReference.child(ORDER_TRACKING_REFRENCE).child(STATUS_REFRENCE)
+                        val statusRef = orderReference.child(ORDER_TRACKING_REFRENCE)
+                            .child(STATUS_REFRENCE)
                         statusRef.setValue(orderStatus)
-                        callback(true,null)
+                        callback(true, null)
+                    } catch (e: Exception) {
+                        callback(false, e)
                     }
-                    catch (e:Exception){
-                        callback(false,e)
-                    }
-                }
-                else{
-                    callback(false,null)
+                } else {
+                    callback(false, null)
                 }
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                callback(false,null)
+                callback(false, null)
             }
         })
-
     }
 }
 

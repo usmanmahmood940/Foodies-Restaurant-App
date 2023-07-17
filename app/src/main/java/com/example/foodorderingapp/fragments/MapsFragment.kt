@@ -43,6 +43,16 @@ class MapsFragment : Fragment() {
     private lateinit var mapViewModel: MapViewModel
     private var myGoogleMap: GoogleMap? = null
 
+    private val requestLocationPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            val isGranted = permissions.all { it.value }
+            if (isGranted) {
+                updateMap()
+            } else {
+                Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -56,10 +66,22 @@ class MapsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
-        mapFragment?.getMapAsync(callback)
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        setupMap()
+        setupBackButton()
+        setupUseLocationButton()
+        (requireActivity() as MainActivity).hideShowBottomNav()
+    }
 
+    private fun setupMap() {
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment?.getMapAsync { googleMap ->
+            myGoogleMap = googleMap
+            updateMap()
+        }
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+    }
+
+    private fun setupBackButton() {
         onBackPressedCallback = object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 val previousFragment = findNavController().previousBackStackEntry
@@ -69,12 +91,10 @@ class MapsFragment : Fragment() {
                             putDouble(LATITUDE, latitude)
                             putDouble(LONGITUDE, longitude)
                         }
-
                     }
                     previousFragment.savedStateHandle.set(LOCATION_DATA, data)
                     findNavController().popBackStack()
                     (requireActivity() as MainActivity).hideShowBottomNav()
-
                 }
             }
         }
@@ -82,34 +102,22 @@ class MapsFragment : Fragment() {
             viewLifecycleOwner,
             onBackPressedCallback
         )
+    }
 
+    private fun setupUseLocationButton() {
         binding.btnUseLocation.setOnClickListener {
             onBackPressedCallback.handleOnBackPressed()
         }
-        val activity = requireActivity() as MainActivity
-        activity.binding.coordinatorLayout.visibility = View.GONE
-    }
-
-
-    private val callback = OnMapReadyCallback { googleMap ->
-        myGoogleMap = googleMap
-        updateMap()
     }
 
     private fun updateMap() {
         val customIcon = getCustomMapIcon()
         myGoogleMap?.apply {
-
-            getCurrentLocation() { locationLatLng ->
+            getCurrentLocation { locationLatLng ->
                 mapViewModel.pinLocation = locationLatLng
                 mapViewModel.pinLocation.apply {
                     addMarker(MarkerOptions().position(this).icon(customIcon))
-                    moveCamera(
-                        CameraUpdateFactory.newLatLngZoom(
-                            this,
-                            15f
-                        )
-                    )
+                    moveCamera(CameraUpdateFactory.newLatLngZoom(this, 15f))
                 }
             }
 
@@ -130,7 +138,7 @@ class MapsFragment : Fragment() {
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            getPermissions()
+            requestLocationPermission()
         } else {
             fusedLocationClient.lastLocation
                 .addOnSuccessListener { location ->
@@ -144,41 +152,23 @@ class MapsFragment : Fragment() {
         }
     }
 
+    private fun requestLocationPermission() {
+        val permissions = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+        requestLocationPermissionLauncher.launch(permissions)
+    }
+
     private fun getCustomMapIcon(): BitmapDescriptor {
         val iconGenerator = IconGenerator(context)
-        iconGenerator.setBackground(
-            ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.ic_location_pin
-            )
-        )
+        iconGenerator.setBackground(ContextCompat.getDrawable(requireContext(), R.drawable.ic_location_pin))
         return BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon())
     }
-
-    private fun getPermissions() {
-        requestMultiplePermissionsLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-        )
-    }
-
-    val requestMultiplePermissionsLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
-            val isGranted = permissions.all { it.value }
-            if (isGranted) {
-                updateMap()
-            } else {
-                Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
-            }
-
-        }
 
     override fun onDestroyView() {
         onBackPressedCallback.remove()
         super.onDestroyView()
     }
-
 
 }

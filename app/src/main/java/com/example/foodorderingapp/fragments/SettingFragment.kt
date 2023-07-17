@@ -11,7 +11,6 @@ import com.example.foodorderingapp.R
 
 class SettingFragment : Fragment() {
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,

@@ -15,6 +15,7 @@ import com.example.foodorderingapp.Utils.Constants.ZERO
 import com.example.foodorderingapp.viewModels.CartViewModel
 import com.example.foodorderingapp.databinding.FragmentCartBinding
 import com.example.foodorderingapp.models.Amounts
+import com.example.foodorderingapp.models.CartItem
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -23,65 +24,96 @@ class CartFragment : Fragment() {
 
     private lateinit var binding: FragmentCartBinding
     private lateinit var cartViewModel: CartViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         binding = FragmentCartBinding.inflate(inflater, container, false)
         cartViewModel = ViewModelProvider(this).get(CartViewModel::class.java)
-        val amounts = Amounts()
 
-        binding.amounts = amounts
-        binding.lifecycleOwner = this
+        setupViews()
+        observeCartItems()
 
+        return binding.root
+    }
 
-        val cartAdapter = CartAdapter(listener = object : CartAdapter.onCartListener {
+    private fun setupViews() {
+        binding.apply {
+            lifecycleOwner = viewLifecycleOwner
+            amounts = Amounts()
+
+            val cartAdapter = createCartAdapter()
+            setupRecyclerView(cartAdapter)
+            setupItemTouchHelper(cartAdapter)
+
+            btnCheckout.setOnClickListener {
+                navigateToCheckout()
+            }
+        }
+    }
+
+    private fun createCartAdapter(): CartAdapter {
+        return CartAdapter(listener = object : CartAdapter.OnCartListener {
             override fun onCartUpdate() {
                 cartViewModel.updateCart()
-
             }
 
             override fun onItemRemove(position: Int) {
                 cartViewModel.removeItem(position)
             }
-
         })
-        binding.rvCart.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvCart.adapter = cartAdapter
+    }
 
+    private fun setupRecyclerView(cartAdapter: CartAdapter) {
+        binding.rvCart.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = cartAdapter
+        }
+    }
+
+    private fun setupItemTouchHelper(cartAdapter: CartAdapter) {
         val itemTouchHelperCallback = CartItemTouchHelperCallback(cartAdapter)
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper.attachToRecyclerView(binding.rvCart)
-
-        cartViewModel.cartItemList.observe(viewLifecycleOwner) {
-            it?.let {
-                if(it.size > ZERO) {
-                    binding.tvCartEmpty.visibility = View.GONE
-                    binding.svCart.visibility = View.VISIBLE
-                    cartAdapter.setList(it)
-                    amounts.updateTotalItemAmount(it.sumOf{ cartItem ->
-                        cartItem.totalAmount
-                    })
-                    binding.invalidateAll()
-                }
-                else{
-                    binding.svCart.visibility = View.GONE
-                    binding.tvCartEmpty.visibility = View.VISIBLE
-                }
-            
-            }
-        }
-
-        binding.btnCheckout.setOnClickListener {
-            // Passin amount to nexr fragment
-            val action =  CartFragmentDirections.actionCartFragmentToCheckoutFragment(amounts = amounts)
-            findNavController().navigate(action)
-        }
-
-
-        return binding.root
     }
 
+    private fun observeCartItems() {
+        cartViewModel.cartItemList.observe(viewLifecycleOwner) { cartItems ->
+            if (cartItems.isNotEmpty()) {
+                showCartItems(cartItems)
+            } else {
+                showEmptyCart()
+            }
+        }
+    }
 
+    private fun showCartItems(cartItems: List<CartItem>) {
+        binding.apply {
+            tvCartEmpty.visibility = View.GONE
+            svCart.visibility = View.VISIBLE
+
+            val amounts = amounts ?: return
+            val totalAmount = cartItems.sumOf { it.totalAmount }
+            amounts.updateTotalItemAmount(totalAmount)
+
+            val cartAdapter = binding.rvCart.adapter as? CartAdapter
+            cartAdapter?.setList(cartItems)
+
+            invalidateAll()
+        }
+    }
+
+    private fun showEmptyCart() {
+        binding.apply {
+            svCart.visibility = View.GONE
+            tvCartEmpty.visibility = View.VISIBLE
+        }
+    }
+
+    private fun navigateToCheckout() {
+        val amounts = binding.amounts ?: return
+        val action = CartFragmentDirections.actionCartFragmentToCheckoutFragment(amounts = amounts)
+        findNavController().navigate(action)
+    }
 }

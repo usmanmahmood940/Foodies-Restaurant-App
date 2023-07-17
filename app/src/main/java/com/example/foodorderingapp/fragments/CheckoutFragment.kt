@@ -1,6 +1,7 @@
 package com.example.foodorderingapp.fragments
 
 import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.location.Geocoder
@@ -23,6 +24,7 @@ import com.example.foodorderingapp.Utils.Constants.MY_LATITUDE
 import com.example.foodorderingapp.Utils.Constants.MY_LONGITUDE
 import com.example.foodorderingapp.Utils.Helper.getAddressFromLocation
 import com.example.foodorderingapp.Utils.Helper.isValidEmail
+import com.example.foodorderingapp.Utils.Helper.showError
 import com.example.foodorderingapp.Utils.NetworkUtils.Companion.checkForInternet
 import com.example.foodorderingapp.activities.OrderTrackingActivity
 import com.example.foodorderingapp.databinding.FragmentCheckoutBinding
@@ -48,156 +50,209 @@ class CheckoutFragment : Fragment() {
 
     @Inject
     lateinit var sharedPreferences: SharedPreferences
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
-        // Inflate the layout for this fragment
         binding = FragmentCheckoutBinding.inflate(inflater, container, false)
         navController = findNavController()
         checkoutViewModel = ViewModelProvider(this)[CheckoutViewModel::class.java]
 
-        initListeners()
-
-        val navBackStackEntry = navController.getBackStackEntry(R.id.checkoutFragment)
-        val locationData = navBackStackEntry.savedStateHandle.getLiveData<Bundle>(LOCATION_DATA)
-        locationData.observe(viewLifecycleOwner) { data ->
-            val latitude = data.getDouble(LATITUDE)
-            val longitude = data.getDouble(LONGITUDE)
-            checkoutViewModel.latitude = latitude
-            checkoutViewModel.longitude = longitude
-
-            val geocoder = Geocoder(requireContext(), Locale.getDefault())
-            binding.etAddress.setText(
-                getAddressFromLocation(geocoder, latitude, longitude)
-            )
-            val chosenLatLng = LatLng(latitude, longitude)
-            val restaurantLatLng = LatLng(MY_LATITUDE, MY_LONGITUDE)
-            showDialogBox("Location","$latitude   + $longitude")
-            checkoutViewModel.distance =
-                checkoutViewModel.calculateDistanceInKm(restaurantLatLng,chosenLatLng)
-
-
-            if (!checkoutViewModel.validDistance()) {
-                showDialogBox(getString(R.string.area_error),getString(R.string.delivery_area_error))
-            }
-        }
+        setupViews()
+        handleLocationResult()
 
         return binding.root
     }
 
-    private fun showDialogBox(title:String, message:String) {
-        val alertDialog = AlertDialog.Builder(requireActivity())
-        alertDialog.setTitle(title)
-        alertDialog.setMessage(message)
-        alertDialog.show()
-    }
-
-    private fun initListeners() {
+    private fun setupViews() {
         binding.apply {
             etName.setText(auth.currentUser?.displayName)
             etEmail.setText(auth.currentUser?.email)
             etMobileNum.setText(auth.currentUser?.phoneNumber)
-            etAddress.isFocusableInTouchMode = false
 
+            etAddress.isFocusableInTouchMode = false
             etAddress.setOnClickListener {
-                navController.navigate(R.id.action_checkoutFragment_to_mapsFragment)
+                navigateToMapsFragment()
             }
 
             btnPlaceOrder.setOnClickListener {
                 placeOrder()
             }
-
         }
+    }
+
+    private fun handleLocationResult() {
+        val navBackStackEntry = navController.getBackStackEntry(R.id.checkoutFragment)
+        val locationData = navBackStackEntry.savedStateHandle.getLiveData<Bundle>(LOCATION_DATA)
+        locationData.observe(viewLifecycleOwner) { data ->
+            val latitude = data.getDouble(LATITUDE)
+            val longitude = data.getDouble(LONGITUDE)
+
+            setAddressFromLocation(latitude, longitude)
+            updateDistance(latitude, longitude)
+        }
+    }
+
+    private fun setAddressFromLocation(latitude: Double, longitude: Double) {
+        val geocoder = Geocoder(requireContext(), Locale.getDefault())
+        binding.etAddress.setText(getAddressFromLocation(geocoder, latitude, longitude))
+    }
+
+    private fun updateDistance(latitude: Double, longitude: Double) {
+        checkoutViewModel.latitude = latitude
+        checkoutViewModel.longitude = longitude
+
+        val chosenLatLng = LatLng(latitude, longitude)
+        val restaurantLatLng = LatLng(MY_LATITUDE, MY_LONGITUDE)
+        checkoutViewModel.distance = checkoutViewModel.calculateDistanceInKm(restaurantLatLng, chosenLatLng)
+
+        if (!checkoutViewModel.validDistance()) {
+            showDialogBox(getString(R.string.area_error), getString(R.string.delivery_area_error))
+        }
+    }
+
+    private fun navigateToMapsFragment() {
+        navController.navigate(R.id.action_checkoutFragment_to_mapsFragment)
     }
 
     private fun placeOrder() {
         binding.apply {
             when {
-                etName.text.toString().isNullOrBlank() -> {
-                    etName.error = getString(R.string.name_required_error)
-                    etName.requestFocus()
+                etName.text.isNullOrBlank() -> {
+                    etName.showError(getString(R.string.name_required_error))
                 }
-                etEmail.text.toString().isNullOrBlank() -> {
-                    etEmail.error = getString(R.string.email_required_error)
-                    etEmail.requestFocus()
+                etEmail.text.isNullOrBlank() -> {
+                    etEmail.showError(getString(R.string.email_required_error))
                 }
                 !etEmail.text.toString().isValidEmail() -> {
-                    etEmail.error = getString(R.string.email_valid_error)
-                    etEmail.requestFocus()
+                    etEmail.showError(getString(R.string.email_valid_error))
                 }
-                etMobileNum.text.toString().isNullOrBlank() -> {
-                    etMobileNum.error = getString(R.string.mobile_required_error)
-                    etMobileNum.requestFocus()
+                etMobileNum.text.isNullOrBlank() -> {
+                    etMobileNum.showError(getString(R.string.mobile_required_error))
                 }
                 etAddress.text.isNullOrBlank() -> {
-                    etAddress.error = getString(R.string.address_required_error)
                     etAddress.isFocusableInTouchMode = true
-                    etAddress.requestFocus()
+                    etAddress.showError(getString(R.string.address_required_error))
                     etAddress.isFocusableInTouchMode = false
-
                 }
                 !checkoutViewModel.validDistance() -> {
-                    showDialogBox(getString(R.string.area_error),getString(R.string.delivery_area_error))
+                    showDialogBox(getString(R.string.area_error), getString(R.string.delivery_area_error))
                 }
                 else -> {
-
-                    val customerInfo = CustomerInfo(
-                        name = etName.text.toString().trim(),
-                        email = etEmail.text.toString().trim(),
-                        phoneNumner = etMobileNum.text.toString().trim()
-                    )
-                    val deliveryInfo = DeliveryInfo(
-                        locationLatitude = checkoutViewModel.latitude,
-                        locationLongitude = checkoutViewModel.longitude
-                    )
-
-                    var cartItemList = emptyList<CartItem>()
-                    val cartJson = sharedPreferences.getString(Constants.CART, null)
-                    if (!cartJson.isNullOrEmpty()) {
-                        val type = object : TypeToken<MutableList<CartItem>?>() {}.type
-                        cartItemList = Gson().fromJson<MutableList<CartItem>>(cartJson, type)
-                    }
+                    val customerInfo = createCustomerInfo()
+                    val deliveryInfo = createDeliveryInfo()
+                    val cartItemList = getCartItemList()
                     val totalAmount = cartItemList.sumOf { it.totalAmount }
-                    val args: CheckoutFragmentArgs by navArgs()
-                    val amounts = args.amounts
+                    val amounts = retrieveAmounts()
                     amounts.updateTotalItemAmount(totalAmount)
-                    val order = Order(
-                        customerInfo = customerInfo,
-                        customerDeliveryInfo = deliveryInfo,
-                        paymentMethod = CASH_ON_DELIVERY,
-                        cartItemList = cartItemList,
-                        amounts = amounts,
-                        orderTracking = OrderTracking().apply {
-                            placeOrder()
-                        }
-                    )
-                    if(checkForInternet(requireActivity().applicationContext)) {
-                        checkoutViewModel.placeOrder(order){ success, exception ->
-                            if(success){
-                                showDialogBox(getString(R.string.information),getString(R.string.order_confirmed))
-                                findNavController().popBackStack(R.id.cartFragment,true)
-                                requireActivity().startActivity(
-                                    Intent(requireActivity(),OrderTrackingActivity::class.java)
+
+                    val order = createOrder(customerInfo, deliveryInfo, cartItemList, amounts)
+                    if (checkForInternet(requireActivity().applicationContext)) {
+                        checkoutViewModel.placeOrder(order) { success, exception ->
+                            if (success) {
+
+
+                                showDialogBox(
+                                    getString(R.string.information),
+                                    getString(R.string.order_confirmed),
+                                    positiveListener = object : DialogInterface.OnClickListener{
+                                        override fun onClick(dialog: DialogInterface?, which: Int) {
+                                            navigateToOrderTracking()
+                                        }
+
+                                    },
+                                    dismissListener = object : DialogInterface.OnDismissListener{
+                                        override fun onDismiss(dialog: DialogInterface?) {
+                                            navigateToOrderTracking()
+                                        }
+
+                                    }
                                 )
 
-                            }
-                            else{
-                                showDialogBox(getString(R.string.error),exception?.message.toString())
+                            } else {
+                                showDialogBox(getString(R.string.error), exception?.message.toString())
                             }
                         }
-
+                    } else {
+                        showDialogBox(getString(R.string.information), getString(R.string.internet_error_msg))
                     }
-                    else{
-                        showDialogBox(getString(R.string.information),getString(R.string.internet_error_msg))
-                    }
-
                 }
             }
         }
     }
 
+    private fun navigateToOrderTracking() {
+        requireActivity().startActivity(
+            Intent(requireActivity(), OrderTrackingActivity::class.java)
+        )
+        findNavController().popBackStack(R.id.cartFragment, true)
+    }
 
+    private fun createCustomerInfo(): CustomerInfo {
+        return CustomerInfo(
+            name = binding.etName.text.toString().trim(),
+            email = binding.etEmail.text.toString().trim(),
+            phoneNumner = binding.etMobileNum.text.toString().trim()
+        )
+    }
 
+    private fun createDeliveryInfo(): DeliveryInfo {
+        return DeliveryInfo(
+            locationLatitude = checkoutViewModel.latitude,
+            locationLongitude = checkoutViewModel.longitude
+        )
+    }
 
+    private fun getCartItemList(): List<CartItem> {
+        val cartJson = sharedPreferences.getString(Constants.CART, null)
+        return if (!cartJson.isNullOrEmpty()) {
+            val type = object : TypeToken<MutableList<CartItem>?>() {}.type
+            Gson().fromJson<MutableList<CartItem>>(cartJson, type)
+        } else {
+            emptyList()
+        }
+    }
+
+    private fun retrieveAmounts(): Amounts {
+        val args: CheckoutFragmentArgs by navArgs()
+        return args.amounts
+    }
+
+    private fun createOrder(
+        customerInfo: CustomerInfo,
+        deliveryInfo: DeliveryInfo,
+        cartItemList: List<CartItem>,
+        amounts: Amounts
+    ): Order {
+        return Order(
+            customerInfo = customerInfo,
+            customerDeliveryInfo = deliveryInfo,
+            paymentMethod = CASH_ON_DELIVERY,
+            cartItemList = cartItemList,
+            amounts = amounts,
+            orderTracking = OrderTracking().apply {
+                placeOrder()
+            }
+        )
+    }
+
+    private fun showDialogBox(
+        title: String,
+        message: String,
+        dismissListener: DialogInterface.OnDismissListener? = null,
+        positiveListener: DialogInterface.OnClickListener?=null
+    ) {
+        val alertDialog = AlertDialog.Builder(requireActivity()).apply {
+            setTitle(title)
+            setMessage(message)
+        }
+        positiveListener?.let {
+            alertDialog.setPositiveButton("Ok",positiveListener)
+        }
+        dismissListener?.let {
+            alertDialog.setOnDismissListener(dismissListener)
+        }
+        alertDialog.show()
+    }
 }

@@ -11,7 +11,6 @@ import com.example.foodorderingapp.R
 
 class SupportFragment : Fragment() {
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
