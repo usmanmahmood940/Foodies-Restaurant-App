@@ -15,6 +15,7 @@ import com.example.foodorderingapp.Utils.Constants.ERROR
 import com.example.foodorderingapp.Utils.Constants.INFORMATION
 import com.example.foodorderingapp.Utils.Constants.ORDER_DELIVERED
 import com.example.foodorderingapp.Utils.Helper
+import com.example.foodorderingapp.Utils.Helper.getCustomMapIcon
 import com.example.foodorderingapp.Utils.Helper.googleMapUri
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -112,8 +113,7 @@ class RiderMapActivity : AppCompatActivity(), OnMapReadyCallback {
                             MarkerOptions()
                                 .position(customerLatLng!!)
                                 .title("Customer Location")
-                                .icon(
-                                    Helper.getCustomMapIcon(
+                                .icon(getCustomMapIcon(
                                         applicationContext,
                                         R.drawable.ic_location_pin
                                     )
@@ -128,11 +128,9 @@ class RiderMapActivity : AppCompatActivity(), OnMapReadyCallback {
                                 MarkerOptions()
                                     .position(riderLatLng)
                                     .title("Your Location")
-                                    .icon(
-                                        Helper.getCustomMapIcon(
+                                    .icon(getCustomMapIcon(
                                             applicationContext,
-                                            R.drawable.ic_delivery_bike_24
-                                        )
+                                            R.drawable.ic_delivery_bike_24)
                                     )
                             )
                             googleMap.animateCamera(

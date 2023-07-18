@@ -16,11 +16,13 @@ import com.example.foodorderingapp.Listeners.CustomSuccessFailureListener
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.RiderApp.RiderHomeActivity
 import com.example.foodorderingapp.Utils.Constants.ERROR
+import com.example.foodorderingapp.Utils.Constants.INFORMATION
 import com.example.foodorderingapp.Utils.Constants.ROLE_RIDER
 import com.example.foodorderingapp.Utils.Constants.ROLE_USER
 import com.example.foodorderingapp.Utils.Helper.isValidEmail
 import com.example.foodorderingapp.Utils.Helper.showAlertDialog
 import com.example.foodorderingapp.Utils.Helper.showError
+import com.example.foodorderingapp.Utils.Helper.togglePasswordVisibility
 import com.example.foodorderingapp.databinding.ActivityLoginBinding
 import com.example.foodorderingapp.viewModels.LoginViewModel
 import com.facebook.*
@@ -40,12 +42,11 @@ import java.lang.ref.WeakReference
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
+
     @Inject
     lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var loginViewModel: LoginViewModel
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
-        
+
         setupGoogleSignInClient()
         setupLoginListeners()
     }
@@ -85,96 +86,120 @@ class LoginActivity : AppCompatActivity() {
                         etPassword.showError(getString(R.string.password_required_error))
                     }
                     else -> {
-                        binding.svLogin.apply {
-                            alpha = 0f
-                            isEnabled = false
+                        binding.apply {
+                            svLogin.alpha = 0.5f
+                            progressBarLogin.visibility = View.VISIBLE
+                            btnLogin.isEnabled = false
                         }
-                        binding.progressBarLogin.visibility = View.VISIBLE
-                        loginViewModel.firebaseAuthWithEmailPass(email,password,object :CustomSuccessFailureListener{
-                            override fun onSuccess() {
-                                auth.currentUser?.uid?.let {
-                                    loginViewModel.checkRole(it){
-                                        val destinationClass = when(it){
-                                                ROLE_RIDER -> {
-                                                    RiderHomeActivity::class.java
-                                                }
-                                                ROLE_USER -> {
-                                                    MainActivity::class.java
-                                                }
-                                                else -> {
-                                                    MainActivity::class.java
+                        loginViewModel.firebaseAuthWithEmailPass(
+                            email,
+                            password,
+                            object : CustomSuccessFailureListener {
+                                override fun onSuccess() {
+                                    auth.currentUser?.apply {
+                                        if (isEmailVerified) {
+                                            uid?.let { uid ->
+                                                loginViewModel.checkRole(uid) { role ->
+                                                    navigateBasedOnRole(role)
                                                 }
                                             }
-                                        startActivity(Intent(this@LoginActivity, destinationClass))
-                                        finish()
+                                        } else {
+                                            sendEmailVerification()
+                                            showAlertDialog(
+                                                WeakReference(this@LoginActivity),
+                                                INFORMATION, "Please verify your email"
+                                            )
+
+                                        }
                                     }
                                 }
-                            }
 
-                            override fun onFailure(errorMessage: String?) {
-                                showAlertDialog(WeakReference(this@LoginActivity),ERROR,errorMessage)
-                                binding.svLogin.apply {
-                                    alpha = 1f
-                                    isEnabled = true
+                                override fun onFailure(errorMessage: String?) {
+                                    showAlertDialog(
+                                        WeakReference(this@LoginActivity),
+                                        ERROR,
+                                        errorMessage
+                                    )
+                                    binding.apply {
+                                        svLogin.alpha = 1f
+                                        progressBarLogin.visibility = View.GONE
+                                        btnLogin.isEnabled = true
+                                    }
+                                    binding.progressBarLogin.visibility = View.GONE
                                 }
-                                binding.progressBarLogin.visibility = View.GONE
-                            }
 
-                        })
+                            })
                     }
                 }
+            }
+
+            btnGoogleLogin.setOnClickListener {
+                signInGoogle()
+            }
+
+            ivEye.setOnClickListener {
+                etPassword.togglePasswordVisibility()
+            }
+
+            tvSignup.setOnClickListener {
+                startActivity(
+                    Intent(this@LoginActivity, SignUpActivity::class.java)
+                )
             }
         }
 
 
-
-        binding.btnGoogleLogin.setOnClickListener {
-            signInGoogle()
-        }
-
-        binding.ivEye.setOnClickListener {
-            togglePasswordVisibility()
-        }
     }
 
-    private fun togglePasswordVisibility() {
-        val inputType = binding.etPassword.inputType
-        val newInputType = if (inputType == InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD) {
-            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-        } else {
-            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+    private fun navigateBasedOnRole(role: String?) {
+        val destinationClass = when (role) {
+            ROLE_RIDER -> {
+                RiderHomeActivity::class.java
+            }
+            ROLE_USER -> {
+                MainActivity::class.java
+            }
+            else -> {
+                MainActivity::class.java
+            }
         }
-        binding.etPassword.inputType = newInputType
+        loginViewModel.saveRoleInPref(role)
+        startActivity(Intent(this@LoginActivity, destinationClass))
+        finish()
     }
+
 
     private fun signInGoogle() {
         val signInIntent = googleSignInClient.signInIntent
         launcher.launch(signInIntent)
     }
 
-    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            handleResults(task)
+    private val launcher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                handleResults(task)
+            }
         }
-    }
 
     private fun handleResults(task: Task<GoogleSignInAccount>) {
         if (task.isSuccessful) {
             val account: GoogleSignInAccount? = task.result
             account?.let {
                 val credentials = GoogleAuthProvider.getCredential(account.idToken, null)
-                loginViewModel.firebaseAuthWithCredentials(credentials,object :CustomSuccessFailureListener{
-                    override fun onSuccess() {
-                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                        finish()
-                    }
+                loginViewModel.firebaseAuthWithCredentials(credentials,
+                    object : CustomSuccessFailureListener {
+                        override fun onSuccess() {
+                            loginViewModel.saveRoleInPref(ROLE_USER)
+                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                            finish()
+                        }
 
-                    override fun onFailure(errorMessage: String?) {
-                        showAlertDialog(WeakReference(this@LoginActivity),ERROR,errorMessage )
-                    }
+                        override fun onFailure(errorMessage: String?) {
+                            showAlertDialog(WeakReference(this@LoginActivity), ERROR, errorMessage)
+                        }
 
-                })
+                    })
             }
         } else {
             Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()

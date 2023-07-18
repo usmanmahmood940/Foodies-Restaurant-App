@@ -29,6 +29,7 @@
 
     <string name="name_required_error">Name field cannot be empty</string>
     <string name="email_required_error">Email field cannot be empty</string>
+    <string name="field_required_error">Field cannot be empty</string>
     <string name="password_required_error">Password field cannot be empty.</string>
     <string name="mobile_required_error">Mobile Number field cannot be empty</string>
     <string name="email_valid_error">"Provide a valid email address</string>

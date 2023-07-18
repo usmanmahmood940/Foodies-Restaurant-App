@@ -28,6 +28,12 @@
         <item name="android:background">@drawable/bg_bottom_sheet</item>
     </style>
 
+
+    // Dialog box
+    <style name="CustomDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/dialog_background</item>
+    </style>
+
    
 
 

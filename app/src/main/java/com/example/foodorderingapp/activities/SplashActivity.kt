@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.content.edit
 import com.example.foodorderingapp.RiderApp.RiderHomeActivity
+import com.example.foodorderingapp.Utils.Constants
 import com.example.foodorderingapp.Utils.Constants.FIRST_TIME_OPEN
+import com.example.foodorderingapp.Utils.Constants.ROLE_REFRENCE
 import com.example.foodorderingapp.databinding.ActivitySplashBinding
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,14 +47,31 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun getStartActivityIntent(): Intent {
+//        auth.currentUser?.isEmailVerified?:false
         return if (auth.currentUser != null) {
-            if (auth.currentUser?.uid == "E5ODMiUXLkahCFBSv0WRh6q2jh83") {
-                Intent(this, RiderHomeActivity::class.java)
-            } else {
-                Intent(this, MainActivity::class.java)
-            }
+            getIntentBasedOnRole(getRole())
         } else {
             Intent(this, LoginActivity::class.java)
         }
     }
+
+    private fun getRole():String?{
+        return sharedPreferences.getString(ROLE_REFRENCE,null)
+    }
+
+    private fun getIntentBasedOnRole(role:String?): Intent {
+        val destinationClass = when(role){
+            Constants.ROLE_RIDER -> {
+                RiderHomeActivity::class.java
+            }
+            Constants.ROLE_USER -> {
+                MainActivity::class.java
+            }
+            else -> {
+                MainActivity::class.java
+            }
+        }
+        return Intent(this@SplashActivity, destinationClass)
+    }
+
 }

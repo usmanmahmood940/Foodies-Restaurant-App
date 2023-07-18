@@ -211,6 +211,21 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/rl_google_facebook" />
 
+                <TextView
+                    android:id="@+id/tvSignup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_normal_100"
+                    android:fontFamily="@font/avenir_next_medium"
+                    android:text="Sign up"
+                    android:textColor="@color/orange"
+                    android:textSize="@dimen/font_small_100"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvForgetPass" />
+
+
+
 
 
 

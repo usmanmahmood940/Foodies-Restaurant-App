@@ -10,7 +10,7 @@
     <string name="home_banner_title">مفت ہوم ڈلیوری</string>
     <string name="label_categories">زمرے</string>
     <string name="label_popular">مشہور</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">ہیلو خالی فریگمنٹ</string>
 
     <string name="my_cart">میرا کارٹ</string>
@@ -31,6 +31,7 @@
 
     <string name="name_required_error">نام فیلڈ خالی نہیں ہو سکتا</string>
     <string name="email_required_error">ای میل فیلڈ خالی نہیں ہو سکتا</string>
+    <string name="field_required_error">فیلڈ خالی نہیں ہو سکتا</string>
     <string name="password_required_error">پاس ورڈ فیلڈ خالی نہیں ہو سکتا۔</string>
     <string name="mobile_required_error">موبائل نمبر فیلڈ خالی نہیں ہو سکتا</string>
     <string name="email_valid_error">"صحیح ای میل پتہ فراہم کریں</string>

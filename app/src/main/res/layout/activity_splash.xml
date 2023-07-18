@@ -26,17 +26,18 @@
         android:textColor="@color/white"
         android:textSize="@dimen/font_large_100"
         android:textStyle="bold"
+
         app:layout_constraintBottom_toTopOf="@+id/iv_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-         />
+        app:layout_constraintTop_toTopOf="@+id/iv_poster" />
 
     <ImageView
         android:id="@+id/iv_logo"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
-        android:padding="@dimen/padding_normal_500"
+        app:layout_constraintWidth_percent="0.65"
         app:layout_constraintBottom_toBottomOf="@+id/iv_poster"
         app:layout_constraintEnd_toEndOf="@id/iv_poster"
         app:layout_constraintStart_toStartOf="@+id/iv_poster"
@@ -52,6 +53,8 @@
         android:textColor="@color/white"
         android:textSize="@dimen/font_normal_125"
         android:textStyle="bold"
+
+        app:layout_constraintBottom_toBottomOf="@+id/iv_poster"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_logo" />
