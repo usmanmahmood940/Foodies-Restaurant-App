@@ -19,7 +19,17 @@ import java.lang.ref.WeakReference
 import java.util.*
 
 object Helper {
-    
+
+    fun showAlertDialog(context: WeakReference<Context>, title: String, message: String?) {
+        val contextRef = context.get()
+        if (contextRef != null) {
+            val alertDialog = AlertDialog.Builder(contextRef).apply {
+                setTitle(title)
+                setMessage(message)
+                show()
+            }
+        }
+    }
     fun generateRandomStringWithTime(): String {
         val timestamp = System.currentTimeMillis()
         val randomString = UUID.randomUUID().toString()
@@ -77,15 +87,7 @@ object Helper {
 
         return  Uri.parse(uri)
     }
-    fun showAlertDialog(context: WeakReference<Context>, title: String, message: String) {
-        val contextRef = context.get()
-        if (contextRef != null) {
-            val alertDialog = AlertDialog.Builder(contextRef)
-            alertDialog.setTitle(title)
-            alertDialog.setMessage(message)
-            alertDialog.show()
-        }
-    }
+
 
 
 }

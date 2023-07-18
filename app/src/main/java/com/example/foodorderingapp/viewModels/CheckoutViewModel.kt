@@ -11,6 +11,10 @@ import com.example.foodorderingapp.Utils.Constants.VALID_DISTANCE
 import com.example.foodorderingapp.Utils.Constants.ZERO_DOUBLE
 import com.example.foodorderingapp.models.Order
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.PhoneAuthCredential
+import com.google.firebase.auth.PhoneAuthOptions
+import com.google.firebase.auth.UserProfileChangeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
@@ -19,7 +23,8 @@ import javax.inject.Inject
 class CheckoutViewModel @Inject constructor(
     private val orderRepository: OrderRepository,
     private val cartManager: CartManager,
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
+    private val auth:FirebaseAuth
 ) : ViewModel() {
     var latitude: Double = ZERO_DOUBLE
     var longitude: Double = ZERO_DOUBLE

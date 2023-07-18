@@ -2,17 +2,27 @@ package com.example.foodorderingapp.activities
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.InputType
-import android.widget.EditText
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.ViewModelProvider
+import com.example.foodorderingapp.Listeners.CustomSuccessFailureListener
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.RiderApp.RiderHomeActivity
+import com.example.foodorderingapp.Utils.Constants.ERROR
+import com.example.foodorderingapp.Utils.Constants.ROLE_RIDER
+import com.example.foodorderingapp.Utils.Constants.ROLE_USER
 import com.example.foodorderingapp.Utils.Helper.isValidEmail
+import com.example.foodorderingapp.Utils.Helper.showAlertDialog
 import com.example.foodorderingapp.Utils.Helper.showError
 import com.example.foodorderingapp.databinding.ActivityLoginBinding
+import com.example.foodorderingapp.viewModels.LoginViewModel
 import com.facebook.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -22,8 +32,9 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import javax.inject.Inject
-import com.google.firebase.auth.AuthCredential
+import java.lang.ref.WeakReference
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
@@ -32,13 +43,18 @@ class LoginActivity : AppCompatActivity() {
     @Inject
     lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
-    private lateinit var callbackManager: CallbackManager
+    private lateinit var loginViewModel: LoginViewModel
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+        
         setupGoogleSignInClient()
         setupLoginListeners()
     }
@@ -52,10 +68,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupLoginListeners() {
-        auth.currentUser?.getIdToken(false)?.addOnSuccessListener {
-            Toast.makeText(this, it.token.toString(), Toast.LENGTH_LONG).show()
-        }
-
 
         with(binding) {
             btnLogin.setOnClickListener {
@@ -73,22 +85,42 @@ class LoginActivity : AppCompatActivity() {
                         etPassword.showError(getString(R.string.password_required_error))
                     }
                     else -> {
-                        auth.signInWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(this@LoginActivity) { task ->
-                                if (task.isSuccessful) {
-                                    val destinationClass =
-                                        if (auth.currentUser?.uid == "E5ODMiUXLkahCFBSv0WRh6q2jh83") {
-                                            RiderHomeActivity::class.java
-                                        } else {
-                                            MainActivity::class.java
-                                        }
-                                    startActivity(Intent(this@LoginActivity, destinationClass))
-                                    finish()
-                                } else {
-                                    Toast.makeText(this@LoginActivity, "Firebase sign-in failed", Toast.LENGTH_SHORT)
-                                        .show()
+                        binding.svLogin.apply {
+                            alpha = 0f
+                            isEnabled = false
+                        }
+                        binding.progressBarLogin.visibility = View.VISIBLE
+                        loginViewModel.firebaseAuthWithEmailPass(email,password,object :CustomSuccessFailureListener{
+                            override fun onSuccess() {
+                                auth.currentUser?.uid?.let {
+                                    loginViewModel.checkRole(it){
+                                        val destinationClass = when(it){
+                                                ROLE_RIDER -> {
+                                                    RiderHomeActivity::class.java
+                                                }
+                                                ROLE_USER -> {
+                                                    MainActivity::class.java
+                                                }
+                                                else -> {
+                                                    MainActivity::class.java
+                                                }
+                                            }
+                                        startActivity(Intent(this@LoginActivity, destinationClass))
+                                        finish()
+                                    }
                                 }
                             }
+
+                            override fun onFailure(errorMessage: String?) {
+                                showAlertDialog(WeakReference(this@LoginActivity),ERROR,errorMessage)
+                                binding.svLogin.apply {
+                                    alpha = 1f
+                                    isEnabled = true
+                                }
+                                binding.progressBarLogin.visibility = View.GONE
+                            }
+
+                        })
                     }
                 }
             }
@@ -132,22 +164,22 @@ class LoginActivity : AppCompatActivity() {
             val account: GoogleSignInAccount? = task.result
             account?.let {
                 val credentials = GoogleAuthProvider.getCredential(account.idToken, null)
-                firebaseAuthentication(credentials)
+                loginViewModel.firebaseAuthWithCredentials(credentials,object :CustomSuccessFailureListener{
+                    override fun onSuccess() {
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        finish()
+                    }
+
+                    override fun onFailure(errorMessage: String?) {
+                        showAlertDialog(WeakReference(this@LoginActivity),ERROR,errorMessage )
+                    }
+
+                })
             }
         } else {
             Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun firebaseAuthentication(credentials: AuthCredential) {
-        auth.signInWithCredential(credentials)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
-                } else {
-                    Toast.makeText(this, "Firebase sign-in failed", Toast.LENGTH_SHORT).show()
-                }
-            }
-    }
+
 }

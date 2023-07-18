@@ -20,6 +20,9 @@ object Constants {
     const val ORDER_TRACKING_REFRENCE = "orderTracking"
     const val ORDER_DELIVERY_INFO_REFRENCE = "deliveryInfo"
     const val STATUS_REFRENCE = "status"
+    const val USER_REFRENCE = "User"
+    const val MOBILE_NUMBER_REF = "mobileNumber"
+    const val ROLE_REFRENCE = "role"
 
     const val ZERO_DOUBLE = 0.0
     const val ZERO = 0
@@ -61,6 +64,9 @@ object Constants {
 
     const val INFORMATION = "Information"
     const val ERROR = "Error"
+
+    const val ROLE_USER = "User"
+    const val ROLE_RIDER = "Rider"
 
 
 

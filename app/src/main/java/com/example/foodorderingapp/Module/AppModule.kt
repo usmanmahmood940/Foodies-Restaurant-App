@@ -6,6 +6,8 @@ import androidx.work.WorkManager
 
 import com.example.foodorderingapp.CartManager
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,4 +43,9 @@ class AppModule {
     fun provideWorkManager(@ApplicationContext appContext: Context): WorkManager =
         WorkManager.getInstance(appContext)
 
+    @Provides
+    @Singleton
+    fun provideFirebaseRefrence():DatabaseReference {
+        return FirebaseDatabase.getInstance().getReference()
+    }
 }

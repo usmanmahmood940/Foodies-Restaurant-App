@@ -152,7 +152,6 @@ class CheckoutFragment : Fragment() {
                         checkoutViewModel.placeOrder(order) { success, exception ->
                             if (success) {
 
-
                                 showDialogBox(
                                     getString(R.string.information),
                                     getString(R.string.order_confirmed),
