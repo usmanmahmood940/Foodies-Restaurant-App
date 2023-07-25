@@ -1,10 +1,7 @@
 package com.example.foodorderingapp.activities
 
-import android.content.Context
 import android.content.DialogInterface
 import android.content.DialogInterface.OnDismissListener
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,19 +16,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.foodorderingapp.Listeners.CustomSuccessFailureListener
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.viewModels.SignUpViewModel
-import com.example.foodorderingapp.Utils.Constants
-import com.example.foodorderingapp.Utils.Constants.ERROR
-import com.example.foodorderingapp.Utils.Constants.INFORMATION
-import com.example.foodorderingapp.Utils.Helper.getImprovedBitmap
-import com.example.foodorderingapp.Utils.Helper.isValidEmail
+import com.example.foodorderingapp.Utils.Extensions.getImprovedBitmap
+import com.example.foodorderingapp.Utils.Extensions.isValidEmail
 import com.example.foodorderingapp.Utils.Helper.showAlertDialog
-import com.example.foodorderingapp.Utils.Helper.showError
-import com.example.foodorderingapp.Utils.Helper.toUri
-import com.example.foodorderingapp.Utils.Helper.togglePasswordVisibility
+import com.example.foodorderingapp.Utils.Extensions.showError
+import com.example.foodorderingapp.Utils.Extensions.toUri
+import com.example.foodorderingapp.Utils.Extensions.togglePasswordVisibility
 import com.example.foodorderingapp.databinding.ActivitySignUpBinding
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.ByteArrayOutputStream
-import java.io.File
 import java.lang.ref.WeakReference
 
 @AndroidEntryPoint
@@ -90,8 +82,8 @@ class SignUpActivity : AppCompatActivity() {
             override fun onSuccess() {
                 showAlertDialog(
                     WeakReference(this@SignUpActivity),
-                    INFORMATION,
-                    "Please verify your email",
+                    getString(R.string.information),
+                    getString(R.string.email_verify),
                     object : OnDismissListener {
                         override fun onDismiss(dialog: DialogInterface?) {
                             finish()
@@ -100,6 +92,7 @@ class SignUpActivity : AppCompatActivity() {
                 )
 
             }
+
             override fun onFailure(errorMessage: String?) {
                 binding.apply {
                     svSignup.alpha = 1f
@@ -108,7 +101,7 @@ class SignUpActivity : AppCompatActivity() {
                 }
                 showAlertDialog(
                     WeakReference(this@SignUpActivity),
-                    Constants.ERROR,
+                    getString(R.string.error),
                     errorMessage
                 )
 
@@ -176,8 +169,8 @@ class SignUpActivity : AppCompatActivity() {
                 (imageUri == null) -> {
                     showAlertDialog(
                         WeakReference(this@SignUpActivity),
-                        ERROR,
-                        "Please Upload Image"
+                        getString(R.string.error),
+                        getString(R.string.upload_image)
                     )
                 }
                 else -> {
@@ -192,13 +185,13 @@ class SignUpActivity : AppCompatActivity() {
                         name,
                         mobileNumber,
                         imageUri!!,
-                        signupListener)
+                        signupListener
+                    )
                 }
             }
         }
 
     }
-
 
 
 }

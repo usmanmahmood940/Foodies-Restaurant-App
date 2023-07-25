@@ -14,11 +14,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.foodorderingapp.adapter.FoodItemAdapter
 import com.example.foodorderingapp.BottomSheet.AddToCartBottomSheet
 import com.example.foodorderingapp.Listeners.FoodItemClickListener
+import com.example.foodorderingapp.R
 import com.example.foodorderingapp.Response.CustomResponse
+import com.example.foodorderingapp.Utils.Helper
 import com.example.foodorderingapp.viewModels.SearchViewModel
 import com.example.foodorderingapp.databinding.FragmentSearchBinding
 import com.example.foodorderingapp.models.FoodItem
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.ref.WeakReference
 
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
@@ -75,7 +78,11 @@ class SearchFragment : Fragment() {
                 }
                 is CustomResponse.Error -> {
                     binding.progressBarSearch.visibility = View.GONE
-                    showDialogBox("Error", response.errorMessage.toString())
+                    Helper.showAlertDialog(
+                        WeakReference(requireContext()),
+                        getString(R.string.error),
+                        response.errorMessage.toString()
+                    )
                 }
                 else -> {}
             }
@@ -95,10 +102,4 @@ class SearchFragment : Fragment() {
         })
     }
 
-    private fun showDialogBox(title: String, message: String) {
-        val alertDialog = AlertDialog.Builder(requireActivity())
-        alertDialog.setTitle(title)
-        alertDialog.setMessage(message)
-        alertDialog.show()
-    }
 }

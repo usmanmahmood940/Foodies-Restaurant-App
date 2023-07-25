@@ -1,6 +1,5 @@
 package com.example.foodorderingapp.fragments
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,6 +20,7 @@ import com.example.foodorderingapp.viewModels.HomeViewModel
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.Response.CustomResponse
 import com.example.foodorderingapp.Utils.Constants
+import com.example.foodorderingapp.Utils.Helper.showAlertDialog
 import com.example.foodorderingapp.databinding.FragmentHomeBinding
 import com.example.foodorderingapp.models.Category
 import com.example.foodorderingapp.models.FoodItem
@@ -28,6 +28,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -159,7 +160,7 @@ class HomeFragment : Fragment() {
                 }
                 is CustomResponse.Error -> {
                     binding.progressBarCategory.visibility = View.GONE
-                    showDialogBox("Error Message", response.errorMessage.toString())
+                    showAlertDialog(WeakReference(requireContext()),getString(R.string.error), response.errorMessage.toString())
                 }
             }
         }
@@ -186,7 +187,7 @@ class HomeFragment : Fragment() {
                 }
                 is CustomResponse.Error -> {
                     binding.progressBarFooditem.visibility = View.GONE
-                    showDialogBox("Error Message", response.errorMessage.toString())
+                    showAlertDialog(WeakReference(requireContext()),getString(R.string.error), response.errorMessage.toString())
                 }
             }
         }
@@ -206,10 +207,4 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun showDialogBox(title: String, message: String) {
-        val alertDialog = AlertDialog.Builder(requireActivity())
-        alertDialog.setTitle(title)
-        alertDialog.setMessage(message)
-        alertDialog.show()
-    }
 }

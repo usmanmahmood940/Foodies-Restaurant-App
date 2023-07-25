@@ -2,27 +2,21 @@ package com.example.foodorderingapp.activities
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.InputType
 import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
 import com.example.foodorderingapp.Listeners.CustomSuccessFailureListener
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.RiderApp.RiderHomeActivity
-import com.example.foodorderingapp.Utils.Constants.ERROR
-import com.example.foodorderingapp.Utils.Constants.INFORMATION
 import com.example.foodorderingapp.Utils.Constants.ROLE_RIDER
 import com.example.foodorderingapp.Utils.Constants.ROLE_USER
-import com.example.foodorderingapp.Utils.Helper.isValidEmail
+import com.example.foodorderingapp.Utils.Extensions.isValidEmail
 import com.example.foodorderingapp.Utils.Helper.showAlertDialog
-import com.example.foodorderingapp.Utils.Helper.showError
-import com.example.foodorderingapp.Utils.Helper.togglePasswordVisibility
+import com.example.foodorderingapp.Utils.Extensions.showError
+import com.example.foodorderingapp.Utils.Extensions.togglePasswordVisibility
 import com.example.foodorderingapp.databinding.ActivityLoginBinding
 import com.example.foodorderingapp.viewModels.LoginViewModel
 import com.facebook.*
@@ -34,7 +28,6 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 import java.lang.ref.WeakReference
 
@@ -97,27 +90,26 @@ class LoginActivity : AppCompatActivity() {
                             object : CustomSuccessFailureListener {
                                 override fun onSuccess() {
                                     auth.currentUser?.apply {
-                                        if (isEmailVerified) {
+//                                        if (isEmailVerified) {
                                             uid?.let { uid ->
                                                 loginViewModel.checkRole(uid) { role ->
                                                     navigateBasedOnRole(role)
                                                 }
                                             }
-                                        } else {
-                                            sendEmailVerification()
-                                            showAlertDialog(
-                                                WeakReference(this@LoginActivity),
-                                                INFORMATION, "Please verify your email"
-                                            )
-
-                                        }
+//                                        } else {
+//                                            sendEmailVerification()
+//                                            showAlertDialog(
+//                                                WeakReference(this@LoginActivity),
+//                                                getString(R.string.information), getString(R.string.email_verify)
+//                                            )
+//                                        }
                                     }
                                 }
 
                                 override fun onFailure(errorMessage: String?) {
                                     showAlertDialog(
                                         WeakReference(this@LoginActivity),
-                                        ERROR,
+                                        getString(R.string.error),
                                         errorMessage
                                     )
                                     binding.apply {
@@ -196,7 +188,7 @@ class LoginActivity : AppCompatActivity() {
                         }
 
                         override fun onFailure(errorMessage: String?) {
-                            showAlertDialog(WeakReference(this@LoginActivity), ERROR, errorMessage)
+                            showAlertDialog(WeakReference(this@LoginActivity), getString(R.string.error), errorMessage)
                         }
 
                     })

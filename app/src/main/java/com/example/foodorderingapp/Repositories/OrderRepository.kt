@@ -26,7 +26,7 @@ class OrderRepository @Inject constructor(private val workManager: WorkManager) 
     private var valueEventListener: ValueEventListener? = null
     private var valueEventListenerOrdersList: ValueEventListener? = null
 
-    private val _runningOrder = MutableLiveData<CustomResponse<Order>>()
+    private val _runningOrder = MutableLiveData<CustomResponse<Order>>(CustomResponse.Loading())
     val runningOrder: LiveData<CustomResponse<Order>>
         get() = _runningOrder
 

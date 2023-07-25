@@ -1,5 +1,6 @@
 package com.example.foodorderingapp.activities
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -14,8 +15,10 @@ import com.example.foodorderingapp.Utils.Constants
 import com.example.foodorderingapp.Utils.Constants.FULL_SCREEN_OPACITY
 import com.example.foodorderingapp.Utils.Constants.HALF_SCREEN_OPACITY
 import com.example.foodorderingapp.Utils.Constants.RUNNING_ORDER
+import com.example.foodorderingapp.Utils.Helper.showAlertDialog
 import com.example.foodorderingapp.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 
@@ -72,11 +75,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkRunningOrder() {
         if (sharedPreferences.getBoolean(RUNNING_ORDER, false)) {
-            binding.fragmentContainerView.alpha = HALF_SCREEN_OPACITY
-            binding.progressBarMain.visibility = View.INVISIBLE
-            startActivity(Intent(this, OrderTrackingActivity::class.java))
-            binding.fragmentContainerView.alpha = FULL_SCREEN_OPACITY
-            binding.progressBarMain.visibility = View.GONE
+            showAlertDialog(
+                WeakReference(this@MainActivity,),
+                getString(R.string.information),
+                getString(R.string.view_running_order),
+                positiveListener = object : DialogInterface.OnClickListener{
+                    override fun onClick(dialog: DialogInterface?, which: Int) {
+                        startActivity(Intent(this@MainActivity, OrderTrackingActivity::class.java))
+                    }
+                },
+                positiveButtonText = getString(R.string.view)
+            )
         }
     }
 

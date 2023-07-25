@@ -1,7 +1,6 @@
 package com.example.foodorderingapp.RiderApp
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -11,24 +10,22 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.foodorderingapp.R
 import com.example.foodorderingapp.Response.CustomResponse
 import com.example.foodorderingapp.RiderApp.Services.RiderLocationService
 import com.example.foodorderingapp.RiderApp.ViewModels.RiderHomeViewModel
 import com.example.foodorderingapp.Utils.Constants
-import com.example.foodorderingapp.Utils.Constants.ERROR
-import com.example.foodorderingapp.Utils.Constants.INFORMATION
-import com.example.foodorderingapp.Utils.Constants.ORDER_IN_DELIVERY
-import com.example.foodorderingapp.Utils.Constants.RIDER_ORDER_ID
+import com.example.foodorderingapp.Utils.Constants.RUNNING_RIDER_ORDER_ID
+import com.example.foodorderingapp.Utils.Helper
+import com.example.foodorderingapp.Utils.Helper.showAlertDialog
 import com.example.foodorderingapp.databinding.ActivityRiderHomeBinding
 import com.example.foodorderingapp.models.DeliveryInfo
 import com.example.foodorderingapp.models.DriverInfo
 import com.example.foodorderingapp.models.Order
 import com.example.foodorderingapp.models.OrderTracking
-import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
@@ -38,6 +35,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -60,7 +58,7 @@ class RiderHomeActivity : AppCompatActivity() {
         val orderId = riderViewModel.checkRunningOrder()
         if (orderId != null) {
             startActivity(Intent(this, RiderMapActivity::class.java).apply {
-                putExtra(RIDER_ORDER_ID, orderId)
+                putExtra(RUNNING_RIDER_ORDER_ID, orderId)
             })
             finish()
         } else {
@@ -122,7 +120,11 @@ class RiderHomeActivity : AppCompatActivity() {
                                     }
                                 }
                                 if (it == null) {
-                                    showDialogBox(INFORMATION, "Enable Location")
+                                    Helper.showAlertDialog(
+                                        WeakReference(this@RiderHomeActivity),
+                                        getString(R.string.information),
+                                        getString(R.string.enable_location)
+                                    )
                                 }
                             }
 
@@ -151,7 +153,7 @@ class RiderHomeActivity : AppCompatActivity() {
                     }
                 }
                 is CustomResponse.Error -> {
-                    showDialogBox(ERROR, it.errorMessage)
+                    showAlertDialog(WeakReference(this@RiderHomeActivity),getString(R.string.error), it.errorMessage)
                 }
                 else -> {}
             }
@@ -202,8 +204,6 @@ class RiderHomeActivity : AppCompatActivity() {
 
                     }
                 }
-
-
         }
 
     }
@@ -233,17 +233,10 @@ class RiderHomeActivity : AppCompatActivity() {
                 locationPermission.value = true
             } else {
                 locationPermission.value = false
-                showDialogBox("Permission Denied", "Location permission denied.")
+                showAlertDialog(WeakReference(this@RiderHomeActivity),getString(R.string.permission_denied), getString(R.string.location_permission_denied))
             }
 
         }
-
-    private fun showDialogBox(title: String, message: String?) {
-        val alertDialog = AlertDialog.Builder(this)
-        alertDialog.setTitle(title)
-        alertDialog.setMessage(message)
-        alertDialog.show()
-    }
 
     override fun onBackPressed() {
         super.onBackPressed()

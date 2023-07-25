@@ -61,5 +61,18 @@
     <string name="error">Error</string>
     <string name="order_confirmed">Your Order is Confirmed</string>
 
+    <string name="email_verify">Please verify your email</string>
+    <string name="order_delivered_message">Enjoy Your Order</string>
+    <string name="upload_image">"Please Upload Image"</string>
+    <string name="permission_denied">Permission Denied</string>
+    <string name="enable_location">"Enable Location"</string>
+    <string name="location_permission_denied">Location permission denied.</string>
+    <string name="customer_location">Customer Location</string>
+    <string name="rider_location">Rider Location</string>
+    <string name="your_location">Your Location</string>
+    <string name="wait">Wait for a while</string>
+    <string name="view">View</string>
+    <string name="view_running_order">View Running Order</string>
+
 
 </resources>

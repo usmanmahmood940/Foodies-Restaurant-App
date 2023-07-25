@@ -49,7 +49,7 @@ class MapsFragment : Fragment() {
             if (isGranted) {
                 updateMap()
             } else {
-                Toast.makeText(requireContext(), "Permission Denied", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.permission_denied), Toast.LENGTH_SHORT).show()
             }
         }
 
