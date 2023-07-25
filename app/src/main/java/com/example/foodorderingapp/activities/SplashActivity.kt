@@ -47,7 +47,6 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun getStartActivityIntent(): Intent {
-//        auth.currentUser?.isEmailVerified?:false
         return if (auth.currentUser != null) {
             getIntentBasedOnRole(getRole())
         } else {

@@ -2,9 +2,11 @@ package com.example.foodorderingapp.viewModels
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.foodorderingapp.Listeners.CustomSuccessFailureListener
 import com.example.foodorderingapp.Repositories.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,7 +22,9 @@ class SignUpViewModel @Inject constructor(
         imageUri: Uri,
         listener: CustomSuccessFailureListener
     ){
-        userRepository.signUp(email,password,name,mobileNumner,imageUri,listener)
+        viewModelScope.launch {
+            userRepository.signUp(email, password, name, mobileNumner, imageUri, listener)
+        }
     }
 
 }

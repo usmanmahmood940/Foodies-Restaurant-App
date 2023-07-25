@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.foodorderingapp.adapter.FoodItemAdapter
@@ -21,6 +22,7 @@ import com.example.foodorderingapp.viewModels.SearchViewModel
 import com.example.foodorderingapp.databinding.FragmentSearchBinding
 import com.example.foodorderingapp.models.FoodItem
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
 @AndroidEntryPoint
@@ -62,29 +64,32 @@ class SearchFragment : Fragment() {
     }
 
     private fun observeFoodItemList() {
-        searchViewModel.foodItemList.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is CustomResponse.Loading -> {
-                    binding.progressBarSearch.visibility = View.VISIBLE
-                    binding.rvSearchFood.visibility = View.INVISIBLE
-                }
-                is CustomResponse.Success -> {
-                    binding.progressBarSearch.visibility = View.GONE
-                    binding.rvSearchFood.visibility = View.VISIBLE
-                    if (response.data != null) {
-                        val list = searchViewModel.getFoodItemsByQuery(searchViewModel.query?:"")
-                        foodItemAdapter.setList(list)
+        lifecycleScope.launch {
+            searchViewModel.foodItemList.collect{ response ->
+                when (response) {
+                    is CustomResponse.Loading -> {
+                        binding.progressBarSearch.visibility = View.VISIBLE
+                        binding.rvSearchFood.visibility = View.INVISIBLE
                     }
+                    is CustomResponse.Success -> {
+                        binding.progressBarSearch.visibility = View.GONE
+                        binding.rvSearchFood.visibility = View.VISIBLE
+                        if (response.data != null) {
+                            val list =
+                                searchViewModel.getFoodItemsByQuery(searchViewModel.query ?: "")
+                            foodItemAdapter.setList(list)
+                        }
+                    }
+                    is CustomResponse.Error -> {
+                        binding.progressBarSearch.visibility = View.GONE
+                        Helper.showAlertDialog(
+                            WeakReference(requireContext()),
+                            getString(R.string.error),
+                            response.errorMessage.toString()
+                        )
+                    }
+                    else -> {}
                 }
-                is CustomResponse.Error -> {
-                    binding.progressBarSearch.visibility = View.GONE
-                    Helper.showAlertDialog(
-                        WeakReference(requireContext()),
-                        getString(R.string.error),
-                        response.errorMessage.toString()
-                    )
-                }
-                else -> {}
             }
         }
     }
