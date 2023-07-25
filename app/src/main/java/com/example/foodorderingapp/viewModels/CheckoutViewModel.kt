@@ -6,15 +6,12 @@ import androidx.core.content.edit
 import androidx.lifecycle.ViewModel
 import com.example.foodorderingapp.CartManager
 import com.example.foodorderingapp.Repositories.OrderRepository
-import com.example.foodorderingapp.Utils.Constants.ORDER_ID
+import com.example.foodorderingapp.Utils.Constants.RUNNING_ORDER_ID
 import com.example.foodorderingapp.Utils.Constants.VALID_DISTANCE
 import com.example.foodorderingapp.Utils.Constants.ZERO_DOUBLE
 import com.example.foodorderingapp.models.Order
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthOptions
-import com.google.firebase.auth.UserProfileChangeRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
@@ -62,7 +59,7 @@ class CheckoutViewModel @Inject constructor(
             if (success) {
                 cartManager.clearCart()
                 sharedPreferences.edit{
-                   putString(ORDER_ID,orderId)
+                   putString(RUNNING_ORDER_ID,orderId)
                    apply()
                 }
                 callback(success,null)

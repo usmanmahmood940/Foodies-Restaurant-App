@@ -29,12 +29,13 @@ class UserRepository @Inject constructor(
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    if (task.result.user?.isEmailVerified ?: false) {
-                        listener.onSuccess()
-                    } else {
-                        task.result.user?.sendEmailVerification()
-                        listener.onFailure("Please Verified Your email")
-                    }
+//                    if (task.result.user?.isEmailVerified ?: false) {
+//                        listener.onSuccess()
+//                    } else {
+//                        task.result.user?.sendEmailVerification()
+//                        listener.onFailure("Please Verified Your email")
+//                    }
+                    listener.onSuccess()
                 } else {
                     listener.onFailure(task.exception?.message)
 
@@ -134,6 +135,7 @@ class UserRepository @Inject constructor(
                         .setDisplayName(name)
                         .setPhotoUri(imageUri)
                         .build()
+                    
                     task.result.user?.apply {
                         sendEmailVerification()
                         updateProfile(displayNameUpdate)

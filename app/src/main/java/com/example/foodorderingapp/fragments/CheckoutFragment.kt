@@ -1,6 +1,6 @@
 package com.example.foodorderingapp.fragments
 
-import android.app.AlertDialog
+
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
@@ -23,8 +23,9 @@ import com.example.foodorderingapp.Utils.Constants.LONGITUDE
 import com.example.foodorderingapp.Utils.Constants.MY_LATITUDE
 import com.example.foodorderingapp.Utils.Constants.MY_LONGITUDE
 import com.example.foodorderingapp.Utils.Helper.getAddressFromLocation
-import com.example.foodorderingapp.Utils.Helper.isValidEmail
-import com.example.foodorderingapp.Utils.Helper.showError
+import com.example.foodorderingapp.Utils.Extensions.isValidEmail
+import com.example.foodorderingapp.Utils.Extensions.showError
+import com.example.foodorderingapp.Utils.Helper.showAlertDialog
 import com.example.foodorderingapp.Utils.NetworkUtils.Companion.checkForInternet
 import com.example.foodorderingapp.activities.OrderTrackingActivity
 import com.example.foodorderingapp.databinding.FragmentCheckoutBinding
@@ -35,6 +36,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import dagger.hilt.android.AndroidEntryPoint
+import java.lang.ref.WeakReference
 import java.util.*
 import javax.inject.Inject
 
@@ -108,7 +110,11 @@ class CheckoutFragment : Fragment() {
         checkoutViewModel.distance = checkoutViewModel.calculateDistanceInKm(restaurantLatLng, chosenLatLng)
 
         if (!checkoutViewModel.validDistance()) {
-            showDialogBox(getString(R.string.area_error), getString(R.string.delivery_area_error))
+            showAlertDialog(
+                context = WeakReference(requireContext()),
+                title = getString(R.string.area_error),
+                message = getString(R.string.delivery_area_error)
+            )
         }
     }
 
@@ -137,7 +143,7 @@ class CheckoutFragment : Fragment() {
                     etAddress.isFocusableInTouchMode = false
                 }
                 !checkoutViewModel.validDistance() -> {
-                    showDialogBox(getString(R.string.area_error), getString(R.string.delivery_area_error))
+                    showAlertDialog(WeakReference(requireContext()), getString(R.string.area_error), getString(R.string.delivery_area_error))
                 }
                 else -> {
                     val customerInfo = createCustomerInfo()
@@ -152,7 +158,7 @@ class CheckoutFragment : Fragment() {
                         checkoutViewModel.placeOrder(order) { success, exception ->
                             if (success) {
 
-                                showDialogBox(
+                                showAlertDialog(WeakReference(requireContext()),
                                     getString(R.string.information),
                                     getString(R.string.order_confirmed),
                                     positiveListener = object : DialogInterface.OnClickListener{
@@ -161,7 +167,7 @@ class CheckoutFragment : Fragment() {
                                         }
 
                                     },
-                                    dismissListener = object : DialogInterface.OnDismissListener{
+                                    onDismissListener = object : DialogInterface.OnDismissListener{
                                         override fun onDismiss(dialog: DialogInterface?) {
                                             navigateToOrderTracking()
                                         }
@@ -170,11 +176,11 @@ class CheckoutFragment : Fragment() {
                                 )
 
                             } else {
-                                showDialogBox(getString(R.string.error), exception?.message.toString())
+                                showAlertDialog(WeakReference(requireContext()),getString(R.string.error), exception?.message.toString())
                             }
                         }
                     } else {
-                        showDialogBox(getString(R.string.information), getString(R.string.internet_error_msg))
+                        showAlertDialog(WeakReference(requireContext()),getString(R.string.information), getString(R.string.internet_error_msg))
                     }
                 }
             }
@@ -192,7 +198,8 @@ class CheckoutFragment : Fragment() {
         return CustomerInfo(
             name = binding.etName.text.toString().trim(),
             email = binding.etEmail.text.toString().trim(),
-            phoneNumner = binding.etMobileNum.text.toString().trim()
+            phoneNumner = binding.etMobileNum.text.toString().trim(),
+            id= auth.currentUser?.uid
         )
     }
 
@@ -236,22 +243,4 @@ class CheckoutFragment : Fragment() {
         )
     }
 
-    private fun showDialogBox(
-        title: String,
-        message: String,
-        dismissListener: DialogInterface.OnDismissListener? = null,
-        positiveListener: DialogInterface.OnClickListener?=null
-    ) {
-        val alertDialog = AlertDialog.Builder(requireActivity()).apply {
-            setTitle(title)
-            setMessage(message)
-        }
-        positiveListener?.let {
-            alertDialog.setPositiveButton("Ok",positiveListener)
-        }
-        dismissListener?.let {
-            alertDialog.setOnDismissListener(dismissListener)
-        }
-        alertDialog.show()
-    }
 }

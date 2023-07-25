@@ -26,29 +26,6 @@ class FoodItemRepository  @Inject constructor() {
         foodItemLiveData.value = CustomResponse.Loading()
     }
 
-
-
-    fun createFoodItem(foodItem: FoodItem, callback: (Boolean, Exception?) -> Unit) {
-
-        val id = databaseReference.push().key ?: generateRandomStringWithTime()
-        val newFoodItem = FoodItem(
-            id,
-            foodItem.title,
-            foodItem.image,
-            foodItem.description,
-            foodItem.price,
-            foodItem.categoryId
-        )
-        databaseReference.child(id).setValue(newFoodItem)
-            .addOnSuccessListener {
-                callback(true, null) // Success: FoodItem created
-            }
-            .addOnFailureListener { exception ->
-                callback(false, exception) // Error: Failed to create FoodItem
-            }
-
-    }
-
     fun getFoodItemList() {
         foodItemLiveData.value = CustomResponse.Loading()
         valueEventListener = object : ValueEventListener {
@@ -74,6 +51,28 @@ class FoodItemRepository  @Inject constructor() {
         valueEventListener?.let {
             databaseReference.removeEventListener(it)
         }
+    }
+
+
+    fun createFoodItem(foodItem: FoodItem, callback: (Boolean, Exception?) -> Unit) {
+
+        val id = databaseReference.push().key ?: generateRandomStringWithTime()
+        val newFoodItem = FoodItem(
+            id,
+            foodItem.title,
+            foodItem.image,
+            foodItem.description,
+            foodItem.price,
+            foodItem.categoryId
+        )
+        databaseReference.child(id).setValue(newFoodItem)
+            .addOnSuccessListener {
+                callback(true, null) // Success: FoodItem created
+            }
+            .addOnFailureListener { exception ->
+                callback(false, exception) // Error: Failed to create FoodItem
+            }
+
     }
 
 }

@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodorderingapp.adapter.CartAdapter
 import com.example.foodorderingapp.CartItemTouchHelperCallback
-import com.example.foodorderingapp.Utils.Constants.ZERO
 import com.example.foodorderingapp.viewModels.CartViewModel
 import com.example.foodorderingapp.databinding.FragmentCartBinding
 import com.example.foodorderingapp.models.Amounts

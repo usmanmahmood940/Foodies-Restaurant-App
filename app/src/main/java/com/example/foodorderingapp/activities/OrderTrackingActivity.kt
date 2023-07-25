@@ -1,33 +1,35 @@
 package com.example.foodorderingapp.activities
 
-import android.app.AlertDialog
+import android.content.DialogInterface
+import android.content.DialogInterface.OnDismissListener
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.content.edit
 import androidx.lifecycle.ViewModelProvider
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.Response.CustomResponse
-import com.example.foodorderingapp.Utils.Constants
-import com.example.foodorderingapp.Utils.Constants.ERROR
-import com.example.foodorderingapp.Utils.Constants.INFORMATION
+import com.example.foodorderingapp.Utils.Constants.FULL_SCREEN_OPACITY
+import com.example.foodorderingapp.Utils.Constants.HALF_SCREEN_OPACITY
+import com.example.foodorderingapp.Utils.Constants.MAP_ZOOM_HEIGHT
+import com.example.foodorderingapp.Utils.Constants.MAP_ZOOM_WIDTH
 import com.example.foodorderingapp.Utils.Constants.MY_LOCATION
 import com.example.foodorderingapp.Utils.Constants.ORDER_ASSIGNING
 import com.example.foodorderingapp.Utils.Constants.ORDER_DELIVERED
-import com.example.foodorderingapp.Utils.Constants.ORDER_ID
+import com.example.foodorderingapp.Utils.Constants.RUNNING_ORDER_ID
 import com.example.foodorderingapp.Utils.Constants.ORDER_IN_DELIVERY
 import com.example.foodorderingapp.Utils.Constants.ORDER_PROCEED
 import com.example.foodorderingapp.Utils.Constants.PROGRESS_50
 import com.example.foodorderingapp.Utils.Constants.PROGRESS_85
 import com.example.foodorderingapp.Utils.Constants.RIDER_LOCATION
 import com.example.foodorderingapp.Utils.Constants.RUNNING_ORDER
+import com.example.foodorderingapp.Utils.Constants.ZERO
 import com.example.foodorderingapp.Utils.Helper.getCustomMapIcon
+import com.example.foodorderingapp.Utils.Helper.showAlertDialog
 import com.example.foodorderingapp.databinding.ActivityOrderTrackingBinding
 import com.example.foodorderingapp.models.DeliveryInfo
 import com.example.foodorderingapp.models.Order
-import com.example.foodorderingapp.models.OrderTracking
 import com.example.foodorderingapp.viewModels.OrderTrackingViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -38,9 +40,7 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -61,67 +61,126 @@ class OrderTrackingActivity : AppCompatActivity(), OnMapReadyCallback {
 
         orderTrackingViewModel = ViewModelProvider(this).get(OrderTrackingViewModel::class.java)
 
-        val mapFragment = supportFragmentManager.findFragmentById(R.id.map_order_tracking) as SupportMapFragment
+        val mapFragment =
+            supportFragmentManager.findFragmentById(R.id.map_order_tracking) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         orderTrackingViewModel.runningOrder.observe(this) { response ->
             when (response) {
-                is CustomResponse.Success -> handleSuccessResponse(response.data)
-                is CustomResponse.Error -> handleError(response.errorMessage.toString())
+                is CustomResponse.Loading -> {
+                    binding.apply {
+                        progressBarLoading.visibility = View.VISIBLE
+                        clOrderTracking.alpha = 0.1f
+                    }
+                }
+                is CustomResponse.Success -> {
+                    binding.apply {
+                        progressBarLoading.visibility = View.GONE
+                        clOrderTracking.alpha = FULL_SCREEN_OPACITY
+                    }
+                    handleSuccessResponse(response.data)
+                }
+                is CustomResponse.Error -> {
+                    binding.apply {
+                        progressBarLoading.visibility = View.GONE
+                        clOrderTracking.alpha = FULL_SCREEN_OPACITY
+                    }
+                    handleError(response.errorMessage.toString())
+                }
                 else -> {}
             }
         }
 
-        sharedPreferences.getString(ORDER_ID, null)?.let { orderId ->
+        sharedPreferences.getString(RUNNING_ORDER_ID, null)?.let { orderId ->
             orderTrackingViewModel.startObservingOrder(orderId)
         }
     }
 
     private fun handleSuccessResponse(data: Order?) {
-        data?.orderTracking?.let { orderTracking ->
-            when (orderTracking.status) {
+        data?.orderTracking?.apply {
+            when (status) {
                 ORDER_PROCEED -> {
-                    binding.ivGifCooking.visibility = View.VISIBLE
-                    binding.rlMap.visibility = View.GONE
-                    binding.pbTracking.progress = PROGRESS_50
-                    binding.tvOrderProceedCircle.background = getDrawable(R.drawable.shape_circle_btn_orange)
-                    binding.tvOrderProceed.text = ORDER_PROCEED
-                    binding.tvTrackingLabel.text = ORDER_ASSIGNING
+                    handleOrderProceedStatus()
                 }
                 ORDER_IN_DELIVERY -> {
-                    binding.ivGifCooking.visibility = View.GONE
-                    binding.rlMap.visibility = View.VISIBLE
-                    binding.pbTracking.progress = PROGRESS_85
-                    binding.tvOrderProceedCircle.background = getDrawable(R.drawable.shape_circle_btn_orange)
-                    binding.tvDileveryCircle.background = getDrawable(R.drawable.shape_circle_btn_orange)
-                    binding.tvDilevery.text = ORDER_IN_DELIVERY
-                    binding.tvTrackingLabel.text = ORDER_IN_DELIVERY
-                    data.orderTracking.deliveryInfo?.let { deliveryInfo ->
-                        setupMapLatLng(deliveryInfo, data.customerDeliveryInfo)
+                    deliveryInfo?.let { deliveryInfo ->
+                        handleOrderInDeliverStatus(deliveryInfo,data.customerDeliveryInfo)
                     }
                 }
                 ORDER_DELIVERED -> {
-                    sharedPreferences.edit {
-                        putString(ORDER_ID, null)
-                        putBoolean(RUNNING_ORDER, false)
-                        apply()
-                    }
-                    showInformationDialog("Enjoy your Order")
-                    finish()
+                    handleOrderDeliveredStatus()
                 }
                 else -> {}
             }
         }
     }
 
-    private fun handleError(errorMessage: String) {
-        showErrorDialog(errorMessage)
+
+
+    private fun handleOrderProceedStatus() {
+        with(binding) {
+            ivGifCooking.visibility = View.VISIBLE
+            rlMap.visibility = View.GONE
+            pbTracking.progress = PROGRESS_50
+            tvOrderProceedCircle.background = getDrawable(R.drawable.shape_circle_btn_orange)
+            tvOrderProceed.text = ORDER_PROCEED
+            tvTrackingLabel.text = ORDER_ASSIGNING
+        }
     }
 
-    private fun setupMapLatLng(riderDeliveryInfo: DeliveryInfo, customerDeliveryInfo: DeliveryInfo) {
-        val riderLatLng = LatLng(riderDeliveryInfo.locationLatitude, riderDeliveryInfo.locationLongitude)
+    private fun handleOrderInDeliverStatus(deliveryInfo:DeliveryInfo,customerDeliveryInfo: DeliveryInfo) {
+        with(binding) {
+            ivGifCooking.visibility = View.GONE
+            rlMap.visibility = View.VISIBLE
+            pbTracking.progress = PROGRESS_85
+            tvOrderProceedCircle.background = getDrawable(R.drawable.shape_circle_btn_orange)
+            tvDileveryCircle.background = getDrawable(R.drawable.shape_circle_btn_orange)
+            tvDilevery.text = ORDER_IN_DELIVERY
+            tvTrackingLabel.text = ORDER_IN_DELIVERY
+            deliveryInfo?.let { deliveryInfo ->
+                setupMapLatLng(deliveryInfo, customerDeliveryInfo)
+            }
+        }
+    }
+
+    private fun handleOrderDeliveredStatus(){
+        sharedPreferences.edit {
+            putString(RUNNING_ORDER_ID, null)
+            putBoolean(RUNNING_ORDER, false)
+            apply()
+        }
+        showAlertDialog(
+            WeakReference(this@OrderTrackingActivity),
+            getString(R.string.information),
+            getString(R.string.order_delivered_message),
+            onDismissListener = object : OnDismissListener {
+                override fun onDismiss(dialog: DialogInterface?) {
+                    finish()
+                }
+            }
+        )
+    }
+
+
+    private fun handleError(errorMessage: String) {
+        showAlertDialog(
+            WeakReference(this@OrderTrackingActivity),
+            getString(R.string.error),
+            errorMessage
+        )
+    }
+
+    private fun setupMapLatLng(
+        riderDeliveryInfo: DeliveryInfo,
+        customerDeliveryInfo: DeliveryInfo,
+    ) {
+        val riderLatLng =
+            LatLng(riderDeliveryInfo.locationLatitude, riderDeliveryInfo.locationLongitude)
         if (riderMarker == null) {
-            val customerLatLng = LatLng(customerDeliveryInfo.locationLatitude, customerDeliveryInfo.locationLongitude)
+            val customerLatLng = LatLng(
+                customerDeliveryInfo.locationLatitude,
+                customerDeliveryInfo.locationLongitude
+            )
 
             googleMap.addMarker(
                 MarkerOptions()
@@ -140,7 +199,14 @@ class OrderTrackingActivity : AppCompatActivity(), OnMapReadyCallback {
             val boundsBuilder = LatLngBounds.Builder()
             boundsBuilder.include(customerLatLng!!)
             boundsBuilder.include(riderLatLng)
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(), 500, 500, 0))
+            googleMap.moveCamera(
+                CameraUpdateFactory.newLatLngBounds(
+                    boundsBuilder.build(),
+                    MAP_ZOOM_WIDTH,
+                    MAP_ZOOM_HEIGHT,
+                    ZERO
+                )
+            )
 
         } else {
             riderMarker?.position = riderLatLng
@@ -151,17 +217,4 @@ class OrderTrackingActivity : AppCompatActivity(), OnMapReadyCallback {
         this.googleMap = googleMap
     }
 
-    private fun showInformationDialog(message: String) {
-        AlertDialog.Builder(this)
-            .setTitle(INFORMATION)
-            .setMessage(message)
-            .show()
-    }
-
-    private fun showErrorDialog(errorMessage: String) {
-        AlertDialog.Builder(this)
-            .setTitle(ERROR)
-            .setMessage(errorMessage)
-            .show()
-    }
 }

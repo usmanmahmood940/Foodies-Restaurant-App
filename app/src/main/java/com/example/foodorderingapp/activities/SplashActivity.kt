@@ -56,7 +56,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun getRole():String?{
-        return sharedPreferences.getString(ROLE_REFRENCE,null)
+        return sharedPreferences.getString(ROLE_REFRENCE,Constants.ROLE_RIDER)
     }
 
     private fun getIntentBasedOnRole(role:String?): Intent {

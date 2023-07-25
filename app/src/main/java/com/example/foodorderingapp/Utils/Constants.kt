@@ -11,7 +11,7 @@ object Constants {
     const val LATITUDE = "Latitude"
     const val LONGITUDE = "Longitude"
 
-    const val MY_LATITUDE  = 31.462638596129963
+    const val MY_LATITUDE = 31.462638596129963
     const val MY_LONGITUDE = 74.29313003696404
 
     const val FOOD_ITEM_REFRENCE = "FoodItem"
@@ -30,10 +30,11 @@ object Constants {
     const val VALID_DISTANCE = 5
 
     const val RUNNING_ORDER = "RunningOrder"
+    const val RUNNING_ORDER_STATUS = "RunningOrderStatus"
     const val RIDER_RUNNING_ORDER = "RiderRunningOrder"
-    const val ORDER_ID = "OrderId"
-    const val RIDER_ORDER_ID = "RiderOrderId"
-    const val MY_TAG="USMAN CODE"
+    const val RUNNING_ORDER_ID = "OrderId"
+    const val RUNNING_RIDER_ORDER_ID = "RiderOrderId"
+    const val MY_TAG = "USMAN CODE"
 
     const val ORDER_PLACED = "Order Placed"
     const val ORDER_PROCEED = "Order Proceeded"
@@ -53,7 +54,7 @@ object Constants {
     const val CHANNEL_ID = "LocationService"
     const val CHANNEL_NAME = "Location Service Channel"
     const val NOTIFICATION_TITLE = "Location Service"
-    const val NOTIFICATION_CONTENT ="Service Running"
+    const val NOTIFICATION_CONTENT = "Service Running"
 
     const val TEN_SECONDS = 10000L
 
@@ -68,6 +69,8 @@ object Constants {
     const val ROLE_USER = "User"
     const val ROLE_RIDER = "Rider"
 
-
+    const val MAP_ZOOM_WIDTH = 500
+    const val MAP_ZOOM_HEIGHT = 500
+    const val PADDING = 0
 
 }

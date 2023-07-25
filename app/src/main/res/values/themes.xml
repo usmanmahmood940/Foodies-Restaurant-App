@@ -11,6 +11,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">@color/orange</item>
+      
         <!-- Customize your theme here. -->
     </style>
 
@@ -30,9 +31,12 @@
 
 
     // Dialog box
-    <style name="CustomDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <style name="CustomDialog" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
         <item name="android:windowBackground">@drawable/dialog_background</item>
+
     </style>
+
+
 
    
 
