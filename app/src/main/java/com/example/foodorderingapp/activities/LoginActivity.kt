@@ -97,20 +97,20 @@ class LoginActivity : AppCompatActivity() {
                             object : CustomSuccessFailureListener {
                                 override fun onSuccess() {
                                     auth.currentUser?.apply {
-                                        if (isEmailVerified) {
+//                                        if (isEmailVerified) {
                                             uid?.let { uid ->
                                                 loginViewModel.checkRole(uid) { role ->
                                                     navigateBasedOnRole(role)
                                                 }
                                             }
-                                        } else {
-                                            sendEmailVerification()
-                                            showAlertDialog(
-                                                WeakReference(this@LoginActivity),
-                                                INFORMATION, "Please verify your email"
-                                            )
-
-                                        }
+//                                        } else {
+//                                            sendEmailVerification()
+//                                            showAlertDialog(
+//                                                WeakReference(this@LoginActivity),
+//                                                INFORMATION, "Please verify your email"
+//                                            )
+//
+//                                        }
                                     }
                                 }
 
