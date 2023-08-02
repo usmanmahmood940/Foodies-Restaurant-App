@@ -124,7 +124,6 @@ class UserRepository @Inject constructor(
         withContext(Dispatchers.Main) {
             action.invoke()
         }
-
     }
 
 }
