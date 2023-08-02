@@ -67,74 +67,7 @@ class RiderHomeActivity : AppCompatActivity() {
     }
 
     fun showOrders() {
-        val adapter = RiderOrderAdapter(listener = object : RiderOrderConfirmClickListener {
-            override fun onConfirm(order: Order) {
-                locationPermission.value = checkPermission()
-                if (checkPermission()) {
-                    locationPermission.value = true
-                } else {
-                    getPermissions()
-                }
-                CoroutineScope(Dispatchers.Main).launch {
-                    locationPermission.collectLatest {
-                        if (it) {
-                            getCurrentLocation()
-                            orderPickedTracking.observe(this@RiderHomeActivity) {
-                                it?.let {
-                                    riderViewModel.updateOrderStatus(
-                                        order.orderId,
-                                        it
-                                    ) { success, exception ->
-                                        if (success) {
-                                            riderViewModel.setRunningOrder(order.orderId)
-                                            riderViewModel.setCustomerLatLng(order.customerDeliveryInfo)
-                                            startActivity(
-                                                Intent(
-                                                    this@RiderHomeActivity,
-                                                    RiderMapActivity::class.java
-                                                )
-                                            )
-                                            finish()
-                                        } else {
-                                            exception?.let {
-                                                Log.e(
-                                                    Constants.MY_TAG,
-                                                    exception?.message.toString()
-                                                )
-                                                return@updateOrderStatus
-                                            }
-                                            Log.e(Constants.MY_TAG, "Order Does not exist")
-
-                                        }
-
-                                    }
-
-                                    val serviceIntent = Intent(
-                                        this@RiderHomeActivity,
-                                        RiderLocationService::class.java
-                                    )
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                        startForegroundService(serviceIntent)
-                                    } else {
-                                        startService(serviceIntent)
-                                    }
-                                }
-                                if (it == null) {
-                                    Helper.showAlertDialog(
-                                        WeakReference(this@RiderHomeActivity),
-                                        getString(R.string.information),
-                                        getString(R.string.enable_location)
-                                    )
-                                }
-                            }
-
-                        } else {
-                            getPermissions()
-                        }
-                    }
-                }
-            }
-        })
+        val adapter = RiderOrderAdapter(listener = confirmOrderListener)
         binding.rlNewOrders.layoutManager = LinearLayoutManager(this)
         binding.rlNewOrders.adapter = adapter
 
@@ -146,10 +79,17 @@ class RiderHomeActivity : AppCompatActivity() {
 
                 }
                 is CustomResponse.Success -> {
-                    if (it.data != null) {
+                    if (it.data != null && it.data.size > 1) {
+                        binding.tvError.visibility = View.GONE
                         binding.rlNewOrders.visibility = View.VISIBLE
                         binding.progressBarRiderOrders.visibility = View.GONE
                         adapter.setList(it.data)
+                    }
+                    else{
+                        binding.tvError.visibility = View.VISIBLE
+                        binding.rlNewOrders.visibility = View.GONE
+                        binding.progressBarRiderOrders.visibility = View.GONE
+                        binding.tvError.text = "No Orders"
                     }
                 }
                 is CustomResponse.Error -> {
@@ -159,6 +99,75 @@ class RiderHomeActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private val confirmOrderListener =  object : RiderOrderConfirmClickListener {
+        override fun onConfirm(order: Order) {
+            locationPermission.value = checkPermission()
+            if (checkPermission()) {
+                locationPermission.value = true
+            } else {
+                getPermissions()
+            }
+            CoroutineScope(Dispatchers.Main).launch {
+                locationPermission.collectLatest {
+                    if (it) {
+                        getCurrentLocation()
+                        orderPickedTracking.observe(this@RiderHomeActivity) {
+                            it?.let {
+                                riderViewModel.updateOrderStatus(
+                                    order.orderId,
+                                    it
+                                ) { success, exception ->
+                                    if (success) {
+                                        riderViewModel.setRunningOrder(order.orderId)
+                                        riderViewModel.setCustomerLatLng(order.customerDeliveryInfo)
+                                        startActivity(
+                                            Intent(
+                                                this@RiderHomeActivity,
+                                                RiderMapActivity::class.java
+                                            )
+                                        )
+                                        finish()
+                                    } else {
+                                        exception?.let {
+                                            Log.e(
+                                                Constants.MY_TAG,
+                                                exception?.message.toString()
+                                            )
+                                            return@updateOrderStatus
+                                        }
+                                        Log.e(Constants.MY_TAG, "Order Does not exist")
+
+                                    }
+
+                                }
+
+                                val serviceIntent = Intent(
+                                    this@RiderHomeActivity,
+                                    RiderLocationService::class.java
+                                )
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    startForegroundService(serviceIntent)
+                                } else {
+                                    startService(serviceIntent)
+                                }
+                            }
+                            if (it == null) {
+                                Helper.showAlertDialog(
+                                    WeakReference(this@RiderHomeActivity),
+                                    getString(R.string.information),
+                                    getString(R.string.enable_location)
+                                )
+                            }
+                        }
+
+                    } else {
+                        getPermissions()
+                    }
+                }
+            }
+        }
     }
 
     private fun setOrderTracking(latLng: LatLng) {
