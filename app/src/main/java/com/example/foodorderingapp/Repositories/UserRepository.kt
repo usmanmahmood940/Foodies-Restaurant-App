@@ -29,9 +29,7 @@ class UserRepository @Inject constructor(
             val signInAuth = auth.signInWithEmailAndPassword(email, password).await()
             signInAuth.user?.apply {
                 if (isEmailVerified || true) {
-
                     runOnMain({ listener.onSuccess() })
-
                 } else {
                     sendEmailVerification()
                     runOnMain {
