@@ -11,6 +11,7 @@
     <dimen name="font_normal_100">25sp</dimen>
     <dimen name="font_normal_125">30dp</dimen>
     <dimen name="font_normal_150">40dp</dimen>
+    <dimen name="font_large_75">45dp</dimen>
     <dimen name="font_large_100">55dp</dimen>
 
     <dimen name="margin_small_50">4dp</dimen>

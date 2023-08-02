@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">FoodOrderingApp</string>
 
-    <string name="splash_label">Broadway</string>
+    <string name="splash_label">Foodies Cafe</string>
     <string name="splash_msg">Order Your Food</string>
     <string name="splash_btn_start">Get Started</string>
 
