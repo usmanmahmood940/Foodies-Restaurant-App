@@ -12,14 +12,19 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
-class FoodItemRepository  @Inject constructor() {
-    private val databaseReference = FirebaseDatabase.getInstance().getReference().child(FOOD_ITEM_REFRENCE)
+class FoodItemRepository @Inject constructor() {
+    private val databaseReference =
+        FirebaseDatabase.getInstance().getReference().child(FOOD_ITEM_REFRENCE)
     private var valueEventListener: ValueEventListener? = null
 
-    private val foodItemLiveData = MutableLiveData<CustomResponse<List<FoodItem>>>()
-    val foodItemList: LiveData<CustomResponse<List<FoodItem>>>
+    private val foodItemLiveData =
+        MutableStateFlow<CustomResponse<List<FoodItem>>>(CustomResponse.Loading())
+    val foodItemList: StateFlow<CustomResponse<List<FoodItem>>>
         get() = foodItemLiveData
 
     init {
@@ -31,20 +36,24 @@ class FoodItemRepository  @Inject constructor() {
         valueEventListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val foodItemList: MutableList<FoodItem> = mutableListOf()
+
                 for (foodItemSnapshot in dataSnapshot.children) {
                     val foodItem = foodItemSnapshot.getValue(FoodItem::class.java)
                     if (foodItem != null) {
                         foodItemList.add(foodItem)
                     }
+                    foodItemLiveData.value = CustomResponse.Success(foodItemList)
                 }
-                foodItemLiveData.value = CustomResponse.Success(foodItemList)
             }
 
             override fun onCancelled(databaseError: DatabaseError) {
-                foodItemLiveData.value = CustomResponse.Error(databaseError.toException().message.toString())
+                foodItemLiveData.value =
+                    CustomResponse.Error(databaseError.toException().message.toString())
             }
         }
+//        val query = databaseReference.orderByKey().limitToFirst(2)
         databaseReference.addValueEventListener(valueEventListener as ValueEventListener)
+
     }
 
     fun stopObservingData() {

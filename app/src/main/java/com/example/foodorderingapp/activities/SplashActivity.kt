@@ -47,7 +47,6 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun getStartActivityIntent(): Intent {
-//        auth.currentUser?.isEmailVerified?:false
         return if (auth.currentUser != null) {
             getIntentBasedOnRole(getRole())
         } else {
@@ -56,7 +55,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun getRole():String?{
-        return sharedPreferences.getString(ROLE_REFRENCE,Constants.ROLE_RIDER)
+        return sharedPreferences.getString(ROLE_REFRENCE,null)
     }
 
     private fun getIntentBasedOnRole(role:String?): Intent {

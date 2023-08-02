@@ -90,19 +90,11 @@ class LoginActivity : AppCompatActivity() {
                             object : CustomSuccessFailureListener {
                                 override fun onSuccess() {
                                     auth.currentUser?.apply {
-//                                        if (isEmailVerified) {
-                                            uid?.let { uid ->
-                                                loginViewModel.checkRole(uid) { role ->
-                                                    navigateBasedOnRole(role)
-                                                }
+                                        uid?.let { uid ->
+                                            loginViewModel.checkRole(uid) { role ->
+                                                navigateBasedOnRole(role)
                                             }
-//                                        } else {
-//                                            sendEmailVerification()
-//                                            showAlertDialog(
-//                                                WeakReference(this@LoginActivity),
-//                                                getString(R.string.information), getString(R.string.email_verify)
-//                                            )
-//                                        }
+                                        }
                                     }
                                 }
 
@@ -188,7 +180,11 @@ class LoginActivity : AppCompatActivity() {
                         }
 
                         override fun onFailure(errorMessage: String?) {
-                            showAlertDialog(WeakReference(this@LoginActivity), getString(R.string.error), errorMessage)
+                            showAlertDialog(
+                                WeakReference(this@LoginActivity),
+                                getString(R.string.error),
+                                errorMessage
+                            )
                         }
 
                     })

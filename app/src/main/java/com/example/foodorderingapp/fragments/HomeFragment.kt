@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -28,6 +29,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
@@ -167,30 +169,33 @@ class HomeFragment : Fragment() {
     }
 
     private fun observeFoodItemList() {
-        homeViewModel.foodItemList.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is CustomResponse.Loading -> {
-                    binding.rvPopular.visibility = View.INVISIBLE
-                    binding.progressBarFooditem.visibility = View.VISIBLE
-                }
-                is CustomResponse.Success -> {
-                    binding.rvPopular.visibility = View.VISIBLE
-                    binding.progressBarFooditem.visibility = View.GONE
-                    response.data?.let { foodItemList ->
-                        (binding.rvPopular.adapter as? FoodItemAdapter)?.apply {
-                            val list = homeViewModel.category?.let {
-                                homeViewModel.getFoodItemsByCategory(it)
-                            } ?: foodItemList
-                            setList(list)
+        lifecycleScope.launch {
+            homeViewModel.foodItemList.collect{ response ->
+                when (response) {
+                    is CustomResponse.Loading -> {
+                        binding.rvPopular.visibility = View.INVISIBLE
+                        binding.progressBarFooditem.visibility = View.VISIBLE
+                    }
+                    is CustomResponse.Success -> {
+                        binding.rvPopular.visibility = View.VISIBLE
+                        binding.progressBarFooditem.visibility = View.GONE
+                        response.data?.let { foodItemList ->
+                            (binding.rvPopular.adapter as? FoodItemAdapter)?.apply {
+                                val list = homeViewModel.category?.let {
+                                    homeViewModel.getFoodItemsByCategory(it)
+                                } ?: foodItemList
+                                setList(list)
+                            }
                         }
                     }
-                }
-                is CustomResponse.Error -> {
-                    binding.progressBarFooditem.visibility = View.GONE
-                    showAlertDialog(WeakReference(requireContext()),getString(R.string.error), response.errorMessage.toString())
+                    is CustomResponse.Error -> {
+                        binding.progressBarFooditem.visibility = View.GONE
+                        showAlertDialog(WeakReference(requireContext()),getString(R.string.error), response.errorMessage.toString())
+                    }
                 }
             }
         }
+
     }
 
     private fun showAddToCartBottomSheet(foodItem: FoodItem) {
