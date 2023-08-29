@@ -238,7 +238,7 @@ class CheckoutFragment : Fragment() {
             cartItemList = cartItemList,
             amounts = amounts,
             orderTracking = OrderTracking().apply {
-                placeOrder()
+                proceedOrder()
             }
         )
     }

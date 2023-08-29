@@ -79,7 +79,7 @@ class RiderHomeActivity : AppCompatActivity() {
 
                 }
                 is CustomResponse.Success -> {
-                    if (it.data != null && it.data.size > 1) {
+                    if (it.data != null && it.data.size >= 1) {
                         binding.tvError.visibility = View.GONE
                         binding.rlNewOrders.visibility = View.VISIBLE
                         binding.progressBarRiderOrders.visibility = View.GONE

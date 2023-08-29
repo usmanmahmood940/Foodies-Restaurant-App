@@ -60,7 +60,7 @@ class LoginActivity : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
     }
-
+    
     private fun setupLoginListeners() {
 
         with(binding) {
