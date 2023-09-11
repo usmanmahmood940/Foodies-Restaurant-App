@@ -2,13 +2,16 @@ package com.example.foodorderingapp.RiderApp
 
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.core.content.edit
 import androidx.lifecycle.ViewModelProvider
 import com.example.foodorderingapp.R
 import com.example.foodorderingapp.Response.CustomResponse
 import com.example.foodorderingapp.RiderApp.Services.RiderLocationService
 import com.example.foodorderingapp.RiderApp.ViewModels.RiderMapViewModel
+import com.example.foodorderingapp.Utils.Constants
 import com.example.foodorderingapp.Utils.Constants.MAP_ZOOM_HEIGHT
 import com.example.foodorderingapp.Utils.Constants.MAP_ZOOM_WIDTH
 import com.example.foodorderingapp.Utils.Constants.ORDER_DELIVERED
@@ -27,6 +30,7 @@ import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
 import dagger.hilt.android.AndroidEntryPoint
 import java.lang.ref.WeakReference
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class RiderMapActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -39,6 +43,8 @@ class RiderMapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var boundsBuilder: LatLngBounds.Builder
     private var riderMarker: Marker? = null
 
+    @Inject
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +96,11 @@ class RiderMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     startActivity(
                         Intent(this@RiderMapActivity, RiderHomeActivity::class.java)
                     )
+                    sharedPreferences.edit {
+                        putString(Constants.RIDER_RUNNING_ORDER,null)
+                        apply()
+                    }
+
                     finish()
                 }
             }
