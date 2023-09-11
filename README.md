@@ -18,6 +18,9 @@ Watch a video demonstration of "Foodies" to see its key features in action:
 - 📊 Track your order's progress from preparation to delivery.
 - 🗺️ View live updates of the delivery rider's location.
 
+## Architecture Followd
+- Model-View-ViewModel (MVVM)
+
 ## Technologies Used
 
 - Android Studio
