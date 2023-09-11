@@ -142,9 +142,9 @@ class CheckoutFragment : Fragment() {
                     etAddress.showError(getString(R.string.address_required_error))
                     etAddress.isFocusableInTouchMode = false
                 }
-                !checkoutViewModel.validDistance() -> {
-                    showAlertDialog(WeakReference(requireContext()), getString(R.string.area_error), getString(R.string.delivery_area_error))
-                }
+//                !checkoutViewModel.validDistance() -> {
+//                    showAlertDialog(WeakReference(requireContext()), getString(R.string.area_error), getString(R.string.delivery_area_error))
+//                }
                 else -> {
                     val customerInfo = createCustomerInfo()
                     val deliveryInfo = createDeliveryInfo()
