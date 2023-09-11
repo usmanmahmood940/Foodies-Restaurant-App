@@ -21,13 +21,16 @@ Watch a video demonstration of "Foodies" to see its key features in action:
 ## Architecture Followed
 - Model-View-ViewModel (MVVM)
 
-## Technologies Used
+## Technologies and Concepts Used
 
 - Android Studio
 - Kotlin
 - Google Maps API
 - Firebase (for real-time tracking)
 - WorkManager
+- Kotlin Coroutines
+- Hilt Dependency Injection
+
 
 ## How to Run
 
