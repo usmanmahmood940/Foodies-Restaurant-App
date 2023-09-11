@@ -1,7 +1,7 @@
 
 # Foodies - Restaurant App
 
-Welcome to the "Foodies" repository! This Android app project was developed to showcase my skills in mobile app development. While "Foodies" is not associated with a real restaurant, it demonstrates a range of features, including menu browsing, easy ordering, real-time rider tracking, order progress monitoring, and live rider location updates.
+"Foodies" is a user-friendly Food Ordering Restaurant app for Android, showcasing menu browsing, easy ordering, real-time rider tracking, and more. Built with Android Studio, it's a practice project for Android app development skills. Clone, run, and contribute. 🍔📱🚀
 
 ## Video Demo
 
