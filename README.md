@@ -29,7 +29,8 @@ Watch a video demonstration of "Foodies" to see its key features in action:
 - Firebase (for real-time tracking)
 - WorkManager
 - Kotlin Coroutines
-- Hilt Dependency Injection
+- Dagger Hilt Dependency Injection
+- Navigation Framework
 
 
 ## How to Run
